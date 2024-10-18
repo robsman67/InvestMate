@@ -1,8 +1,46 @@
-# React + Vite
+# DA50 Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+This is the source code of the DA50 Project's website which acts as the platform to download the main application.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Requirements
+
+---
+
+- node v20.18.0
+- npm 10.8.2
+
+## Installation
+
+---
+
+1. Clone the repository. Example :
+
+```bash
+git clone https://github.com/Ardenel/DA50-Project.git
+```
+
+2. Install dependencies :
+
+```bash
+npm i
+```
+
+3. To run the site on development :
+
+```bash
+npm run dev
+```
+
+4. To build the website and deploy :
+
+```bash
+npm run build
+```
+
+5. To preview the built website :
+
+```bash
+npm run preview
+```
