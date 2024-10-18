@@ -1,0 +1,62 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+@layer utilities {
+  .main-gradient {
+    @apply bg-gradient-to-r from-primary-dark to-primary-light;
+  }
+  .secondary-gradient {
+    @apply bg-gradient-to-r from-secondary-dark to-secondary-light;
+  }
+
+  .padding {
+    @apply sm:px-16 px-8 sm:py-24 py-12;
+  }
+
+  .padding-x {
+    @apply sm:px-16 px-8;
+  }
+
+  .padding-y {
+    @apply sm:py-24 py-12;
+  }
+
+  .padding-l {
+    @apply sm:pl-16 pl-8;
+  }
+
+  .padding-r {
+    @apply sm:pr-16 pr-8;
+  }
+
+  .padding-t {
+    @apply sm:pt-24 pt-12;
+  }
+
+  .padding-b {
+    @apply sm:pb-24 pb-12;
+  }
+
+  .gradient-text {
+    @apply leading-relaxed bg-gradient-to-r secondary-gradient inline-block text-transparent bg-clip-text;
+  }
+
+  .fade-left {
+    @apply opacity-0 translate-x-11 transition-all duration-1000;
+  }
+
+  .fade-right {
+    @apply opacity-0 -translate-x-11 transition-all duration-1000;
+  }
+
+  .fade-x-active {
+    @apply opacity-100 translate-x-0 transition-all duration-1000;
+  }
+}
