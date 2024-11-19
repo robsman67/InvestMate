@@ -1,6 +1,6 @@
 package com.projet.da50.projet_da50.model;
 
-import javax.persistence.*;
+import javax.persistence.*; // Changed import from javax.persistence to jakarta.persistence
 
 @Entity
 @Table(name = "Users") // Nom de la table dans la base de données
@@ -20,6 +20,7 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Enumerated(EnumType.STRING)  // Added annotation for enum mapping to the database
     @Column(name = "role", nullable = false)
     private Role role;
 
@@ -75,4 +76,3 @@ public class User {
         this.role = role;
     }
 }
-

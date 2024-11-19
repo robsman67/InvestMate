@@ -52,7 +52,7 @@ public class AuthentificationFormView extends UI{
         hbBtnLogin.getChildren().add(btnLogin);
         grid.add(hbBtnLogin, 1, 2);
         btnLogin.setOnAction(e -> {
-            String username = userTextField.getText();
+            /*String username = userTextField.getText();
             String password = pwBox.getText();
 
             if (userController.verifyUser(username, password)) {
@@ -60,7 +60,8 @@ public class AuthentificationFormView extends UI{
                 // Rediriger l'utilisateur vers la page d'accueil ou le tableau de bord
             } else {
                 System.out.println("Identifiants incorrects.");
-            }
+            }*/
+            new MainMenuView(primaryStage).show();
         });
 
         // Bouton "Mot de passe oublié"
@@ -81,17 +82,6 @@ public class AuthentificationFormView extends UI{
         hbBottomButtons.setAlignment(Pos.BOTTOM_CENTER);
         hbBottomButtons.getChildren().addAll(btnForgotPassword, btnCreateAccount);
         grid.add(hbBottomButtons, 1, 3);
-
-        // Action du bouton de connexion
-        btnLogin.setOnAction(e -> {
-            String username = userTextField.getText();
-            String password = pwBox.getText();
-            if (username.equals("admin") && password.equals("admin")) {
-                System.out.println("Connexion réussie !");
-            } else {
-                System.out.println("Nom d'utilisateur ou mot de passe incorrect.");
-            }
-        });
 
         // Création et affichage de la scène
         Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);

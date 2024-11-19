@@ -1,14 +1,13 @@
 module com.projet.da50.projet_da50 {
 
-    requires javafx.controls;
-    requires javafx.fxml;
-    requires org.hibernate.orm.core;
-    requires java.persistence;
-    requires java.naming;
+    requires javafx.controls;           // JavaFX Controls
+    requires javafx.fxml;              // JavaFX FXML
+    requires org.hibernate.orm.core;   // Hibernate ORM for JPA
+    requires java.naming;              // JNDI support (if needed)
     requires java.sql;
+    requires java.persistence;                 // SQL operations
 
-    opens com.projet.da50.projet_da50.model to org.hibernate.orm.core;
-    opens com.projet.da50.projet_da50 to javafx.fxml;
+    opens com.projet.da50.projet_da50.model to org.hibernate.orm.core; // Hibernate reflection access
 
-    exports com.projet.da50.projet_da50;
+    exports com.projet.da50.projet_da50;  // Export the main package
 }
