@@ -5,6 +5,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 
 public class MainMenuView extends UI {
     private Stage primaryStage;
@@ -21,7 +27,10 @@ public class MainMenuView extends UI {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        //TODO
+        Button createLessonButton = new Button("Créer une leçon");
+        createLessonButton.setOnAction(e -> { new CreateLessonView(primaryStage).show(); });
+
+        grid.add(createLessonButton, 0, 0);
 
         Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setTitle("Main Menu");

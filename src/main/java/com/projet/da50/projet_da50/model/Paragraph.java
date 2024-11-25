@@ -6,6 +6,11 @@ public class Paragraph extends Elements{
 
     public Paragraph() {}
 
+    public Paragraph(String content, ParagraphType type) {
+        this.content = content;
+        this.type = type;
+    }
+
     // Getters and setters
     public String getContent() {
         return content;

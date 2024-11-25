@@ -6,6 +6,7 @@ module com.projet.da50.projet_da50 {
     requires java.naming;              // JNDI support (if needed)
     requires java.sql;
     requires java.persistence;                 // SQL operations
+    requires javafx.media;
 
     opens com.projet.da50.projet_da50.model to org.hibernate.orm.core; // Hibernate reflection access
 

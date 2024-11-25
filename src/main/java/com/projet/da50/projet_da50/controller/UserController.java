@@ -10,7 +10,7 @@ import com.projet.da50.projet_da50.model.User;
 public class UserController {
 
     private SessionFactory factory;
-
+/*
     public UserController() {
         // Créer la SessionFactory à partir de la configuration
         factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class).buildSessionFactory();
@@ -72,4 +72,5 @@ public class UserController {
     public void close() {
         factory.close();
     }
+ */
 }

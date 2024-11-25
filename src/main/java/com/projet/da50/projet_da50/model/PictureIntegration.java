@@ -5,6 +5,10 @@ public class PictureIntegration extends Elements {
 
     public PictureIntegration() {}
 
+    public PictureIntegration(String contentPath) {
+        this.contentPath = contentPath;
+    }
+
     // Getters and setters
     public String getContentPath() {
         return contentPath;

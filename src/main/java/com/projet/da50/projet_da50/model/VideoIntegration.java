@@ -5,6 +5,10 @@ public class VideoIntegration extends Elements {
 
     public VideoIntegration() {}
 
+    public VideoIntegration(String contentPath) {
+        this.contentPath = contentPath;
+    }
+
     // Getters and setters
     public String getContentPath() {
         return contentPath;
