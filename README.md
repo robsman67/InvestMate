@@ -18,7 +18,7 @@ This is the source code of the DA50 Project's website which acts as the platform
 1. Clone the repository. Example :
 
 ```bash
-git clone https://github.com/Ardenel/DA50-Project.git
+git@github.com:DA50-Project-AAAHRT/DA50-Project.git
 ```
 
 2. Install dependencies :
