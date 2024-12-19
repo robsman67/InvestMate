@@ -121,18 +121,23 @@ public class CreateLessonView extends UI {
 
         addElementSection.getChildren().add(addButton);
 
-        // Centre : Prévisualisation de la leçon
+        // Prévisualisation avec défilement
+        VBox previewContent = new VBox(10); // Le contenu défilable
+        previewContent.setPadding(new Insets(10));
+        previewContent.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-border-color: #dcdcdc; -fx-border-width: 1;");
+
+        ScrollPane previewScrollPane = new ScrollPane(previewContent);
+        previewScrollPane.setFitToWidth(true); // Adapter à la largeur
+        previewScrollPane.setStyle("-fx-background: #ffffff;");
+
+        // Section centrale
         VBox previewSection = new VBox(10);
+        previewSection.getChildren().add(previewScrollPane);
         previewSection.setPadding(new Insets(10));
-        previewSection.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-border-color: #dcdcdc; -fx-border-width: 1;");
-        Label previewTitle = new Label("Prévisualisation de la leçon :");
-        previewTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-        previewSection.getChildren().add(previewTitle);
 
         // Bouton pour supprimer un élément sélectionné
         Button deleteButton = new Button("Supprimer un élément");
         deleteButton.setOnAction(e -> {
-            // Supprime le dernier élément ajouté (pour simplifier, ou vous pouvez ajouter une sélection)
             if (!elementsList.isEmpty()) {
                 Elements lastElement = elementsList.get(elementsList.size() - 1);
                 lessonController.removeElement(lastElement);
@@ -141,12 +146,7 @@ public class CreateLessonView extends UI {
             }
         });
 
-        // Ajout du bouton de suppression à la section
         previewSection.getChildren().add(deleteButton);
-
-        // Section des éléments
-        VBox elementsSection = new VBox(10, previewSection);
-        elementsSection.setPadding(new Insets(10));
 
         // Bouton pour sauvegarder la leçon
         Button saveButton = new Button("Sauvegarder la leçon");
@@ -159,16 +159,19 @@ public class CreateLessonView extends UI {
         });
 
         root.setTop(addElementSection);
-        root.setCenter(elementsSection);
+        root.setCenter(previewSection);
         root.setBottom(saveButton);
         BorderPane.setAlignment(saveButton, Pos.CENTER);
         BorderPane.setMargin(saveButton, new Insets(10));
 
         // Créer et afficher la scène
-        Scene scene = new Scene(root, 500, 500);
+        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         stage.setTitle("Créer une Leçon");
         stage.setScene(scene);
         stage.show();
+
+        // Initialiser la méthode updatePreview
+        updatePreview();
     }
 
     // Méthode pour afficher une alerte
@@ -181,13 +184,23 @@ public class CreateLessonView extends UI {
     }
 
     private void updatePreview() {
-        VBox previewSection = (VBox) ((VBox) ((BorderPane) stage.getScene().getRoot()).getCenter()).getChildren().get(0);
+        // Récupère la section de prévisualisation
+        VBox previewSection = (VBox) ((ScrollPane) ((VBox) ((BorderPane) stage.getScene().getRoot()).getCenter()).getChildren().get(0)).getContent();
         previewSection.getChildren().clear();
+
+        // Ajoute un titre à la prévisualisation
         Label previewTitle = new Label("Prévisualisation de la leçon :");
         previewTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         previewSection.getChildren().add(previewTitle);
 
+        // Parcourt les éléments de la leçon
         for (Elements element : lessonController.getLesson().getElements().values()) {
+            // Conteneur pour chaque élément et son bouton
+            HBox elementBox = new HBox();
+            elementBox.setSpacing(10);
+            elementBox.setAlignment(Pos.CENTER_LEFT);
+
+            // Affichage selon le type d'élément
             if (element instanceof Title) {
                 Title title = (Title) element;
                 Label titleLabel = new Label(title.getContent());
@@ -196,41 +209,56 @@ public class CreateLessonView extends UI {
                                 ? "-fx-font-size: 20px; -fx-font-weight: bold;"
                                 : "-fx-font-size: 16px; -fx-font-style: italic;"
                 );
-                previewSection.getChildren().add(titleLabel);
+                elementBox.getChildren().add(titleLabel);
             } else if (element instanceof Paragraph) {
                 Paragraph paragraph = (Paragraph) element;
                 Label paragraphLabel = new Label(paragraph.getContent());
                 paragraphLabel.setStyle("-fx-font-size: 14px;");
                 paragraphLabel.setWrapText(true);
-                previewSection.getChildren().add(paragraphLabel);
+                elementBox.getChildren().add(paragraphLabel);
             } else if (element instanceof PictureIntegration) {
                 PictureIntegration image = (PictureIntegration) element;
                 try {
                     ImageView imageView = new ImageView(new javafx.scene.image.Image(image.getContentPath()));
                     imageView.setFitWidth(300);
                     imageView.setPreserveRatio(true);
-                    previewSection.getChildren().add(imageView);
+                    elementBox.getChildren().add(imageView);
                 } catch (Exception ex) {
                     Label errorLabel = new Label("Image non disponible : " + image.getContentPath());
                     errorLabel.setStyle("-fx-text-fill: red;");
-                    previewSection.getChildren().add(errorLabel);
+                    elementBox.getChildren().add(errorLabel);
                 }
             } else if (element instanceof VideoIntegration) {
                 VideoIntegration video = (VideoIntegration) element;
                 try {
-                    // Lecture de la vidéo avec MediaPlayer
                     Media media = new Media(video.getContentPath());
                     MediaPlayer mediaPlayer = new MediaPlayer(media);
                     MediaView mediaView = new MediaView(mediaPlayer);
-                    mediaView.setFitWidth(300); // Ajuster la taille
+                    mediaView.setFitWidth(300);
                     mediaPlayer.play();
-                    previewSection.getChildren().add(mediaView);
+                    elementBox.getChildren().add(mediaView);
                 } catch (Exception ex) {
                     Label errorLabel = new Label("Vidéo non disponible : " + video.getContentPath());
                     errorLabel.setStyle("-fx-text-fill: red;");
-                    previewSection.getChildren().add(errorLabel);
+                    elementBox.getChildren().add(errorLabel);
                 }
             }
+
+            // Ajoute un bouton "Supprimer"
+            Button deleteButton = new Button("Supprimer");
+            deleteButton.setStyle("-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-font-size: 12px;");
+            deleteButton.setOnAction(event -> {
+                // Supprime l'élément de la leçon
+                lessonController.getLesson().removeElement(element);
+                // Met à jour la prévisualisation
+                updatePreview();
+            });
+
+            // Ajoute le bouton "Supprimer" à la boîte
+            elementBox.getChildren().add(deleteButton);
+
+            // Ajoute l'élément à la section de prévisualisation
+            previewSection.getChildren().add(elementBox);
         }
     }
 }
