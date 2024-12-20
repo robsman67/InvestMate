@@ -1,4 +1,4 @@
-name: CI
+name: CI-'Developpement'-branch
 
 on:
   push:
