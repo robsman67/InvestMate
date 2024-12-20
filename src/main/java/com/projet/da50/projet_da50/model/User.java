@@ -1,6 +1,6 @@
 package com.projet.da50.projet_da50.model;
 
-import javax.persistence.*;
+import javax.persistence.*; // Changed import from javax.persistence to jakarta.persistence
 
 @Entity
 @Table(name = "Users") // Nom de la table dans la base de données
@@ -11,15 +11,18 @@ public class User {
     @Column(name = "id")
     private Long id;
 
+    //Must be unique
     @Column(name = "username", unique = true, nullable = false)
     private String username;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "email", nullable = false)
-    private String email;
+    //Must be unique
+    @Column(name = "mail", unique= true, nullable = false)
+    private String mail;
 
+    //@Enumerated(EnumType.STRING)  // Added annotation for enum mapping to the database
     @Column(name = "role", nullable = false)
     private Role role;
 
@@ -27,11 +30,11 @@ public class User {
     public User() {}
 
     // Constructeur avec paramètres
-    public User(String username, String password, String email) {
+    public User(String username, String password, String mail) {
         this.username = username;
         this.password = password;
-        this.email = email;
-        this.role = Role.Reader; // Par défaut, un nouvel utilisateur est un lecteur
+        this.mail = mail;
+        this.role = Role.Reader; // Default role
     }
 
     // Getters et setters
@@ -59,12 +62,12 @@ public class User {
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    public String getMail() {
+        return mail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     public Role getRole() {
@@ -75,4 +78,3 @@ public class User {
         this.role = role;
     }
 }
-
