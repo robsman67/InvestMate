@@ -32,6 +32,17 @@ public class MainMenuView extends UI {
         });
         grid.add(btnCourses, 0, 0);
 
+        System.out.println(getAdmin());
+        if (getAdmin()) {
+            // Add Admin button
+            Button btnAdmin = new Button("Create Course");
+            btnAdmin.getStyleClass().add("button-blue");
+            btnAdmin.setOnAction(e -> {
+                new CreateLessonView(primaryStage).show();
+            });
+            grid.add(btnAdmin, 0, 2);
+        }
+
         // Add Wallet button
         Button btnWallet = new Button("Wallet");
         btnWallet.getStyleClass().add("button-blue");
@@ -46,7 +57,7 @@ public class MainMenuView extends UI {
         btnDisconnect.setOnAction(e -> {
             new AuthenticationFormView(primaryStage).show();
         });
-        grid.add(btnDisconnect, 0, 2);
+        grid.add(btnDisconnect, 165, 0);
 
         // Request focus on another element to prevent the Disconnect button from being selected
         btnCourses.requestFocus();

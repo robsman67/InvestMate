@@ -2,6 +2,7 @@ package com.projet.da50.projet_da50.view;
 
 import com.projet.da50.projet_da50.controller.LessonController;
 import com.projet.da50.projet_da50.model.*;
+import com.projet.da50.projet_da50.view.components.CustomButton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -9,9 +10,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.*;
+import javafx.scene.control.Button;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class CreateLessonView extends UI {
     private Stage stage;
@@ -28,6 +36,7 @@ public class CreateLessonView extends UI {
         // Grille principale
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(15));
+        root.getStyleClass().add("main-background");
 
         // Haut : Formulaire pour ajouter des éléments
         VBox addElementSection = new VBox(10);
@@ -36,27 +45,31 @@ public class CreateLessonView extends UI {
 
         // Champ pour le nom de la leçon
         Label nameLabel = new Label("Nom de la leçon :");
+        nameLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
         TextField nameField = new TextField();
         addElementSection.getChildren().addAll(nameLabel, nameField);
 
         // Sélection du type d'élément
         Label elementTypeLabel = new Label("Type d'élément :");
+        elementTypeLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
         ComboBox<String> elementTypeComboBox = new ComboBox<>();
         elementTypeComboBox.getItems().addAll("Sous-Titre", "Paragraphe", "Image", "Vidéo");
-        elementTypeComboBox.setValue("Titre Principal");
+        elementTypeComboBox.setValue("Sous-Titre");
+
 
         // Champ pour le contenu de l'élément
         Label contentLabel = new Label("Contenu de l'élément :");
+        contentLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
         TextField contentField = new TextField();
+
+        ComboBox<TitleType> titleTypeComboBox = new ComboBox<>();
+        titleTypeComboBox.getItems().addAll(TitleType.SubTitle1, TitleType.SubTitle2);
+        titleTypeComboBox.setValue(TitleType.SubTitle1);
 
         // Options pour le type de paragraphe ou de sous-titre
         ComboBox<ParagraphType> paragraphTypeComboBox = new ComboBox<>();
         paragraphTypeComboBox.getItems().addAll(ParagraphType.INTRO, ParagraphType.TEXT, ParagraphType.CCL);
         paragraphTypeComboBox.setValue(ParagraphType.TEXT);
-
-        ComboBox<TitleType> titleTypeComboBox = new ComboBox<>();
-        titleTypeComboBox.getItems().addAll(TitleType.SubTitle1, TitleType.SubTitle2);
-        titleTypeComboBox.setValue(TitleType.SubTitle1);
 
         addElementSection.getChildren().addAll(elementTypeLabel, elementTypeComboBox, contentLabel, contentField);
 
@@ -73,11 +86,26 @@ public class CreateLessonView extends UI {
                 typeOptionBox.getChildren().add(titleTypeComboBox);
             } else if (selectedType.equals("Paragraphe")) {
                 typeOptionBox.getChildren().add(paragraphTypeComboBox);
+            } else if (selectedType.equals("Image")) {
+                Button chooseImageButton = new CustomButton("Choose Image");
+                chooseImageButton.getStyleClass().add("button-blue");
+                chooseImageButton.setOnAction(event -> {
+                    FileChooser fileChooser = new FileChooser();
+                    fileChooser.setTitle("Sélectionner une image");
+                    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+
+                    File selectedFile = fileChooser.showOpenDialog(stage); // Afficher le dialogue
+                    if (selectedFile != null) {
+                        contentField.setText(selectedFile.getAbsolutePath()); // Remplir le champ de contenu avec le chemin du fichier
+                    }
+                });
+                typeOptionBox.getChildren().add(chooseImageButton);
             }
         });
 
         // Bouton pour ajouter un élément
-        Button addButton = new Button("Ajouter");
+        Button addButton = new CustomButton("Add");
+        addButton.getStyleClass().add("button-blue");
         addButton.setOnAction(e -> {
             String content = contentField.getText();
             String elementType = elementTypeComboBox.getValue();
@@ -135,21 +163,9 @@ public class CreateLessonView extends UI {
         previewSection.getChildren().add(previewScrollPane);
         previewSection.setPadding(new Insets(10));
 
-        // Bouton pour supprimer un élément sélectionné
-        Button deleteButton = new Button("Supprimer un élément");
-        deleteButton.setOnAction(e -> {
-            if (!elementsList.isEmpty()) {
-                Elements lastElement = elementsList.get(elementsList.size() - 1);
-                lessonController.removeElement(lastElement);
-                elementsList.remove(lastElement);
-                updatePreview(); // Mettre à jour la prévisualisation
-            }
-        });
-
-        previewSection.getChildren().add(deleteButton);
-
         // Bouton pour sauvegarder la leçon
-        Button saveButton = new Button("Sauvegarder la leçon");
+        Button saveButton = new CustomButton("Save");
+        saveButton.getStyleClass().add("button-blue");
         saveButton.setOnAction(e -> {
             String lessonName = nameField.getText();
             if (lessonController.validateInputs(lessonName)) {
@@ -166,7 +182,10 @@ public class CreateLessonView extends UI {
 
         // Créer et afficher la scène
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-        stage.setTitle("Créer une Leçon");
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+
+        stage.setTitle("Lesson Creator");
+        stage.setMaximized(true);
         stage.setScene(scene);
         stage.show();
 
@@ -193,8 +212,13 @@ public class CreateLessonView extends UI {
         previewTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         previewSection.getChildren().add(previewTitle);
 
+        Map<String, Elements> lesson = lessonController.getLesson().getElements();
+
         // Parcourt les éléments de la leçon
-        for (Elements element : lessonController.getLesson().getElements().values()) {
+        for (int i = 0; i<lessonController.getLesson().getElements().size(); i++) {
+
+            Elements element = lesson.get("Content" + i);
+
             // Conteneur pour chaque élément et son bouton
             HBox elementBox = new HBox();
             elementBox.setSpacing(10);

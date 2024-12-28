@@ -2,6 +2,8 @@ package com.projet.da50.projet_da50.view;
 
 import com.projet.da50.projet_da50.controller.LoginErrorHandler;
 import com.projet.da50.projet_da50.controller.UserController;
+import com.projet.da50.projet_da50.model.Role;
+import com.projet.da50.projet_da50.model.User;
 import com.projet.da50.projet_da50.view.components.CustomButton;
 import com.projet.da50.projet_da50.view.components.CustomLabel;
 import com.projet.da50.projet_da50.view.components.CustomPasswordField;
@@ -156,6 +158,10 @@ public class AuthenticationFormView extends UI {
 
         String validationMessage = loginErrorHandler.validateAuthenticationFields(username, password);
         if ("Valid credentials.".equals(validationMessage)) {
+            User user = userController.findUserByUsername(username);
+            if(user.getRole() == Role.Admin) {
+                setAdmin(true);
+            }
             new MainMenuView(primaryStage).show();
         } else {
             // Gérer l'affichage du message d'erreur
