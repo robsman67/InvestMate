@@ -32,7 +32,6 @@ public class MainMenuView extends UI {
         });
         grid.add(btnCourses, 0, 0);
 
-        System.out.println(getAdmin());
         if (getAdmin()) {
             // Add Admin button
             Button btnAdmin = new Button("Create Course");

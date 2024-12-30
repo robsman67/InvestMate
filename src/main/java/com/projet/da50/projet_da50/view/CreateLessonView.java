@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -212,14 +213,14 @@ public class CreateLessonView extends UI {
         previewTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         previewSection.getChildren().add(previewTitle);
 
-        Map<String, Elements> lesson = lessonController.getLesson().getElements();
+        List<Elements> lesson = lessonController.getLesson().getElements();
 
         // Parcourt les éléments de la leçon
-        for (int i = 0; i<lessonController.getLesson().getElements().size(); i++) {
+        for (int i = 0; i < lessonController.getLesson().getElements().size(); i++) {
 
-            Elements element = lesson.get("Content" + i);
+            Elements element = lesson.get(i);
 
-            // Conteneur pour chaque élément et son bouton
+            // Conteneur pour chaque élément et ses boutons
             HBox elementBox = new HBox();
             elementBox.setSpacing(10);
             elementBox.setAlignment(Pos.CENTER_LEFT);
@@ -267,6 +268,29 @@ public class CreateLessonView extends UI {
                     elementBox.getChildren().add(errorLabel);
                 }
             }
+
+            // Ajoute des boutons flèches pour échanger les éléments
+            Button upButton = new Button("↑");
+            upButton.setStyle("-fx-font-size: 14px;");
+            int finalI = i;
+            upButton.setOnAction(event -> {
+                if (finalI > 0) {  // Vérifie si l'élément n'est pas déjà au début
+                    lessonController.swapElements(lesson, finalI, finalI-1);  // Appel à une méthode pour échanger les éléments
+                    updatePreview();  // Met à jour la prévisualisation
+                }
+            });
+
+            Button downButton = new Button("↓");
+            downButton.setStyle("-fx-font-size: 14px;");
+            downButton.setOnAction(event -> {
+                if (finalI < lessonController.getLesson().getElements().size() - 1) {  // Vérifie si l'élément n'est pas déjà à la fin
+                    lessonController.swapElements(lesson, finalI, finalI+1);  // Appel à une méthode pour échanger les éléments
+                    updatePreview();  // Met à jour la prévisualisation
+                }
+            });
+
+            // Ajoute les boutons flèches à la boîte
+            elementBox.getChildren().addAll(upButton, downButton);
 
             // Ajoute un bouton "Supprimer"
             Button deleteButton = new Button("Supprimer");

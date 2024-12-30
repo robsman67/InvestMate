@@ -1,15 +1,15 @@
 package com.projet.da50.projet_da50.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Iterator;
+import java.util.*;
 
 
 public class Lesson {
 
     private int id;
 
-    private Map<String, Elements> elements = new HashMap<>();
+    private Title title;
+
+    private List<Elements> elements = new ArrayList<>();
 
     private Tags tag;
 
@@ -17,6 +17,15 @@ public class Lesson {
     }
 
     // Getters and setters
+
+    public Title getTitle() {
+        return title;
+    }
+
+    public void setTitle(Title title) {
+        this.title = title;
+    }
+
     public int getId() {
         return id;
     }
@@ -25,11 +34,11 @@ public class Lesson {
         this.id = id;
     }
 
-    public Map<String, Elements> getElements() {
+    public List<Elements> getElements() {
         return elements;
     }
 
-    public void setElements(Map<String, Elements> elements) {
+    public void setElements(List<Elements> elements) {
         this.elements = elements;
     }
 
@@ -42,21 +51,19 @@ public class Lesson {
     }
 
     // Methods to add and remove elements
-    public void addElement(String index, Elements element) {
-        this.elements.put(index, element);
+    public void addElement(Elements element) {
+        this.elements.add(element);
     }
 
     public boolean removeElement(Elements value) {
-        Iterator<Map.Entry<String, Elements>> iterator = elements.entrySet().iterator();
-
-        while (iterator.hasNext()) {
-            Map.Entry<String, Elements> entry = iterator.next();
-            if (entry.getValue().equals(value)) {
-                iterator.remove();
+        // Parcourt la liste et cherche l'élément à supprimer
+        for (int i = 0; i < elements.size(); i++) {
+            if (elements.get(i).equals(value)) {
+                elements.remove(i);  // Supprime l'élément à l'indice i
                 return true;
             }
         }
-        return false;
+        return false;  // Si l'élément n'a pas été trouvé
     }
 
     @Override

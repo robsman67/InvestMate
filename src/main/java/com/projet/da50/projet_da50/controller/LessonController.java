@@ -3,11 +3,13 @@ package com.projet.da50.projet_da50.controller;
 import com.projet.da50.projet_da50.model.*;
 import javafx.scene.control.Alert;
 
+import java.util.List;
+import java.util.Map;
+
 public class LessonController {
 
     private Lesson lesson;
 
-    private Integer index = 0;
 
     public LessonController() {
         this.lesson = new Lesson();
@@ -19,14 +21,6 @@ public class LessonController {
 
     public void setLesson(Lesson lesson) {
         this.lesson = lesson;
-    }
-
-    public Integer getIndex() {
-        return index;
-    }
-
-    public void setIndex(Integer index) {
-        this.index = index;
     }
 
     /**
@@ -55,7 +49,7 @@ public class LessonController {
         Title title = new Title();
         title.setContent(lessonTitle);
         title.setType(TitleType.MainTitle);
-        lesson.addElement(String.valueOf(title.getType()), title);
+        lesson.setTitle(title);
 
         return lesson;
     }
@@ -65,9 +59,7 @@ public class LessonController {
         title.setContent(content);
         title.setType(type);
 
-        String id = "Content" + index++;
-
-        lesson.addElement(id, title);
+        lesson.addElement(title);
 
         return lesson;
 
@@ -78,9 +70,7 @@ public class LessonController {
         paragraph.setContent(content);
         paragraph.setType(type);
 
-        String id = "Content" + index++;
-
-        lesson.addElement(id, paragraph);
+        lesson.addElement(paragraph);
 
         return lesson;
     }
@@ -89,9 +79,7 @@ public class LessonController {
         PictureIntegration image = new PictureIntegration();
         image.setContentPath(url);
 
-        String id = "Content" + index++;
-
-        lesson.addElement(id, image);
+        lesson.addElement(image);
 
         return lesson;
     }
@@ -100,9 +88,7 @@ public class LessonController {
         VideoIntegration video = new VideoIntegration();
         video.setContentPath(url);
 
-        String id = "Content" + index++;
-
-        lesson.addElement(id, video);
+        lesson.addElement(video);
 
         return lesson;
     }
@@ -128,4 +114,22 @@ public class LessonController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    public boolean swapElements(List<Elements> lesson, int index1, int index2) {
+        // Vérifier que les indices sont valides
+        if (index1 >= 0 && index1 < lesson.size() && index2 >= 0 && index2 < lesson.size()) {
+            // Sauvegarder l'élément à l'indice index1 dans une variable temporaire
+            Elements temp = lesson.get(index1);
+
+            // Échanger les éléments
+            lesson.set(index1, lesson.get(index2));
+            lesson.set(index2, temp);
+
+            return true;  // Indiquer que l'échange a réussi
+        } else {
+            System.out.println("Indices invalides !");
+            return false;  // Indiquer que l'échange a échoué en raison d'indices invalides
+        }
+    }
+
 }
