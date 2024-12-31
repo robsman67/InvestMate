@@ -8,6 +8,7 @@ module com.projet.da.projet_da {
     requires java.sql;
     requires java.persistence;
     requires jbcrypt;
+    requires com.sun.jna.platform;
     requires java.desktop;
 
     opens com.projet.da50.projet_da50.model to org.hibernate.orm.core;
@@ -15,4 +16,5 @@ module com.projet.da.projet_da {
     opens com.projet.da50.projet_da50.view.components to javafx.graphics;
 
     exports com.projet.da50.projet_da50;
+    opens com.projet.da50.projet_da50.view.MyAccount to javafx.graphics;
 }

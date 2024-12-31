@@ -5,6 +5,8 @@ import javafx.stage.Stage;
 import javafx.application.Application;
 import com.projet.da50.projet_da50.view.AuthenticationFormView;
 
+import static com.projet.da50.projet_da50.controller.TokenNotStayedLogin.*;
+
 public class Main extends Application{
 
     @Override
@@ -28,6 +30,10 @@ public class Main extends Application{
     }
 
     public static void main(String[] args) {
+        //System.out.println(System.getProperty("java.class.path"));
+
+        shutDownDeleteToken();
         launch(args);
+
     }
 }

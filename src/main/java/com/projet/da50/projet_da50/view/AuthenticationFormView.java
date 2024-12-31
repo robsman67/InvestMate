@@ -1,6 +1,6 @@
 package com.projet.da50.projet_da50.view;
 
-import com.projet.da50.projet_da50.controller.LoginErrorHandler;
+import com.projet.da50.projet_da50.controller.TokenManager;
 import com.projet.da50.projet_da50.controller.UserController;
 import com.projet.da50.projet_da50.model.Role;
 import com.projet.da50.projet_da50.model.User;
@@ -11,6 +11,7 @@ import com.projet.da50.projet_da50.view.components.CustomTextField;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
@@ -24,6 +25,8 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import static com.projet.da50.projet_da50.controller.TokenManager.logController;
+
 /**
  * The AuthenticationFormView class represents the login view for the application.
  * It allows users to authenticate by entering their username and password.
@@ -32,9 +35,10 @@ public class AuthenticationFormView extends UI {
 
     private final UserController userController;
     private final Stage primaryStage;
-    private final LoginErrorHandler loginErrorHandler;
+    private final ErrorHandler ErrorHandler;
     private Label errorLabel;
     private GridPane grid;
+    private CheckBox stayConnectedCheckBox; // Checkbox for "Stay Connected"
 
     /**
      * Constructs the AuthenticationFormView.
@@ -114,6 +118,14 @@ public class AuthenticationFormView extends UI {
         passwordBox.setAlignment(Pos.CENTER);
         formContainer.getChildren().add(passwordBox);
 
+        stayConnectedCheckBox = new CheckBox("Stay connected");
+        stayConnectedCheckBox.setStyle("-fx-font-size: 14; -fx-text-fill: white;");
+        stayConnectedCheckBox.setAlignment(Pos.CENTER);
+
+        // Add checkbox to form container
+        formContainer.getChildren().add(stayConnectedCheckBox);
+
+
         // Forgot Password Hyperlink
         Hyperlink forgotPasswordLink = new Hyperlink("Forgotten password?");
         forgotPasswordLink.getStyleClass().add("hyperlink");
@@ -162,25 +174,36 @@ public class AuthenticationFormView extends UI {
         String username = userField.getText();
         String password = pwField.getText();
 
-        // Developer Account (shortcut)
-        // TO DO DELETE THIS
-        if ("a".equals(username)) {
-            setAdmin(true);
-            new MainMenuView(primaryStage).show();
-            return;
-        }
+        String validationMessage = errorHandler.validateAuthenticationFields(username, password);
+        if (validationMessage.startsWith("Valid credentials.")) {
+            System.out.println("Login successful.");
 
-        String validationMessage = loginErrorHandler.validateAuthenticationFields(username, password);
-        if ("Valid credentials.".equals(validationMessage)) {
             User user = userController.findUserByUsername(username);
-            if (user.getRole() == Role.Admin) {
-                setAdmin(true);
-            }else{
+
+            if (user.getRole() != Role.Admin) {
                 setAdmin(false);
+                // Generate a token for the user
+                String token = TokenManager.generateToken(username);
+
+                // Enregistrer le token en fonction de la case à cocher
+                if (stayConnectedCheckBox.isSelected()) {
+                    TokenManager.saveToken(token, true); // Enregistrer le token pour 24 heures
+                    logController.createLog(user.getId(), "Login", "User logged in with token.");
+                    System.out.println("Token saved for 24 hours.");
+                } else {
+                    stayLogged = false;
+                    // Pour une connexion non persistante on enregistre quand même le token en mémoire
+                    logController.createLog(getIdToken(), "Login", "User logged in without token.");
+                    System.out.println("Token generated for the current session only.");
+                }
+            } else {
+                setAdmin(true);
+                System.out.println("Admin login, no token generated.");
             }
+
             new MainMenuView(primaryStage).show();
         } else {
-            // Display error message
+            // Gérer l'affichage du message d'erreur
             if (errorLabel != null) {
                 errorLabel.setText(validationMessage);
                 errorLabel.setVisible(true);

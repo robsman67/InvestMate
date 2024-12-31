@@ -1,5 +1,6 @@
 package com.projet.da50.projet_da50.view;
 
+import com.projet.da50.projet_da50.view.MyAccount.MyAccountView;
 import com.projet.da50.projet_da50.controller.LessonController;
 import com.projet.da50.projet_da50.model.Lesson;
 import com.projet.da50.projet_da50.model.Tags;
@@ -25,6 +26,7 @@ import java.util.List;
  * Provides navigation, search, and lesson display functionalities.
  */
 public class MainMenuView extends UI {
+    private final Stage primaryStage;
 
     private final Stage primaryStage;
     private final LessonController lessonController;
@@ -127,9 +129,21 @@ public class MainMenuView extends UI {
         HBox logoutButton = new HBox(20);
         logoutButton.setAlignment(Pos.CENTER_RIGHT);
 
+        // Add My Account button
+        Button btnMyAccount = new Button("My Account");
+        btnMyAccount.getStyleClass().add("button-blue");
+        btnMyAccount.setOnAction(e -> {
+            new MyAccountView(primaryStage).show();
+            // Handle My Account button action (à implémenter plus tard)
+        });
+        grid.add(btnMyAccount, 0, 2);
+
+        // Add Disconnect button
         CustomButton btnDisconnect = new CustomButton("Logout");
         btnDisconnect.getStyleClass().add("button-red");
         btnDisconnect.setOnAction(e -> {
+            //Delete the current Token
+            deleteToken();
             primaryStage.close();
             new AuthenticationFormView(primaryStage).show();
         });

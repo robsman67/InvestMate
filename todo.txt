@@ -3,6 +3,9 @@ TODO :
     + : No token for the admin (in security purpose)
     + : Déconnexion --> supp le token
     ? : how to know who is logged in
+    + : Message that will warn the user that he will be disconnected in 5 minutes
+    + : Delete expired token
+
 
 - Gerer les logs (log4j)
 
@@ -14,6 +17,10 @@ TODO :
 - Ameliorer le view en general
 
 - Admin will have different view
+
+- Bouton stay connected or not (for the token manager)
+
+- Test if cross platform
 
 DONE :
 - Create unitary test -- FAIT
