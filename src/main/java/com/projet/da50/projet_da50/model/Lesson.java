@@ -1,16 +1,25 @@
 package com.projet.da50.projet_da50.model;
 
+import javax.persistence.*;
 import java.util.*;
 
-
+@Entity
+@Table(name = "Lessons")
 public class Lesson {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incrémentation
+    @Column(name = "id")
     private int id;
 
-    private Title title;
+    @Column(name = "title", unique = true, nullable = false)
+    private String title;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "lesson_id")
     private List<Elements> elements = new ArrayList<>();
 
+    @Column(name = "tag", nullable = true)
     private Tags tag;
 
     public Lesson() {
@@ -18,11 +27,11 @@ public class Lesson {
 
     // Getters and setters
 
-    public Title getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    public void setTitle(Title title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 

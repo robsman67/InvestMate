@@ -1,8 +1,18 @@
 package com.projet.da50.projet_da50.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "Elements")
+@Inheritance(strategy = InheritanceType.JOINED) // Utilisation de la stratégie d'héritage
 public abstract class Elements {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incrémentation
+    @Column(name = "id")
     private int id;
 
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
 
     public Elements() {}

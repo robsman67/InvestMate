@@ -1,8 +1,15 @@
 package com.projet.da50.projet_da50.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "Titles")
 public class Title extends Elements{
+
+    @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "type", nullable = false)
     private TitleType type;
 
     public Title() {}

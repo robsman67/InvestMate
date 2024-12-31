@@ -3,12 +3,17 @@ package com.projet.da50.projet_da50.view;
 import com.projet.da50.projet_da50.controller.LessonController;
 import com.projet.da50.projet_da50.model.*;
 import com.projet.da50.projet_da50.view.components.CustomButton;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -16,10 +21,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.*;
 import javafx.scene.control.Button;
 
+import java.awt.*;
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class CreateLessonView extends UI {
@@ -87,13 +91,13 @@ public class CreateLessonView extends UI {
                 typeOptionBox.getChildren().add(titleTypeComboBox);
             } else if (selectedType.equals("Paragraphe")) {
                 typeOptionBox.getChildren().add(paragraphTypeComboBox);
-            } else if (selectedType.equals("Image")) {
+            } else if (selectedType.equals("Image") || selectedType.equals("Vidéo")) {
                 Button chooseImageButton = new CustomButton("Choose Image");
                 chooseImageButton.getStyleClass().add("button-blue");
                 chooseImageButton.setOnAction(event -> {
                     FileChooser fileChooser = new FileChooser();
-                    fileChooser.setTitle("Sélectionner une image");
-                    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+                    fileChooser.setTitle("Sélectionner a file");
+                    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Files", "*.png", "*.jpg", "*.jpeg", "*.gif","*.mp4","*.avi","*.flv","*.mov"));
 
                     File selectedFile = fileChooser.showOpenDialog(stage); // Afficher le dialogue
                     if (selectedFile != null) {
@@ -170,14 +174,25 @@ public class CreateLessonView extends UI {
         saveButton.setOnAction(e -> {
             String lessonName = nameField.getText();
             if (lessonController.validateInputs(lessonName)) {
-                lessonController.saveLesson(); // Sauvegarder la leçon
-                showAlert("Succès", "La leçon a été sauvegardée avec succès !");
+                lessonController.createLesson();
             }
         });
 
+        // Bouton pour sauvegarder la leçon
+        Button BackButton = new CustomButton("back to the main menu");
+        BackButton.getStyleClass().add("button-blue");
+        BackButton.setOnAction(e -> {
+            new MainMenuView(stage).show();
+        });
+
+        VBox BtnContent = new VBox(10); // Le contenu défilable
+        BtnContent.getChildren().add(saveButton);
+        BtnContent.getChildren().add(BackButton);
+        BtnContent.setPadding(new Insets(10));
+
         root.setTop(addElementSection);
         root.setCenter(previewSection);
-        root.setBottom(saveButton);
+        root.setBottom(BtnContent);
         BorderPane.setAlignment(saveButton, Pos.CENTER);
         BorderPane.setMargin(saveButton, new Insets(10));
 
@@ -255,19 +270,22 @@ public class CreateLessonView extends UI {
                 }
             } else if (element instanceof VideoIntegration) {
                 VideoIntegration video = (VideoIntegration) element;
+                String videoPath = video.getContentPath();
+
                 try {
-                    Media media = new Media(video.getContentPath());
+                    Media media = new Media(new File(videoPath).toURI().toString());
                     MediaPlayer mediaPlayer = new MediaPlayer(media);
                     MediaView mediaView = new MediaView(mediaPlayer);
                     mediaView.setFitWidth(300);
                     mediaPlayer.play();
                     elementBox.getChildren().add(mediaView);
                 } catch (Exception ex) {
-                    Label errorLabel = new Label("Vidéo non disponible : " + video.getContentPath());
+                    Label errorLabel = new Label("Vidéo locale non disponible : " + videoPath);
                     errorLabel.setStyle("-fx-text-fill: red;");
                     elementBox.getChildren().add(errorLabel);
                 }
             }
+
 
             // Ajoute des boutons flèches pour échanger les éléments
             Button upButton = new Button("↑");

@@ -1,18 +1,25 @@
 package com.projet.da50.projet_da50.controller;
 
+import com.projet.da50.projet_da50.HibernateUtil;
 import com.projet.da50.projet_da50.model.*;
 import javafx.scene.control.Alert;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import java.util.List;
-import java.util.Map;
 
 public class LessonController {
 
     private Lesson lesson;
 
+    private SessionFactory factory;
 
     public LessonController() {
         this.lesson = new Lesson();
+        factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class).buildSessionFactory();
     }
 
     public Lesson getLesson() {
@@ -45,11 +52,7 @@ public class LessonController {
      */
     public Lesson createMainTitle(String lessonTitle) {
 
-        // Ajouter un élément "Title"
-        Title title = new Title();
-        title.setContent(lessonTitle);
-        title.setType(TitleType.MainTitle);
-        lesson.setTitle(title);
+        lesson.setTitle(lessonTitle);
 
         return lesson;
     }
@@ -97,11 +100,6 @@ public class LessonController {
         lesson.removeElement(element);
     }
 
-    public void saveLesson() {
-        System.out.println("saveLesson");
-        System.out.println(lesson.toString());
-    }
-
     /**
      * Affiche une alerte d'erreur ou d'information.
      * @param title Titre de l'alerte
@@ -129,6 +127,66 @@ public class LessonController {
         } else {
             System.out.println("Indices invalides !");
             return false;  // Indiquer que l'échange a échoué en raison d'indices invalides
+        }
+    }
+
+    public Lesson findLessonByTitle(String Title) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Lesson> query = session.createQuery("from Lesson where title = :title", Lesson.class);
+            query.setParameter("title", Title);
+            return query.uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Lesson> getAllLessons() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Lesson> query = session.createQuery("from Lesson", Lesson.class);
+            return query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Long createLesson() {
+        // Declare the transaction and session outside of the try-with-resources block
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            // Open the session and begin the transaction manually
+            session = HibernateUtil.getSessionFactory().openSession();
+            transaction = session.beginTransaction();
+
+            // Check if the lesson already exists
+            if (findLessonByTitle(lesson.getTitle()) != null) {
+                System.err.println("This lesson already exists: " + lesson.getTitle());
+                return null;
+            }
+
+            // Save the lesson
+            Long id = (Long) session.save(lesson);
+
+            // Commit the transaction if everything is fine
+            transaction.commit();
+            System.out.println("Lesson created with ID: " + id);
+            return id;
+        } catch (Exception e) {
+            // Rollback the transaction if there was an error
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // Close the SessionFactory when the application is closed
+    public void close() {
+        if (factory != null && !factory.isClosed()) {
+            factory.close();
         }
     }
 
