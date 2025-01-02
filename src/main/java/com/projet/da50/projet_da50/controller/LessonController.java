@@ -9,6 +9,10 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class LessonController {
@@ -19,7 +23,7 @@ public class LessonController {
 
     public LessonController() {
         this.lesson = new Lesson();
-        factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class).buildSessionFactory();
+        factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Lesson.class).buildSessionFactory();
     }
 
     public Lesson getLesson() {
@@ -57,6 +61,13 @@ public class LessonController {
         return lesson;
     }
 
+    public Lesson setTag(Tags tag) {
+
+        lesson.setTag(tag);
+
+        return lesson;
+    }
+
     public Lesson createSubTitle(String content, TitleType type){
         Title title = new Title();
         title.setContent(content);
@@ -78,13 +89,22 @@ public class LessonController {
         return lesson;
     }
 
-    public Lesson createImage(String url){
+    public Lesson createImage(String url) throws IOException {
+
+        byte[] imageBytes = readImageAsBytes(url);
+
         PictureIntegration image = new PictureIntegration();
         image.setContentPath(url);
+        image.setImageData(imageBytes);
 
         lesson.addElement(image);
 
         return lesson;
+    }
+
+    public byte[] readImageAsBytes(String imagePath) throws IOException {
+        Path path = Paths.get(imagePath);
+        return Files.readAllBytes(path);
     }
 
     public Lesson createVideo(String url){
@@ -151,7 +171,7 @@ public class LessonController {
         }
     }
 
-    public Long createLesson() {
+    public Integer createLesson() {
         // Declare the transaction and session outside of the try-with-resources block
         Session session = null;
         Transaction transaction = null;
@@ -167,7 +187,7 @@ public class LessonController {
             }
 
             // Save the lesson
-            Long id = (Long) session.save(lesson);
+            Integer id = (Integer) session.save(lesson);
 
             // Commit the transaction if everything is fine
             transaction.commit();

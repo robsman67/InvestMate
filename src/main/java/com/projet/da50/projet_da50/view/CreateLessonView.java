@@ -21,8 +21,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.*;
 import javafx.scene.control.Button;
 
-import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -55,11 +55,18 @@ public class CreateLessonView extends UI {
         addElementSection.getChildren().addAll(nameLabel, nameField);
 
         // Sélection du type d'élément
+        Label tagTypeLabel = new Label("Tag:");
+        tagTypeLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
+        ComboBox<Tags> tagTypeComboBox = new ComboBox<>();
+        tagTypeComboBox.getItems().addAll(Tags.BEGINNER, Tags.INTERMEDIATE, Tags.EXPERT);
+        tagTypeComboBox.setValue(Tags.BEGINNER);
+
+        // Sélection du type d'élément
         Label elementTypeLabel = new Label("Type d'élément :");
         elementTypeLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
         ComboBox<String> elementTypeComboBox = new ComboBox<>();
         elementTypeComboBox.getItems().addAll("Sous-Titre", "Paragraphe", "Image", "Vidéo");
-        elementTypeComboBox.setValue("Sous-Titre");
+        elementTypeComboBox.setValue("Paragraphe");
 
 
         // Champ pour le contenu de l'élément
@@ -74,9 +81,9 @@ public class CreateLessonView extends UI {
         // Options pour le type de paragraphe ou de sous-titre
         ComboBox<ParagraphType> paragraphTypeComboBox = new ComboBox<>();
         paragraphTypeComboBox.getItems().addAll(ParagraphType.INTRO, ParagraphType.TEXT, ParagraphType.CCL);
-        paragraphTypeComboBox.setValue(ParagraphType.TEXT);
+        paragraphTypeComboBox.setValue(ParagraphType.INTRO);
 
-        addElementSection.getChildren().addAll(elementTypeLabel, elementTypeComboBox, contentLabel, contentField);
+        addElementSection.getChildren().addAll(tagTypeLabel,tagTypeComboBox,elementTypeLabel,elementTypeComboBox, contentLabel, contentField);
 
         // Ajouter un champ dynamique pour le type
         HBox typeOptionBox = new HBox(10);
@@ -122,10 +129,6 @@ public class CreateLessonView extends UI {
 
             // Ajouter l'élément via le contrôleur
             switch (elementType) {
-                case "Titre Principal":
-                    lessonController.createMainTitle(content);
-                    elementsList.add(new Title(content, TitleType.MainTitle));
-                    break;
                 case "Sous-Titre":
                     TitleType titleType = titleTypeComboBox.getValue();
                     lessonController.createSubTitle(content, titleType);
@@ -137,7 +140,11 @@ public class CreateLessonView extends UI {
                     elementsList.add(new Paragraph(content, paragraphType));
                     break;
                 case "Image":
-                    lessonController.createImage(content);
+                    try {
+                        lessonController.createImage(content);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     elementsList.add(new PictureIntegration(content));
                     break;
                 case "Vidéo":
@@ -174,7 +181,10 @@ public class CreateLessonView extends UI {
         saveButton.setOnAction(e -> {
             String lessonName = nameField.getText();
             if (lessonController.validateInputs(lessonName)) {
+                lessonController.createMainTitle(lessonName);
+                lessonController.setTag(tagTypeComboBox.getValue());
                 lessonController.createLesson();
+                new MainMenuView(stage).show();
             }
         });
 
@@ -315,7 +325,7 @@ public class CreateLessonView extends UI {
             deleteButton.setStyle("-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-font-size: 12px;");
             deleteButton.setOnAction(event -> {
                 // Supprime l'élément de la leçon
-                lessonController.getLesson().removeElement(element);
+                lessonController.removeElement(element);
                 // Met à jour la prévisualisation
                 updatePreview();
             });

@@ -10,28 +10,17 @@ public abstract class Elements {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incrémentation
     @Column(name = "id")
-    private int id;
-
-    @Column(name = "name", unique = true, nullable = false)
-    private String name;
+    private Integer id;
 
     public Elements() {}
 
     // Getters and setters
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public abstract String toSave();

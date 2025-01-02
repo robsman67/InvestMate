@@ -10,7 +10,7 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incrémentation
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
     @Column(name = "title", unique = true, nullable = false)
     private String title;
@@ -19,7 +19,8 @@ public class Lesson {
     @JoinColumn(name = "lesson_id")
     private List<Elements> elements = new ArrayList<>();
 
-    @Column(name = "tag", nullable = true)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tag", nullable = false)
     private Tags tag;
 
     public Lesson() {

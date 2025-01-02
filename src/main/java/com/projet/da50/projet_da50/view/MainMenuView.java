@@ -1,6 +1,9 @@
 package com.projet.da50.projet_da50.view;
 
+import com.projet.da50.projet_da50.controller.LessonController;
+import com.projet.da50.projet_da50.model.Lesson;
 import com.projet.da50.projet_da50.view.components.CustomButton;
+import com.projet.da50.projet_da50.view.components.LessonComponent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -8,11 +11,18 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainMenuView extends UI {
     private Stage primaryStage;
 
+    private LessonController lessonController = new LessonController();
+    List<Lesson> lessonList = new ArrayList<>();
+
     public MainMenuView(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        this.lessonList = lessonController.getAllLessons();
     }
 
     public void show() {
@@ -32,6 +42,14 @@ public class MainMenuView extends UI {
         });
         grid.add(btnCourses, 0, 0);
 
+        // Display all lessons with their name and tag
+        int rowIndex = 1;  // Start adding lessons from the second row
+        for (Lesson lesson : lessonList) {
+            LessonComponent lessonComponent = new LessonComponent(lesson);
+            grid.add(lessonComponent, 0, rowIndex++);
+        }
+
+
         if (getAdmin()) {
             // Add Admin button
             Button btnAdmin = new Button("Create Course");
@@ -39,7 +57,7 @@ public class MainMenuView extends UI {
             btnAdmin.setOnAction(e -> {
                 new CreateLessonView(primaryStage).show();
             });
-            grid.add(btnAdmin, 0, 2);
+            grid.add(btnAdmin, 140, 0);
         }
 
         // Add Wallet button
@@ -48,7 +66,7 @@ public class MainMenuView extends UI {
         btnWallet.setOnAction(e -> {
             // Handle Wallet button action (à implémenter plus tard)
         });
-        grid.add(btnWallet, 0, 1);
+        grid.add(btnWallet, 20, 0);
 
         // Add Disconnect button
         CustomButton btnDisconnect = new CustomButton("Logout");
@@ -57,6 +75,8 @@ public class MainMenuView extends UI {
             new AuthenticationFormView(primaryStage).show();
         });
         grid.add(btnDisconnect, 165, 0);
+
+
 
         // Request focus on another element to prevent the Disconnect button from being selected
         btnCourses.requestFocus();
