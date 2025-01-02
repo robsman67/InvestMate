@@ -22,8 +22,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import javafx.scene.shape.Rectangle;
 
 import static com.projet.da50.projet_da50.controller.TokenManager.logController;
 
@@ -95,6 +96,7 @@ public class AuthenticationFormView extends UI {
         formContainer.setAlignment(Pos.CENTER);
         formContainer.setPadding(new Insets(30));
         formContainer.setStyle("-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #5199ff, #243447); -fx-background-radius: 10;");
+        // Ajust width of form container
         formContainer.setMaxWidth(WINDOW_WIDTH * 0.4);
         formContainer.setMaxHeight(WINDOW_WIDTH * 0.4);
 

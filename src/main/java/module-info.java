@@ -16,5 +16,5 @@ module com.projet.da.projet_da {
     opens com.projet.da50.projet_da50.view.components to javafx.graphics;
 
     exports com.projet.da50.projet_da50;
-    opens com.projet.da50.projet_da50.view.MyAccount to javafx.graphics;
+
 }

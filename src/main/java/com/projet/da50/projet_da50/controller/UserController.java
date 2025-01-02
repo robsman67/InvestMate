@@ -124,12 +124,6 @@ public class UserController {
         }
     }
 
-    /**
-     * Updates a user's information in the database.
-     *
-     * @param user The user object with updated information.
-     * @return True if the user was updated successfully, false otherwise.
-     */
     public boolean updateUser(User user) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
