@@ -86,6 +86,7 @@ public class ForgotPassWordFormView extends UI {
         // Bouton "Reset Password"
         CustomButton btnResetPassword = new CustomButton("Reset Password");
         btnResetPassword.getStyleClass().add("button-lightblue");
+        btnResetPassword.setDefaultButton(true);
         btnResetPassword.setOnAction(e -> handleResetPassword(mailField, formContainer));
 
         // Back Button

@@ -268,9 +268,9 @@ public class MyAccountView extends UI {
                     grid.add(successField, 6, 5);
                 }
             } else {
-                System.out.println("Wrong last password");
+                System.out.println("Wrong current password");
                 Label errorField = new Label();
-                errorField.setText("Wrong last password.");
+                errorField.setText("Wrong current password.");
                 grid.add(errorField, 6, 5);
             }
         });

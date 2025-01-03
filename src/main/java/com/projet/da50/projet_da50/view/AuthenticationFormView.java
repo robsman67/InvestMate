@@ -144,6 +144,8 @@ public class AuthenticationFormView extends UI {
         // Login Button
         CustomButton btnLogin = new CustomButton("Login");
         btnLogin.getStyleClass().add("button-lightblue");
+        //Press enter to log in
+        btnLogin.setDefaultButton(true);
         btnLogin.setOnAction(e -> handleLogin(userField, pwField));
 
         // Create Account Button

@@ -99,6 +99,7 @@ public class CreateAccountFormView extends UI {
         // Create Account Button
         CustomButton btnCreateAccount = new CustomButton("Create Account");
         btnCreateAccount.getStyleClass().add("button-lightblue");
+        btnCreateAccount.setDefaultButton(true);
         btnCreateAccount.setOnAction(e -> handleCreateAccount(userField, pwField, mailField, formGrid));
 
         // Back Button
