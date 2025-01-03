@@ -304,6 +304,8 @@ public class MyAccountView extends UI {
         CustomButton btnBack = new CustomButton("Go back");
         btnBack.getStyleClass().add("button-blue");
         grid.add(btnBack, 0, 8);
+        // Press echap to go back or the button
+        btnBack.setCancelButton(true);
         btnBack.setOnAction(e -> {
             new MainMenuView(primaryStage).show();
         });
