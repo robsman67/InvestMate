@@ -150,15 +150,61 @@ public class LessonController {
         }
     }
 
-    public Lesson findLessonByTitle(String Title) {
+    public List<Lesson> findLessonByTitle(String title) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Lesson> query = session.createQuery("from Lesson where title like :title", Lesson.class);
+            query.setParameter("title", "%" + title + "%");
+            return query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Lesson getLessonByTitle(String title) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Lesson> query = session.createQuery("from Lesson where title = :title", Lesson.class);
-            query.setParameter("title", Title);
+            query.setParameter("title", title);
             return query.uniqueResult();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public List<Lesson> findLessonByTags(Tags tag) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Lesson> query = session.createQuery("from Lesson where tag = :tag", Lesson.class);
+            query.setParameter("tag", tag);
+            return query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Lesson> findLessonByTitleAndTags(String title, Tags tag) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Lesson> query = session.createQuery("from Lesson where title like :title and tag = :tag", Lesson.class);
+            query.setParameter("title", "%" + title + "%");
+            query.setParameter("tag", tag);
+            return query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Lesson> findLesson(String title, Tags tag) {
+       if (title == null && tag == Tags.ALL) {
+           return getAllLessons();
+       } else if (title != null && tag == Tags.ALL) {
+           return findLessonByTitle(title);
+       } else if (title == null && tag != Tags.ALL) {
+           return findLessonByTags(tag);
+       } else {
+           return findLessonByTitleAndTags(title, tag);
+       }
     }
 
     public List<Lesson> getAllLessons() {

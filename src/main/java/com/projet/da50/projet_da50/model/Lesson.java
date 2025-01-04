@@ -15,7 +15,7 @@ public class Lesson {
     @Column(name = "title", unique = true, nullable = false)
     private String title;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "lesson_id")
     private List<Elements> elements = new ArrayList<>();
 
