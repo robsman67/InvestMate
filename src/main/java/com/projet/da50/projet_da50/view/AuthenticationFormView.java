@@ -156,6 +156,13 @@ public class AuthenticationFormView extends UI {
         String username = userField.getText();
         String password = pwField.getText();
 
+        //Dev Account
+        if (username.equals("a")) {
+            setAdmin(true);
+            new MainMenuView(primaryStage).show();
+            return;
+        }
+
         String validationMessage = loginErrorHandler.validateAuthenticationFields(username, password);
         if ("Valid credentials.".equals(validationMessage)) {
             User user = userController.findUserByUsername(username);

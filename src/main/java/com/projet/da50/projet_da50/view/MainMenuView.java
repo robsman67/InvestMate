@@ -6,6 +6,8 @@ import com.projet.da50.projet_da50.model.Tags;
 import com.projet.da50.projet_da50.view.components.CustomButton;
 import com.projet.da50.projet_da50.view.components.LessonComponent;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,112 +18,36 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainMenuView extends UI {
-    private Stage primaryStage;
-    private LessonController lessonController = new LessonController();
-    List<Lesson> lessonList = new ArrayList<>();
+    private final Stage primaryStage;
+    private final LessonController lessonController;
+    private List<Lesson> lessonList;
 
     public MainMenuView(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        this.lessonController = new LessonController();
         this.lessonList = lessonController.getAllLessons();
     }
 
+    /**
+     * Initializes and displays the main menu UI.
+     */
     public void show() {
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.TOP_LEFT);
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(25, 25, 25, 25));
-        grid.getStyleClass().add("main-background");
+        GridPane grid = createMainLayout();
 
-        // Étendre les colonnes sur toute la largeur
-        ColumnConstraints column = new ColumnConstraints();
-        column.setHgrow(Priority.ALWAYS);
-        grid.getColumnConstraints().add(column);
-
-        // Barre de recherche : TextField, ComboBox et bouton
-        HBox searchBar = new HBox(10); // Espacement entre les éléments
-        searchBar.setAlignment(Pos.CENTER_LEFT);
-
-        // Zone de texte pour entrer les critères de recherche
-        TextField searchField = new TextField();
-        searchField.setPromptText("Search by keyword...");
-        searchField.setPrefWidth(300); // Largeur de la zone de texte
-
-        // Drop-down (ComboBox) pour sélectionner une catégorie
-        ComboBox<Tags> categoryBox = new ComboBox<>(FXCollections.observableArrayList(
-                Tags.ALL, Tags.BEGINNER, Tags.INTERMEDIATE, Tags.EXPERT
-        ));
-        categoryBox.getSelectionModel().selectFirst(); // Sélectionner la première option par défaut
-
-        // Bouton de recherche
-        Button searchButton = new Button("Search");
-        searchButton.getStyleClass().add("button-blue");
-        searchButton.setOnAction(e -> {
-            String keyword = searchField.getText();
-            Tags category = categoryBox.getValue();
-
-            // Effectuer une recherche basée sur les critères
-            List<Lesson> filteredLessons = lessonController.findLesson(keyword, category);
-            displayLessons(grid, filteredLessons);
-        });
-
-        // Ajouter les éléments à la barre de recherche
-        searchBar.getChildren().addAll(searchField, categoryBox, searchButton);
-
-        // Ajouter la barre de recherche en haut de la grille
-        grid.add(searchBar, 0, 1);
-
-        // Ajouter les leçons dans les lignes suivantes
-        displayLessons(grid, lessonList);
-
-        // Ajouter le bouton "Home"
-        Button btnHome = new Button("Home");
-        btnHome.getStyleClass().add("button-blue");
-        btnHome.setOnAction(e -> {
-            // Rediriger vers la vue d'accueil ou le menu principal
-            new MainMenuView(primaryStage).show();
-        });
-        grid.add(btnHome, 20, 0);
-
-        // Ajouter le bouton "Quizz"
-        Button btnQuizz = new Button("Quizz");
-        btnQuizz.getStyleClass().add("button-blue");
-        btnQuizz.setOnAction(e -> {
-            // Rediriger vers la vue du quizz
-        });
-        grid.add(btnQuizz, 80, 0);
-
-        // Bouton d'administration et autres boutons (si admin)
+        // Add UI components
+        addNavigationButtons(grid);
+        addLogoutButton(grid);
         if (getAdmin()) {
-            Button btnAdmin = new Button("Create Course");
-            btnAdmin.getStyleClass().add("button-blue");
-            btnAdmin.setOnAction(e -> {
-                new CreateLessonView(primaryStage).show();
-            });
-            grid.add(btnAdmin, 140, 0);
+            addAdminNavigationButtons(grid);
         }
+        addSearchBar(grid);
+        addLessons(grid);
 
-        // Ajouter le bouton "Wallet"
-        Button btnWallet = new Button("Wallet");
-        btnWallet.getStyleClass().add("button-blue");
-        btnWallet.setOnAction(e -> {
-            // Handle Wallet button action (à implémenter plus tard)
-        });
-        grid.add(btnWallet, 20, 0);
 
-        // Ajouter le bouton "Logout"
-        CustomButton btnDisconnect = new CustomButton("Logout");
-        btnDisconnect.getStyleClass().add("button-red");
-        btnDisconnect.setOnAction(e -> {
-            new AuthenticationFormView(primaryStage).show();
-        });
-        grid.add(btnDisconnect, 165, 0);
-
-        // Créer la scène
+        // Create and set the scene
         Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         primaryStage.setTitle("Main Menu");
@@ -131,20 +57,134 @@ public class MainMenuView extends UI {
     }
 
     /**
-     * Méthode pour afficher les leçons filtrées dans la grille.
+     * Creates the main layout for the view.
+     * @return the configured GridPane.
+     */
+    private GridPane createMainLayout() {
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.TOP_LEFT);
+        grid.setHgap(20);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.getStyleClass().add("main-background");
+
+        ColumnConstraints column = new ColumnConstraints();
+        column.setHgrow(Priority.ALWAYS);
+        grid.getColumnConstraints().add(column);
+
+        return grid;
+    }
+
+    /**
+     * Adds navigation buttons to the grid.
+     * @param grid the GridPane to which the buttons are added.
+     */
+    private void addNavigationButtons(GridPane grid) {
+        HBox navigationButtons = new HBox(20);
+        navigationButtons.setAlignment(Pos.CENTER_LEFT);
+
+        Button btnHome = createButton("Home", "button-blue", e -> new MainMenuView(primaryStage).show());
+        Button btnQuizz = createButton("Quizz", "button-blue", e -> { /* Navigate to Quizz view */ });
+
+        Button btnWallet = createButton("Wallet", "button-blue", e -> { /* Handle Wallet action */ });
+
+        navigationButtons.getChildren().addAll(btnHome, btnQuizz, btnWallet);
+
+        grid.add(navigationButtons, 0, 0);
+    }
+
+    private void addLogoutButton(GridPane grid) {
+        HBox logoutButton = new HBox(20);
+        logoutButton.setAlignment(Pos.CENTER_RIGHT);
+
+        CustomButton btnDisconnect = new CustomButton("Logout");
+        btnDisconnect.getStyleClass().add("button-red");
+        btnDisconnect.setOnAction(e -> new AuthenticationFormView(primaryStage).show());
+
+        logoutButton.getChildren().add(btnDisconnect);
+
+        grid.add(logoutButton, 1, 0);
+    }
+
+    /**
+     * Adds admin navigation buttons to the grid.
+     * @param grid the GridPane to which the buttons are added.
+     */
+    private void addAdminNavigationButtons(GridPane grid) {
+        HBox navigationButtons = new HBox(20);
+        navigationButtons.setAlignment(Pos.CENTER_LEFT);
+
+        Button btnAdmin = createButton("Create Course", "button-blue", e -> new CreateLessonView(primaryStage).show());
+        navigationButtons.getChildren().add(btnAdmin);
+
+        grid.add(navigationButtons, 0, 1);
+    }
+
+    /**
+     * Adds the search bar to the given grid.
+     * @param grid the GridPane to which the search bar is added.
+     */
+    private void addSearchBar(GridPane grid) {
+        HBox searchBar = new HBox(15);
+        searchBar.setAlignment(Pos.CENTER_LEFT);
+
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search by keyword...");
+        searchField.setPrefWidth(300);
+
+        ComboBox<Tags> categoryBox = new ComboBox<>(FXCollections.observableArrayList(
+                Tags.ALL, Tags.BEGINNER, Tags.INTERMEDIATE, Tags.EXPERT
+        ));
+        categoryBox.getSelectionModel().selectFirst();
+
+        Button searchButton = new Button("Search");
+        searchButton.getStyleClass().add("button-blue");
+        searchButton.setOnAction(e -> {
+            String keyword = searchField.getText();
+            Tags category = categoryBox.getValue();
+            List<Lesson> filteredLessons = lessonController.findLesson(keyword, category);
+            displayLessons(grid, filteredLessons);
+        });
+
+        searchBar.getChildren().addAll(searchField, categoryBox, searchButton);
+        grid.add(searchBar, 0, 2);
+    }
+
+    /**
+     * Displays the list of lessons in the grid.
+     * @param grid the GridPane to which the lessons are added.
+     */
+    private void addLessons(GridPane grid) {
+        displayLessons(grid, lessonList);
+    }
+
+    /**
+     * Helper method to create a styled button with an action.
+     * @param text the button text.
+     * @param styleClass the CSS style class.
+     * @param action the action to perform on button click.
+     * @return the configured Button.
+     */
+    private Button createButton(String text, String styleClass, EventHandler<ActionEvent> action) {
+        Button button = new Button(text);
+        button.getStyleClass().add(styleClass);
+        button.setOnAction(action);
+        return button;
+    }
+
+    /**
+     * Displays the given lessons in the grid.
+     * @param grid the GridPane where lessons are displayed.
+     * @param lessons the list of lessons to display.
      */
     private void displayLessons(GridPane grid, List<Lesson> lessons) {
-        // Supprimer les anciennes leçons affichées
-        grid.getChildren().removeIf(node -> GridPane.getRowIndex(node) != null && GridPane.getRowIndex(node) > 0);
+        grid.getChildren().removeIf(node -> GridPane.getRowIndex(node) != null && GridPane.getRowIndex(node) >= 3);
 
-        int rowIndex = 10;
+        int rowIndex = 3; // Start just below the search bar
         for (Lesson lesson : lessons) {
             LessonComponent lessonComponent = new LessonComponent(primaryStage, lesson);
-
-            // Étendre le composant sur toute la ligne
             GridPane.setColumnSpan(lessonComponent, GridPane.REMAINING);
             GridPane.setHgrow(lessonComponent, Priority.ALWAYS);
-
             grid.add(lessonComponent, 0, rowIndex++);
         }
     }
