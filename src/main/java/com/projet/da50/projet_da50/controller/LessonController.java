@@ -150,7 +150,7 @@ public class LessonController {
         }
     }
 
-    public List<Lesson> findLessonByTitle(String title) {
+    public List<Lesson> findLessonContainsTitle(String title) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Lesson> query = session.createQuery("from Lesson where title like :title", Lesson.class);
             query.setParameter("title", "%" + title + "%");
@@ -199,7 +199,7 @@ public class LessonController {
        if (title == null && tag == Tags.ALL) {
            return getAllLessons();
        } else if (title != null && tag == Tags.ALL) {
-           return findLessonByTitle(title);
+           return findLessonContainsTitle(title);
        } else if (title == null && tag != Tags.ALL) {
            return findLessonByTags(tag);
        } else {
@@ -227,10 +227,13 @@ public class LessonController {
             transaction = session.beginTransaction();
 
             // Check if the lesson already exists
-            if (findLessonByTitle(lesson.getTitle()) != null) {
+            System.out.println("List of lessons with title: " + getLessonByTitle(lesson.getTitle()));
+            if (getLessonByTitle(lesson.getTitle()) != null) {
                 System.err.println("This lesson already exists: " + lesson.getTitle());
                 return null;
             }
+
+            System.out.println("Creating lesson: " + lesson.getTitle());
 
             // Save the lesson
             Integer id = (Integer) session.save(lesson);

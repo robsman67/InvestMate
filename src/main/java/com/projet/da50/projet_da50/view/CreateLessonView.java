@@ -371,6 +371,7 @@ public class CreateLessonView extends UI {
         if (lessonController.validateInputs(lessonName)) {
             lessonController.createMainTitle(lessonName);
             lessonController.setTag(tagTypeComboBox.getValue());
+            System.out.println("Lesson is creating");
             lessonController.createLesson();
             new MainMenuView(stage).show();
         } else {
