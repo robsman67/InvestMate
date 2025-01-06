@@ -70,10 +70,8 @@ public class CreateLessonView extends UI {
         // Set up the scene and stage
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
-
         stage.setTitle("Lesson Creator");
         stage.setScene(scene);
-        stage.setMaximized(true);
         stage.show();
 
         // Initialize preview
@@ -151,6 +149,7 @@ public class CreateLessonView extends UI {
         previewScrollPane.setStyle("-fx-background: #ffffff;");
 
         VBox previewSection = new VBox(10);
+        previewSection.setMinHeight(300);
         previewSection.getChildren().add(previewScrollPane);
         previewSection.setPadding(new Insets(10));
 
@@ -171,7 +170,8 @@ public class CreateLessonView extends UI {
         saveButton.setOnAction(e -> saveLesson());
 
         Button backButton = new CustomButton("Back to Main Menu");
-        backButton.setOnAction(e -> new MainMenuView(stage).show());
+        backButton.setOnAction(e -> {stage.close();
+                new MainMenuView(stage).show();});
 
         buttonSection.getChildren().addAll(saveButton, backButton);
         return buttonSection;
@@ -185,7 +185,7 @@ public class CreateLessonView extends UI {
         previewSection.getChildren().clear();
 
         // Add a title for the preview section
-        Label previewTitle = createStyledLabel("Lesson Preview: " + nameField.getText(), 16, true, "black");
+        Label previewTitle = createStyledLabel("Lesson Preview: " + nameField.getText(), 20, true, "black");
         previewSection.getChildren().add(previewTitle);
 
         List<Elements> lesson = lessonController.getLesson().getElements();
@@ -219,6 +219,46 @@ public class CreateLessonView extends UI {
         label.setStyle(style + " -fx-text-fill:" + color + ";");
         return label;
     }
+
+    /**
+     * Updates the input context based on the selected element type.
+     * @param elementTypeComboBox The ComboBox for selecting element type.
+     * @param inputContainer The container for input fields.
+     */
+    /**
+    private void updateInputContextType(ComboBox<String> elementTypeComboBox, VBox inputContainer) {
+        elementTypeComboBox.setOnAction(e -> {
+            String selectedType = elementTypeComboBox.getValue();
+
+            // Clear the current content
+            inputContainer.getChildren().clear();
+
+            // Label for content input
+            Label contentLabel = createStyledLabel("Content:", 16, true, "white");
+
+            // Add appropriate input field based on the selected type
+            if ("Paragraph".equals(selectedType)) {
+                TextArea contentArea = new TextArea();
+                contentArea.setWrapText(true);
+                contentArea.setPrefHeight(100); // Adjust height as needed
+                inputContainer.getChildren().addAll(contentLabel, contentArea);
+
+                // Example action to capture contentArea data
+                contentArea.textProperty().addListener((observable, oldValue, newValue) -> {
+                    System.out.println("TextArea Content: " + newValue); // Handle changes as needed
+                });
+            } else if ("Sub-Title".equals(selectedType) || "Image".equals(selectedType) || "Video".equals(selectedType)) {
+                TextField contentField = new TextField();
+                inputContainer.getChildren().addAll(contentLabel, contentField);
+
+                // Example action to capture contentField data
+                contentField.textProperty().addListener((observable, oldValue, newValue) -> {
+                    System.out.println("TextField Content: " + newValue); // Handle changes as needed
+                });
+            }
+        });
+    }
+    */
 
     private void updateDynamicOptions(HBox typeOptionBox, ComboBox<String> elementTypeComboBox,
                                       ComboBox<TitleType> titleTypeComboBox, ComboBox<ParagraphType> paragraphTypeComboBox,
@@ -255,6 +295,18 @@ public class CreateLessonView extends UI {
 
         if (content.isEmpty()) {
             showAlert("Error", "Element content cannot be empty.");
+            return;
+        }
+
+        // Validate content length
+        int contentLength = content.length();
+        if ("Sub-Title".equals(elementType) && contentLength > 250) {
+            int excess = contentLength - 250;
+            showAlert("Error", "Subtitle content exceeds the limit by " + excess + " characters.");
+            return;
+        } else if ("Paragraph".equals(elementType) && contentLength > 1500) {
+            int excess = contentLength - 1500;
+            showAlert("Error", "Paragraph content exceeds the limit by " + excess + " characters.");
             return;
         }
 
@@ -354,7 +406,7 @@ public class CreateLessonView extends UI {
             }
         });
 
-        Button deleteButton = new Button("Delete");
+        Button deleteButton = new Button("X");
         deleteButton.setStyle("-fx-background-color: #ff4d4d; -fx-text-fill: white;");
         deleteButton.setOnAction(event -> {
             lessonController.removeElement(element);
@@ -371,8 +423,8 @@ public class CreateLessonView extends UI {
         if (lessonController.validateInputs(lessonName)) {
             lessonController.createMainTitle(lessonName);
             lessonController.setTag(tagTypeComboBox.getValue());
-            System.out.println("Lesson is creating");
             lessonController.createLesson();
+            stage.close();
             new MainMenuView(stage).show();
         } else {
             showAlert("Error", "Please provide a valid lesson name.");

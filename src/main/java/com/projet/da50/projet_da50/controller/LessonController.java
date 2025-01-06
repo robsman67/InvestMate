@@ -44,6 +44,10 @@ public class LessonController {
             showAlert("Validation Error", "Le titre de la leçon ne peut pas être vide.");
             return false;
         }
+        if (lessonTitle.length() > 100){
+            showAlert("Validation Error", "Le titre de la leçon ne peut dépasser 100 caractères. Il est trop long de " + (lessonTitle.length() - 100) + " caractères.");
+            return false;
+        }
 
         // Ajout d'autres règles de validation si nécessaire
         return true;

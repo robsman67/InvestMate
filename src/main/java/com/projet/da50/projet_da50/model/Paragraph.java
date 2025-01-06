@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name = "Paragraphs")
 public class Paragraph extends Elements{
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @Column(name = "type", nullable = false)

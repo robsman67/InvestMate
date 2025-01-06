@@ -47,6 +47,7 @@ public class AuthenticationFormView extends UI {
 
     public void show() {
         primaryStage.setTitle("Authentication");
+        primaryStage.setMaximized(false);
 
         // Création du GridPane principal
         this.grid = new GridPane();

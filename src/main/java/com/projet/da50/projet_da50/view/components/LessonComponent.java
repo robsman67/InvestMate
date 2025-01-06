@@ -46,10 +46,11 @@ public class LessonComponent extends HBox {
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         // Création du bouton "Lire" à droite
-        Button readButton = new Button("read");
+        Button readButton = new Button("Read");
         readButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px;");
         readButton.setOnAction(event -> {
             System.out.println("Clicked on " + lesson.getTitle());
+            primaryStage.close();
             new LessonView(primaryStage, lesson.getTitle()).show();
         });
 

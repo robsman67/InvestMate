@@ -83,10 +83,11 @@ public class MainMenuView extends UI {
         HBox navigationButtons = new HBox(20);
         navigationButtons.setAlignment(Pos.CENTER_LEFT);
 
-        Button btnHome = createButton("Home", "button-blue", e -> new MainMenuView(primaryStage).show());
-        Button btnQuizz = createButton("Quizz", "button-blue", e -> { /* Navigate to Quizz view */ });
+        Button btnHome = createButton("Home", "button-blue", e -> { primaryStage.close();
+            new MainMenuView(primaryStage).show();});
+        Button btnQuizz = createButton("Quizz", "button-blue", e -> { primaryStage.close(); /* Navigate to Quizz view */ });
 
-        Button btnWallet = createButton("Wallet", "button-blue", e -> { /* Handle Wallet action */ });
+        Button btnWallet = createButton("Wallet", "button-blue", e -> { primaryStage.close();/* Handle Wallet action */ });
 
         navigationButtons.getChildren().addAll(btnHome, btnQuizz, btnWallet);
 
@@ -99,7 +100,8 @@ public class MainMenuView extends UI {
 
         CustomButton btnDisconnect = new CustomButton("Logout");
         btnDisconnect.getStyleClass().add("button-red");
-        btnDisconnect.setOnAction(e -> new AuthenticationFormView(primaryStage).show());
+        btnDisconnect.setOnAction(e -> {primaryStage.close();
+            new AuthenticationFormView(primaryStage).show();});
 
         logoutButton.getChildren().add(btnDisconnect);
 
@@ -114,7 +116,8 @@ public class MainMenuView extends UI {
         HBox navigationButtons = new HBox(20);
         navigationButtons.setAlignment(Pos.CENTER_LEFT);
 
-        Button btnAdmin = createButton("Create Course", "button-blue", e -> new CreateLessonView(primaryStage).show());
+        Button btnAdmin = createButton("Create Course", "button-blue", e -> {primaryStage.close();
+            new CreateLessonView(primaryStage).show();});
         navigationButtons.getChildren().add(btnAdmin);
 
         grid.add(navigationButtons, 0, 1);
