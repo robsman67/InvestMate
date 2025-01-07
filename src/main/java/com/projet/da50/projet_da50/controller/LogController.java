@@ -15,19 +15,14 @@ public class LogController {
         factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Log.class).buildSessionFactory();
     }
 
-    public void createLog(Long userId, String action) {
+    public void createLog(Long userId, String action, String detail) {
         Transaction transaction = null;
-        //String sql = "INSERT INTO logs (user_id, action) VALUES (?, ?)";
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            Log log = new Log(userId, action);
-            System.out.println("Saving log");
+            Log log = new Log(userId, action, detail);
             session.save(log);
-            System.out.println("Saving log");
             transaction.commit();
-            System.out.println("Log saved");
         } catch (Exception e) {
-            System.out.println("Error saving log");
             if (transaction != null) {
                 transaction.rollback();
             }
