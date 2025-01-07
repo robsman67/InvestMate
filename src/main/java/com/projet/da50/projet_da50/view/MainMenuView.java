@@ -143,8 +143,8 @@ public class MainMenuView extends UI {
         btnDisconnect.getStyleClass().add("button-red");
         btnDisconnect.setOnAction(e -> {
             //Delete the current Token
-            deleteToken();
             primaryStage.close();
+            TokenManager.deleteToken(); // Supprimer le token lors de la déconnexion
             new AuthenticationFormView(primaryStage).show();
         });
 

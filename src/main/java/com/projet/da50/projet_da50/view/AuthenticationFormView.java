@@ -10,6 +10,8 @@ import com.projet.da50.projet_da50.view.components.CustomButton;
 import com.projet.da50.projet_da50.view.components.CustomLabel;
 import com.projet.da50.projet_da50.view.components.CustomPasswordField;
 import com.projet.da50.projet_da50.view.components.CustomTextField;
+import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -25,6 +27,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.scene.shape.Rectangle;
 
 import static com.projet.da50.projet_da50.controller.TokenManager.logController;

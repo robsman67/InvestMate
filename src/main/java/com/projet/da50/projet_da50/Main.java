@@ -1,20 +1,29 @@
 package com.projet.da50.projet_da50;
 
+import com.projet.da50.projet_da50.controller.TokenManager;
+import com.projet.da50.projet_da50.view.AuthenticationFormView;
+import com.projet.da50.projet_da50.view.MainMenuView;
+import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.application.Application;
-import com.projet.da50.projet_da50.view.AuthenticationFormView;
 
-import static com.projet.da50.projet_da50.controller.TokenNotStayedLogin.*;
-
-public class Main extends Application{
+public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        AuthenticationFormView authPage = new AuthenticationFormView(primaryStage);
-        authPage.show();
+        // Vérifier si un token valide existe
+        String storedToken = TokenManager.getToken();
 
-        // Définir l'icône de l'application
+        if (TokenManager.isTokenValid(storedToken)) {
+            // Un token valide existe, on connecte l'utilisateur directement
+            new MainMenuView(primaryStage).show();
+        } else {
+            // Aucun token valide n'existe, afficher la vue d'authentification
+            AuthenticationFormView authPage = new AuthenticationFormView(primaryStage);
+            authPage.show();
+        }
+
+        // Set the application icon
         Image icon = new Image(getClass().getResource("/icon.png").toExternalForm());
         primaryStage.getIcons().add(icon);
 
@@ -30,10 +39,6 @@ public class Main extends Application{
     }
 
     public static void main(String[] args) {
-        //System.out.println(System.getProperty("java.class.path"));
-
-        shutDownDeleteToken();
         launch(args);
-
     }
 }

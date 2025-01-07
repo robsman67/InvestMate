@@ -1,9 +1,12 @@
 package com.projet.da50.projet_da50.view;
 
 import com.projet.da50.projet_da50.controller.ErrorHandler;
+import com.projet.da50.projet_da50.controller.TokenManager;
 import com.projet.da50.projet_da50.controller.UserController;
 import com.projet.da50.projet_da50.model.User;
 import com.projet.da50.projet_da50.view.components.CustomButton;
+import com.projet.da50.projet_da50.view.components.CustomLabel;
+import com.projet.da50.projet_da50.view.components.CustomPasswordField;
 import com.projet.da50.projet_da50.view.components.CustomTextField;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -14,21 +17,33 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.mindrot.jbcrypt.BCrypt;
 
-import static com.projet.da50.projet_da50.controller.TokenNotStayedLogin.*;
-
 public class MyAccountView extends UI {
 
     private final Stage primaryStage;
     private final ErrorHandler errorHandler = new ErrorHandler();
     UserController userController = new UserController();
 
+    private User user;
 
-
-    private User user = new User();
     public MyAccountView(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        String token = getToken();
-        user = userController.findUserByUsername(token);
+        String token = TokenManager.getToken();
+        if (TokenManager.isTokenValid(token)) {
+            String username = TokenManager.extractUsernameFromToken(token);
+            if (username != null) {
+                user = userController.findUserByUsername(username);
+            } else {
+                // Handle the case where the username cannot be extracted
+                System.err.println("Error: Unable to extract username from token.");
+                new AuthenticationFormView(primaryStage).show();
+                return;
+            }
+        } else {
+            // Handle the case where no valid token is found
+            System.err.println("Error: No valid token found.");
+            new AuthenticationFormView(primaryStage).show();
+            return;
+        }
     }
 
     public void show() {
@@ -156,28 +171,27 @@ public class MyAccountView extends UI {
             grid.getChildren().removeIf(node -> GridPane.getRowIndex(node) == 3 && GridPane.getColumnIndex(node) == 4);
 
             if (errorHandler.isUsernameAlreadyTaken(newUsername)) {
-                    Label errorField = new Label();
-                    errorField.setText("This username is already used.");
-                    grid.add(errorField, 4, 3);
-                } else if (newUsername.isEmpty()) {
-                    Label errorField = new Label();
-                    errorField.setText("Please fill in all fields.");
-                    grid.add(errorField, 4, 3);
-                } else {
-                    // Save the new email to the user profile
-                    user.setUsername(newUsername);
-                    // Update the user in the database
-                    userController.updateUser(user);
+                Label errorField = new Label();
+                errorField.setText("This username is already used.");
+                grid.add(errorField, 4, 3);
+            } else if (newUsername.isEmpty()) {
+                Label errorField = new Label();
+                errorField.setText("Please fill in all fields.");
+                grid.add(errorField, 4, 3);
+            } else {
+                // Save the new email to the user profile
+                user.setUsername(newUsername);
+                // Update the user in the database
+                userController.updateUser(user);
 
-                    // Update the token with the username
-                    deleteToken();
-                    saveToken(newUsername);
-                    // Display a success message
-                    Label successField = new Label();
-                    successField.setText("Username updated successfully.");
-                    grid.add(successField, 4, 3);
-                    System.out.println("New username saved: " + newUsername);
-                }
+                // Update the token with the username
+                TokenManager.deleteToken();
+                TokenManager.generateToken(newUsername);
+                // Display a success message
+                Label successField = new Label();
+                successField.setText("Username updated successfully.");
+                grid.add(successField, 4, 3);
+            }
         });
 
 
@@ -195,7 +209,7 @@ public class MyAccountView extends UI {
         //Write last password
         Label lastPasswordLabel = new Label("Current Password: ");
         lastPasswordLabel.setVisible(false);
-        CustomTextField lastPasswordField = new CustomTextField();
+        CustomPasswordField lastPasswordField = new CustomPasswordField();
         lastPasswordField.setVisible(false);
 
 
@@ -204,7 +218,7 @@ public class MyAccountView extends UI {
 
 
         // Create a text field for entering the new email (initially hidden)
-        CustomTextField newPasswordField = new CustomTextField();
+        CustomPasswordField newPasswordField = new CustomPasswordField();
         newPasswordField.setVisible(false);
         Label newPasswordLabel = new Label("New Password:");
         newPasswordLabel.setVisible(false);
@@ -282,12 +296,9 @@ public class MyAccountView extends UI {
         //To delete
         btnSureDelete.setOnAction(e -> {
             userController.deleteUserById(user.getId());
-            deleteToken();
+            TokenManager.deleteToken();
             new AuthenticationFormView(primaryStage).show();
         });
-
-        //TODO : Full screen page
-        //TODO : Frontend
 
         // Go back button
         CustomButton btnBack = new CustomButton("Go back");
@@ -295,13 +306,11 @@ public class MyAccountView extends UI {
         grid.add(btnBack, 0, 8);
         // Press echap to go back or the button
         btnBack.setCancelButton(true);
-        btnBack.setOnAction(e -> {
-            new MainMenuView(primaryStage).show();
-        });
+        btnBack.setOnAction(e -> new MainMenuView(primaryStage).show());
 
         Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
-        primaryStage.setTitle("My Account - " + getToken());
+        primaryStage.setTitle("My Account - " + TokenManager.extractUsernameFromToken(TokenManager.getToken()));
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
         primaryStage.show();
