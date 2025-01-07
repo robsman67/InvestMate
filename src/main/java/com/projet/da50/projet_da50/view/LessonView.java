@@ -13,7 +13,10 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -224,15 +227,26 @@ public class LessonView extends UI {
      * @param elementBox the HBox to add the rendered element to
      */
     private void renderPictureElement(PictureIntegration image, HBox elementBox) {
+        byte[] imageData = image.getImageData(); // Assuming image.getContentData() returns the byte[]
         try {
-            ImageView imageView = new ImageView(new javafx.scene.image.Image(image.getContentPath()));
+            // Create an InputStream from the byte array
+            InputStream inputStream = new ByteArrayInputStream(imageData);
+
+            // Create a JavaFX Image from the InputStream
+            javafx.scene.image.Image fxImage = new javafx.scene.image.Image(inputStream);
+
+            // Create an ImageView for the Image
+            ImageView imageView = new ImageView(fxImage);
             imageView.setFitWidth(300);
             imageView.setPreserveRatio(true);
+
+            // Add the ImageView to the elementBox
             elementBox.getChildren().add(imageView);
         } catch (Exception ex) {
-            Label errorLabel = new Label("Image not available: " + image.getContentPath());
+            Label errorLabel = new Label("Image not available");
             errorLabel.setStyle("-fx-text-fill: red;");
             elementBox.getChildren().add(errorLabel);
+            ex.printStackTrace();
         }
     }
 
@@ -243,18 +257,49 @@ public class LessonView extends UI {
      * @param elementBox the HBox to add the rendered element to
      */
     private void renderVideoElement(VideoIntegration video, HBox elementBox) {
-        String videoPath = video.getContentPath();
+        byte[] videoData = video.getVideoData(); // Assuming video.getContentData() returns the byte[]
         try {
-            Media media = new Media(new File(videoPath).toURI().toString());
+            // Write the byte[] data to a temporary file
+            File tempFile = File.createTempFile("video", ".mp4");
+            try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+                fos.write(videoData);
+            }
+
+            // Create a Media object from the temporary file
+            Media media = new Media(tempFile.toURI().toString());
             MediaPlayer mediaPlayer = new MediaPlayer(media);
             MediaView mediaView = new MediaView(mediaPlayer);
             mediaView.setFitWidth(300);
-            mediaPlayer.play();
-            elementBox.getChildren().add(mediaView);
+
+            // Create play and stop buttons
+            Button playButton = new Button("Play");
+            playButton.getStyleClass().add("button-blue");
+
+            // Set button actions
+            playButton.setOnAction(e -> {
+                if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+                    mediaPlayer.pause();
+                    playButton.setText("Play");
+                } else {
+                    mediaPlayer.play();
+                    playButton.setText("Pause");
+                }
+            });
+
+            // Arrange MediaView and buttons in a VBox
+            VBox videoControls = new VBox(5, mediaView, playButton);
+            videoControls.setAlignment(Pos.CENTER);
+
+            // Add the video controls to the elementBox
+            elementBox.getChildren().add(videoControls);
+
+            // Delete the temporary file on JVM exit
+            tempFile.deleteOnExit();
         } catch (Exception ex) {
-            Label errorLabel = new Label("Video not available: " + videoPath);
+            Label errorLabel = new Label("Video not available");
             errorLabel.setStyle("-fx-text-fill: red;");
             elementBox.getChildren().add(errorLabel);
+            ex.printStackTrace();
         }
     }
 

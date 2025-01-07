@@ -125,7 +125,7 @@ public class LessonController {
         return lesson;
     }
 
-    public byte[] readAsBytes(String url) throws IOException {
+    public static byte[] readAsBytes(String url) throws IOException {
         Path path = Paths.get(url);
         return Files.readAllBytes(path);
     }

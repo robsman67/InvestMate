@@ -331,7 +331,17 @@ public class CreateLessonView extends UI {
             int excess = contentLength - 1500;
             showAlert("Error", "Paragraph content exceeds the limit by " + excess + " characters.");
             return;
+        } else if ("Video".equals(elementType)) {
+            byte[] videoData = LessonController.readAsBytes(content);
+            int maxAllowedPacket = 67108864;
+
+            if (videoData.length > maxAllowedPacket) {
+                showAlert("Error", "The video exceeds the limit  of " + maxAllowedPacket + " bytes.");
+                return;
+            }
         }
+
+
 
         switch (elementType) {
             case "Sub-Title":
@@ -405,6 +415,7 @@ public class CreateLessonView extends UI {
                 MediaView mediaView = new MediaView(mediaPlayer);
                 mediaView.setFitWidth(300);
                 mediaPlayer.play();
+                mediaPlayer.pause();
                 elementBox.getChildren().add(mediaView);
             } catch (Exception ex) {
                 Label errorLabel = new Label("Video not available: " + video.getContentPath());
