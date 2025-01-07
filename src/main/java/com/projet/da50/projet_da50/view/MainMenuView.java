@@ -20,11 +20,21 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
+/**
+ * Represents the main menu view of the application.
+ * Provides navigation, search, and lesson display functionalities.
+ */
 public class MainMenuView extends UI {
+
     private final Stage primaryStage;
     private final LessonController lessonController;
     private List<Lesson> lessonList;
 
+    /**
+     * Constructs a new MainMenuView with the specified primary stage.
+     *
+     * @param primaryStage the primary stage of the application.
+     */
     public MainMenuView(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.lessonController = new LessonController();
@@ -37,7 +47,7 @@ public class MainMenuView extends UI {
     public void show() {
         GridPane grid = createMainLayout();
 
-        // Add UI components
+        // Add UI components to the grid
         addNavigationButtons(grid);
         addLogoutButton(grid);
         if (getAdmin()) {
@@ -45,7 +55,6 @@ public class MainMenuView extends UI {
         }
         addSearchBar(grid);
         addLessons(grid);
-
 
         // Create and set the scene
         Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -58,7 +67,8 @@ public class MainMenuView extends UI {
 
     /**
      * Creates the main layout for the view.
-     * @return the configured GridPane.
+     *
+     * @return a configured {@link GridPane}.
      */
     private GridPane createMainLayout() {
         GridPane grid = new GridPane();
@@ -76,56 +86,75 @@ public class MainMenuView extends UI {
     }
 
     /**
-     * Adds navigation buttons to the grid.
-     * @param grid the GridPane to which the buttons are added.
+     * Adds navigation buttons (Home, Quizz, Wallet) to the grid.
+     *
+     * @param grid the {@link GridPane} to which the buttons are added.
      */
     private void addNavigationButtons(GridPane grid) {
         HBox navigationButtons = new HBox(20);
         navigationButtons.setAlignment(Pos.CENTER_LEFT);
 
-        Button btnHome = createButton("Home", "button-blue", e -> { primaryStage.close();
-            new MainMenuView(primaryStage).show();});
-        Button btnQuizz = createButton("Quizz", "button-blue", e -> { primaryStage.close(); /* Navigate to Quizz view */ });
+        Button btnHome = createButton("Home", "button-blue", e -> {
+            primaryStage.close();
+            new MainMenuView(primaryStage).show();
+        });
 
-        Button btnWallet = createButton("Wallet", "button-blue", e -> { primaryStage.close();/* Handle Wallet action */ });
+        Button btnQuizz = createButton("Quizz", "button-blue", e -> {
+            primaryStage.close();
+            // Navigate to Quizz view (To be implemented)
+        });
+
+        Button btnWallet = createButton("Wallet", "button-blue", e -> {
+            primaryStage.close();
+            // Handle Wallet action (To be implemented)
+        });
 
         navigationButtons.getChildren().addAll(btnHome, btnQuizz, btnWallet);
-
         grid.add(navigationButtons, 0, 0);
     }
 
+    /**
+     * Adds the logout button to the grid.
+     *
+     * @param grid the {@link GridPane} to which the logout button is added.
+     */
     private void addLogoutButton(GridPane grid) {
         HBox logoutButton = new HBox(20);
         logoutButton.setAlignment(Pos.CENTER_RIGHT);
 
         CustomButton btnDisconnect = new CustomButton("Logout");
         btnDisconnect.getStyleClass().add("button-red");
-        btnDisconnect.setOnAction(e -> {primaryStage.close();
-            new AuthenticationFormView(primaryStage).show();});
+        btnDisconnect.setOnAction(e -> {
+            primaryStage.close();
+            new AuthenticationFormView(primaryStage).show();
+        });
 
         logoutButton.getChildren().add(btnDisconnect);
-
         grid.add(logoutButton, 1, 0);
     }
 
     /**
-     * Adds admin navigation buttons to the grid.
-     * @param grid the GridPane to which the buttons are added.
+     * Adds admin-specific navigation buttons (e.g., Create Course) to the grid.
+     *
+     * @param grid the {@link GridPane} to which the buttons are added.
      */
     private void addAdminNavigationButtons(GridPane grid) {
-        HBox navigationButtons = new HBox(20);
-        navigationButtons.setAlignment(Pos.CENTER_LEFT);
+        HBox adminButtons = new HBox(20);
+        adminButtons.setAlignment(Pos.CENTER_LEFT);
 
-        Button btnAdmin = createButton("Create Course", "button-blue", e -> {primaryStage.close();
-            new CreateLessonView(primaryStage).show();});
-        navigationButtons.getChildren().add(btnAdmin);
+        Button btnCreateCourse = createButton("Create Course", "button-blue", e -> {
+            primaryStage.close();
+            new CreateLessonView(primaryStage).show();
+        });
 
-        grid.add(navigationButtons, 0, 1);
+        adminButtons.getChildren().add(btnCreateCourse);
+        grid.add(adminButtons, 0, 1);
     }
 
     /**
-     * Adds the search bar to the given grid.
-     * @param grid the GridPane to which the search bar is added.
+     * Adds a search bar to the grid.
+     *
+     * @param grid the {@link GridPane} to which the search bar is added.
      */
     private void addSearchBar(GridPane grid) {
         HBox searchBar = new HBox(15);
@@ -154,19 +183,21 @@ public class MainMenuView extends UI {
     }
 
     /**
-     * Displays the list of lessons in the grid.
-     * @param grid the GridPane to which the lessons are added.
+     * Adds the initial list of lessons to the grid.
+     *
+     * @param grid the {@link GridPane} to which lessons are added.
      */
     private void addLessons(GridPane grid) {
         displayLessons(grid, lessonList);
     }
 
     /**
-     * Helper method to create a styled button with an action.
-     * @param text the button text.
-     * @param styleClass the CSS style class.
-     * @param action the action to perform on button click.
-     * @return the configured Button.
+     * Creates a styled button with a specified action.
+     *
+     * @param text the text of the button.
+     * @param styleClass the CSS style class for the button.
+     * @param action the action to perform when the button is clicked.
+     * @return a configured {@link Button}.
      */
     private Button createButton(String text, String styleClass, EventHandler<ActionEvent> action) {
         Button button = new Button(text);
@@ -176,14 +207,16 @@ public class MainMenuView extends UI {
     }
 
     /**
-     * Displays the given lessons in the grid.
-     * @param grid the GridPane where lessons are displayed.
-     * @param lessons the list of lessons to display.
+     * Displays a list of lessons in the grid.
+     *
+     * @param grid the {@link GridPane} where lessons are displayed.
+     * @param lessons the list of {@link Lesson} objects to display.
      */
     private void displayLessons(GridPane grid, List<Lesson> lessons) {
+        // Clear previous lessons
         grid.getChildren().removeIf(node -> GridPane.getRowIndex(node) != null && GridPane.getRowIndex(node) >= 3);
 
-        int rowIndex = 3; // Start just below the search bar
+        int rowIndex = 3; // Start below the search bar
         for (Lesson lesson : lessons) {
             LessonComponent lessonComponent = new LessonComponent(primaryStage, lesson);
             GridPane.setColumnSpan(lessonComponent, GridPane.REMAINING);

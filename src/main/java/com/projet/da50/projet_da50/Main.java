@@ -20,7 +20,7 @@ public class Main extends Application{
         primaryStage.setOnCloseRequest(event -> {
             if (!primaryStage.isMaximized()) {
                 // if the authentication window is closed without being in full screen,
-                // this means that the user is not connected, so we close the application
+                // this means that the user is not connected, so we close the applicationa
                 HibernateUtil.shutdown();
                 System.exit(0);
             }

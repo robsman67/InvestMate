@@ -15,92 +15,120 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+/**
+ * The LessonController class manages the creation, validation, and retrieval of Lesson objects.
+ * It interacts with the Hibernate ORM to store and retrieve lesson data from the database.
+ */
 public class LessonController {
 
     private Lesson lesson;
-
     private SessionFactory factory;
 
+    /**
+     * Default constructor, initializing a new Lesson and configuring Hibernate SessionFactory.
+     */
     public LessonController() {
         this.lesson = new Lesson();
         factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Lesson.class).buildSessionFactory();
     }
 
+    /**
+     * Constructor with an existing Lesson to be managed by this controller.
+     * @param lesson The existing Lesson instance.
+     */
     public LessonController(Lesson lesson) {
         this.lesson = lesson;
         factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Lesson.class).buildSessionFactory();
     }
 
+    /** Getter and Setter for the lesson attribute. */
+
     public Lesson getLesson() {
         return lesson;
     }
+
 
     public void setLesson(Lesson lesson) {
         this.lesson = lesson;
     }
 
     /**
-     * Valide les entrées pour une leçon.
-     * @param lessonTitle Titre de la leçon (doit être non vide)
-     * @return `true` si les entrées sont valides, `false` sinon
+     * Validates the inputs for creating a lesson.
+     * @param lessonTitle The title of the lesson to validate.
+     * @return true if the inputs are valid, false otherwise.
      */
     public boolean validateInputs(String lessonTitle) {
 
         if (lessonTitle == null || lessonTitle.isEmpty()) {
-            showAlert("Validation Error", "Le titre de la leçon ne peut pas être vide.");
+            showAlert("Validation Error", "The lesson title cannot be empty.");
             return false;
         }
         if (lessonTitle.length() > 100){
-            showAlert("Validation Error", "Le titre de la leçon ne peut dépasser 100 caractères. Il est trop long de " + (lessonTitle.length() - 100) + " caractères.");
+            showAlert("Validation Error", "The lesson title cannot exceed 100 characters. It is " + (lessonTitle.length() - 100) + " characters too long.");
             return false;
         }
 
-        // Ajout d'autres règles de validation si nécessaire
+        // Additional validation rules can be added here as needed.
         return true;
     }
 
     /**
-     * Crée une leçon avec les entrées validées.
-     * @param lessonTitle Titre de la leçon
-     * @return Une instance de `Lesson`
+     * Creates and sets the main title for the lesson.
+     * @param lessonTitle The title of the lesson.
+     * @return The updated Lesson object.
      */
     public Lesson createMainTitle(String lessonTitle) {
-
         lesson.setTitle(lessonTitle);
-
         return lesson;
     }
 
+    /**
+     * Sets a tag for the lesson.
+     * @param tag The tag to assign to the lesson.
+     * @return The updated Lesson object.
+     */
     public Lesson setTag(Tags tag) {
-
         lesson.setTag(tag);
-
         return lesson;
     }
 
-    public Lesson createSubTitle(String content, TitleType type){
+    /**
+     * Creates and adds a subtitle to the lesson.
+     * @param content The content of the subtitle.
+     * @param type The type of the subtitle.
+     * @return The updated Lesson object.
+     */
+    public Lesson createSubTitle(String content, TitleType type) {
         Title title = new Title();
         title.setContent(content);
         title.setType(type);
 
         lesson.addElement(title);
-
         return lesson;
-
     }
 
-    public Lesson createParagraph(String content, ParagraphType type){
+    /**
+     * Creates and adds a paragraph to the lesson.
+     * @param content The content of the paragraph.
+     * @param type The type of the paragraph.
+     * @return The updated Lesson object.
+     */
+    public Lesson createParagraph(String content, ParagraphType type) {
         Paragraph paragraph = new Paragraph();
         paragraph.setContent(content);
         paragraph.setType(type);
 
         lesson.addElement(paragraph);
-
         return lesson;
     }
 
+    /**
+     * Creates and adds an image to the lesson.
+     * @param url The URL where the image is located.
+     * @return The updated Lesson object.
+     * @throws IOException If there is an error reading the image file.
+     */
     public Lesson createImage(String url) throws IOException {
-
         byte[] imageBytes = readAsBytes(url);
 
         PictureIntegration image = new PictureIntegration();
@@ -108,12 +136,16 @@ public class LessonController {
         image.setImageData(imageBytes);
 
         lesson.addElement(image);
-
         return lesson;
     }
 
+    /**
+     * Creates and adds a video to the lesson.
+     * @param url The URL where the video is located.
+     * @return The updated Lesson object.
+     * @throws IOException If there is an error reading the video file.
+     */
     public Lesson createVideo(String url) throws IOException {
-
         byte[] videoBytes = readAsBytes(url);
 
         VideoIntegration video = new VideoIntegration();
@@ -121,23 +153,32 @@ public class LessonController {
         video.setVideoData(videoBytes);
 
         lesson.addElement(video);
-
         return lesson;
     }
 
+    /**
+     * Reads a file as bytes from a given URL.
+     * @param url The URL of the file to read.
+     * @return A byte array representing the file's contents.
+     * @throws IOException If there is an error reading the file.
+     */
     public static byte[] readAsBytes(String url) throws IOException {
         Path path = Paths.get(url);
         return Files.readAllBytes(path);
     }
 
+    /**
+     * Removes an element from the lesson.
+     * @param element The element to remove.
+     */
     public void removeElement(Elements element) {
         lesson.removeElement(element);
     }
 
     /**
-     * Affiche une alerte d'erreur ou d'information.
-     * @param title Titre de l'alerte
-     * @param message Message de l'alerte
+     * Displays an alert with the given title and message.
+     * @param title The title of the alert.
+     * @param message The message to display in the alert.
      */
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -147,23 +188,31 @@ public class LessonController {
         alert.showAndWait();
     }
 
+    /**
+     * Swaps two elements in the lesson's list of elements.
+     * @param lesson The list of elements in the lesson.
+     * @param index1 The index of the first element.
+     * @param index2 The index of the second element.
+     * @return true if the swap was successful, false otherwise.
+     */
     public boolean swapElements(List<Elements> lesson, int index1, int index2) {
-        // Vérifier que les indices sont valides
+        // Validate the indices
         if (index1 >= 0 && index1 < lesson.size() && index2 >= 0 && index2 < lesson.size()) {
-            // Sauvegarder l'élément à l'indice index1 dans une variable temporaire
             Elements temp = lesson.get(index1);
-
-            // Échanger les éléments
             lesson.set(index1, lesson.get(index2));
             lesson.set(index2, temp);
-
-            return true;  // Indiquer que l'échange a réussi
+            return true;  // Swap successful
         } else {
-            System.out.println("Indices invalides !");
-            return false;  // Indiquer que l'échange a échoué en raison d'indices invalides
+            System.out.println("Invalid indices!");
+            return false;  // Swap failed due to invalid indices
         }
     }
 
+    /**
+     * Finds lessons that contain the given title.
+     * @param title The title to search for.
+     * @return A list of lessons that contain the given title.
+     */
     public List<Lesson> findLessonContainsTitle(String title) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Lesson> query = session.createQuery("from Lesson where title like :title", Lesson.class);
@@ -175,6 +224,11 @@ public class LessonController {
         }
     }
 
+    /**
+     * Retrieves a lesson by its exact title.
+     * @param title The title of the lesson.
+     * @return The lesson with the given title, or null if not found.
+     */
     public Lesson getLessonByTitle(String title) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Lesson> query = session.createQuery("from Lesson where title = :title", Lesson.class);
@@ -186,6 +240,11 @@ public class LessonController {
         }
     }
 
+    /**
+     * Finds lessons by the given tag.
+     * @param tag The tag to search for.
+     * @return A list of lessons that have the given tag.
+     */
     public List<Lesson> findLessonByTags(Tags tag) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Lesson> query = session.createQuery("from Lesson where tag = :tag", Lesson.class);
@@ -197,6 +256,12 @@ public class LessonController {
         }
     }
 
+    /**
+     * Finds lessons that match both a title and a tag.
+     * @param title The title to search for.
+     * @param tag The tag to search for.
+     * @return A list of lessons that match both the title and the tag.
+     */
     public List<Lesson> findLessonByTitleAndTags(String title, Tags tag) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Lesson> query = session.createQuery("from Lesson where title like :title and tag = :tag", Lesson.class);
@@ -209,18 +274,28 @@ public class LessonController {
         }
     }
 
+    /**
+     * Finds lessons based on a title and a tag, with fallback conditions.
+     * @param title The title to search for.
+     * @param tag The tag to search for.
+     * @return A list of lessons matching the search criteria.
+     */
     public List<Lesson> findLesson(String title, Tags tag) {
-       if (title == null && tag == Tags.ALL) {
-           return getAllLessons();
-       } else if (title != null && tag == Tags.ALL) {
-           return findLessonContainsTitle(title);
-       } else if (title == null && tag != Tags.ALL) {
-           return findLessonByTags(tag);
-       } else {
-           return findLessonByTitleAndTags(title, tag);
-       }
+        if (title == null && tag == Tags.ALL) {
+            return getAllLessons();
+        } else if (title != null && tag == Tags.ALL) {
+            return findLessonContainsTitle(title);
+        } else if (title == null && tag != Tags.ALL) {
+            return findLessonByTags(tag);
+        } else {
+            return findLessonByTitleAndTags(title, tag);
+        }
     }
 
+    /**
+     * Retrieves all lessons from the database.
+     * @return A list of all lessons.
+     */
     public List<Lesson> getAllLessons() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Lesson> query = session.createQuery("from Lesson", Lesson.class);
@@ -231,33 +306,26 @@ public class LessonController {
         }
     }
 
+    /**
+     * Creates and saves a new lesson in the database.
+     * @return The ID of the created lesson, or null if creation failed.
+     */
     public Integer createLesson() {
-        // Declare the transaction and session outside of the try-with-resources block
         Session session = null;
         Transaction transaction = null;
         try {
-            // Open the session and begin the transaction manually
             session = HibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
 
-            // Check if the lesson already exists
-            System.out.println("List of lessons with title: " + getLessonByTitle(lesson.getTitle()));
             if (getLessonByTitle(lesson.getTitle()) != null) {
                 System.err.println("This lesson already exists: " + lesson.getTitle());
                 return null;
             }
 
-            System.out.println("Creating lesson: " + lesson.getTitle());
-
-            // Save the lesson
             Integer id = (Integer) session.save(lesson);
-
-            // Commit the transaction if everything is fine
             transaction.commit();
-            System.out.println("Lesson created with ID: " + id);
             return id;
         } catch (Exception e) {
-            // Rollback the transaction if there was an error
             if (transaction != null) {
                 transaction.rollback();
             }
@@ -266,6 +334,9 @@ public class LessonController {
         }
     }
 
+    /**
+     * Updates the current lesson in the database.
+     */
     public void updateLesson() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -276,7 +347,9 @@ public class LessonController {
         }
     }
 
-    // Close the SessionFactory when the application is closed
+    /**
+     * Closes the Hibernate SessionFactory.
+     */
     public void close() {
         if (factory != null && !factory.isClosed()) {
             factory.close();

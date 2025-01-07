@@ -156,14 +156,17 @@ public class CreateLessonView extends UI {
      * @return A VBox containing the preview section.
      */
     private VBox createPreviewSection() {
+        // Content area for preview elements
         VBox previewContent = new VBox(10);
         previewContent.setPadding(new Insets(10));
         previewContent.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-border-color: #dcdcdc; -fx-border-width: 1;");
 
+        // Add a scroll pane to the content area
         ScrollPane previewScrollPane = new ScrollPane(previewContent);
         previewScrollPane.setFitToWidth(true);
         previewScrollPane.setStyle("-fx-background: #ffffff;");
 
+        // Container for the preview section
         VBox previewSection = new VBox(10);
         previewSection.setMinHeight(300);
         previewSection.getChildren().add(previewScrollPane);
@@ -178,10 +181,12 @@ public class CreateLessonView extends UI {
      * @return A VBox containing action buttons.
      */
     private VBox createActionButtons() {
+        // Container for action buttons
         VBox buttonSection = new VBox(10);
         buttonSection.setPadding(new Insets(10));
         buttonSection.setAlignment(Pos.CENTER);
 
+        // Save and back buttons
         Button saveButton = new CustomButton("Save");
         saveButton.setOnAction(e ->
                 {
@@ -192,6 +197,7 @@ public class CreateLessonView extends UI {
                     }
                 });
 
+        // Back to main menu button
         Button backButton = new CustomButton("Back to Main Menu");
         backButton.setOnAction(e -> {stage.close();
                 new MainMenuView(stage).show();});
@@ -211,6 +217,7 @@ public class CreateLessonView extends UI {
         Label previewTitle = createStyledLabel("Lesson Preview: " + nameField.getText(), 20, true, "black");
         previewSection.getChildren().add(previewTitle);
 
+        // Add elements to the preview section
         List<Elements> lesson = lessonController.getLesson().getElements();
         for (int i = 0; i < lesson.size(); i++) {
             Elements element = lesson.get(i);
@@ -233,6 +240,14 @@ public class CreateLessonView extends UI {
         alert.showAndWait();
     }
 
+    /**
+     * Creates a styled label with the specified text, font size, boldness, and color.
+     * @param text The text to display.
+     * @param fontSize The font size.
+     * @param bold Whether the text should be bold.
+     * @param color The text color.
+     * @return A styled label with the specified properties.
+     */
     private Label createStyledLabel(String text, int fontSize, boolean bold, String color) {
         Label label = new Label(text);
         String style = "-fx-font-size: " + fontSize + "px;";
@@ -243,6 +258,7 @@ public class CreateLessonView extends UI {
         return label;
     }
 
+    // Element still in progress
     /**
      * Updates the input context based on the selected element type.
      * @param elementTypeComboBox The ComboBox for selecting element type.
@@ -283,12 +299,22 @@ public class CreateLessonView extends UI {
     }
     */
 
+    /**
+     * Updates the dynamic options based on the selected element type.
+     * @param typeOptionBox The container for dynamic options.
+     * @param elementTypeComboBox The ComboBox for selecting element type.
+     * @param titleTypeComboBox The ComboBox for selecting title type.
+     * @param paragraphTypeComboBox The ComboBox for selecting paragraph type.
+     * @param contentField The TextField for entering content.
+     */
     private void updateDynamicOptions(HBox typeOptionBox, ComboBox<String> elementTypeComboBox,
                                       ComboBox<TitleType> titleTypeComboBox, ComboBox<ParagraphType> paragraphTypeComboBox,
                                       TextField contentField) {
+
         String selectedType = elementTypeComboBox.getValue();
         typeOptionBox.getChildren().clear();
 
+        // Add dynamic options based on the selected element type
         if ("Sub-Title".equals(selectedType)) {
             typeOptionBox.getChildren().add(titleTypeComboBox);
         } else if ("Paragraph".equals(selectedType)) {
@@ -311,38 +337,47 @@ public class CreateLessonView extends UI {
         }
     }
 
+    /**
+    * Adds an element to the lesson based on the selected element type.
+     * @param contentField The TextField for entering content.
+     * @param elementTypeComboBox The ComboBox for selecting element type.
+     * @param titleTypeComboBox The ComboBox for selecting title type.
+     * @param paragraphTypeComboBox The ComboBox for selecting paragraph type.
+     * @throws IOException If an error occurs while reading the file.
+     */
     private void addElement(TextField contentField, ComboBox<String> elementTypeComboBox,
                             ComboBox<TitleType> titleTypeComboBox, ComboBox<ParagraphType> paragraphTypeComboBox) throws IOException {
         String content = contentField.getText();
         String elementType = elementTypeComboBox.getValue();
 
+        // Validate content input is not empty
         if (content.isEmpty()) {
             showAlert("Error", "Element content cannot be empty.");
             return;
         }
 
-        // Validate content length
+        // Validate content length based on element type
         int contentLength = content.length();
-        if ("Sub-Title".equals(elementType) && contentLength > 250) {
+        if ("Sub-Title".equals(elementType) && contentLength > 250) { // Subtitle content limit is 250 characters
             int excess = contentLength - 250;
             showAlert("Error", "Subtitle content exceeds the limit by " + excess + " characters.");
             return;
-        } else if ("Paragraph".equals(elementType) && contentLength > 1500) {
+        } else if ("Paragraph".equals(elementType) && contentLength > 1500) { // Paragraph content limit is 1500 characters
             int excess = contentLength - 1500;
             showAlert("Error", "Paragraph content exceeds the limit by " + excess + " characters.");
             return;
-        } else if ("Video".equals(elementType)) {
+        } else if ("Video".equals(elementType)) { // Video content limit is 67108864 bytes (64 MB)
             byte[] videoData = LessonController.readAsBytes(content);
             int maxAllowedPacket = 67108864;
 
             if (videoData.length > maxAllowedPacket) {
-                showAlert("Error", "The video exceeds the limit  of " + maxAllowedPacket + " bytes.");
+                showAlert("Error", "The video exceeds the limit  of 64 MB.");
                 return;
             }
         }
 
 
-
+        // Add the element to the lesson
         switch (elementType) {
             case "Sub-Title":
                 TitleType titleType = titleTypeComboBox.getValue();
@@ -375,6 +410,13 @@ public class CreateLessonView extends UI {
         updatePreview();
     }
 
+    /**
+     * Creates an HBox for displaying an element in the preview section.
+     * @param element The element to display.
+     * @param index The index of the element in the lesson.
+     * @return An HBox containing the element and action buttons.
+     */
+
     private HBox createElementBox(Elements element, int index) {
         HBox elementBox = new HBox(10);
         elementBox.setPadding(new Insets(10));
@@ -382,6 +424,7 @@ public class CreateLessonView extends UI {
 
         List<Elements> lesson = lessonController.getLesson().getElements();
 
+        // Display the element content based on its type
         if (element instanceof Title) {
             Title title = (Title) element;
             Label titleLabel = new Label(title.getContent());
@@ -452,6 +495,9 @@ public class CreateLessonView extends UI {
         return elementBox;
     }
 
+    /**
+     * Saves the lesson to the database and returns to the main menu.
+     */
     private void saveLesson() {
         String lessonName = nameField.getText();
         if (lessonController.validateInputs(lessonName)) {
@@ -465,6 +511,9 @@ public class CreateLessonView extends UI {
         }
     }
 
+    /**
+     * Updates the lesson in the database and returns to the main menu.
+     */
     private void updateLesson() {
 
         if(!nameField.getText().isEmpty() && !Objects.equals(nameField.getText(), lessonController.getLesson().getTitle())) {

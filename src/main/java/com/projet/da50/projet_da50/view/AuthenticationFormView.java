@@ -16,47 +16,52 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
-import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 
+/**
+ * The AuthenticationFormView class represents the login view for the application.
+ * It allows users to authenticate by entering their username and password.
+ */
 public class AuthenticationFormView extends UI {
 
-    private UserController userController;
-    private Stage primaryStage;
-    private LoginErrorHandler loginErrorHandler;
+    private final UserController userController;
+    private final Stage primaryStage;
+    private final LoginErrorHandler loginErrorHandler;
     private Label errorLabel;
     private GridPane grid;
 
+    /**
+     * Constructs the AuthenticationFormView.
+     *
+     * @param primaryStage the primary stage of the application.
+     */
     public AuthenticationFormView(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.userController = new UserController();
         this.loginErrorHandler = new LoginErrorHandler();
     }
 
+    /**
+     * Displays the authentication form.
+     */
     public void show() {
         primaryStage.setTitle("Authentication");
         primaryStage.setMaximized(false);
 
-        // Création du GridPane principal
+        // Create the main GridPane layout
         this.grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        // Configuration pour centrer le logo sur deux colonnes
+        // Configure grid columns to center the logo across two columns
         grid.getColumnConstraints().addAll(
                 new ColumnConstraints(),
                 new ColumnConstraints()
@@ -64,29 +69,28 @@ public class AuthenticationFormView extends UI {
         grid.getColumnConstraints().get(0).setHgrow(Priority.ALWAYS);
         grid.getColumnConstraints().get(1).setHgrow(Priority.ALWAYS);
 
-        // Création d'un rectangle pour le dégradé de fond
+        // Create a rectangle for the background gradient
         Rectangle background = new Rectangle(WINDOW_WIDTH, WINDOW_HEIGHT);
         Stop[] stops = new Stop[] {
-                new Stop(0, Color.web("#243447")), // Couleur de début
-                new Stop(1, Color.web("#0d1117"))  // Couleur de fin
+                new Stop(0, Color.web("#243447")), // Start color
+                new Stop(1, Color.web("#0d1117"))  // End color
         };
         LinearGradient gradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
         background.setFill(gradient);
 
-        // Application de l'effet de flou gaussien à l'arrière-plan
-        GaussianBlur blur = new GaussianBlur(20); // Augmenter la valeur pour plus de flou
+        // Apply Gaussian blur effect to the background
+        GaussianBlur blur = new GaussianBlur(20);
         background.setEffect(blur);
 
-        // Création d'un StackPane pour superposer le fond et le contenu
+        // Create a StackPane to overlay the background and content
         StackPane root = new StackPane();
         root.getChildren().addAll(background, grid);
 
-        // Conteneur pour les éléments du formulaire
+        // Container for the form elements
         VBox formContainer = new VBox(20);
         formContainer.setAlignment(Pos.CENTER);
         formContainer.setPadding(new Insets(30));
         formContainer.setStyle("-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #5199ff, #243447); -fx-background-radius: 10;");
-        // Ajust width of form container
         formContainer.setMaxWidth(WINDOW_WIDTH * 0.4);
         formContainer.setMaxHeight(WINDOW_WIDTH * 0.4);
 
@@ -96,14 +100,14 @@ public class AuthenticationFormView extends UI {
         logoView.setPreserveRatio(true);
         formContainer.getChildren().add(logoView);
 
-        // Username
+        // Username field
         CustomLabel userLabel = new CustomLabel("Username:");
         CustomTextField userField = new CustomTextField();
         HBox userBox = new HBox(10, userLabel, userField);
         userBox.setAlignment(Pos.CENTER);
         formContainer.getChildren().add(userBox);
 
-        // Password
+        // Password field
         CustomLabel pwLabel = new CustomLabel("Password:");
         CustomPasswordField pwField = new CustomPasswordField();
         HBox passwordBox = new HBox(10, pwLabel, pwField);
@@ -111,14 +115,12 @@ public class AuthenticationFormView extends UI {
         formContainer.getChildren().add(passwordBox);
 
         // Forgot Password Hyperlink
-        Hyperlink forgotPasswordLink = new Hyperlink("forgotten password ?");
+        Hyperlink forgotPasswordLink = new Hyperlink("Forgotten password?");
         forgotPasswordLink.getStyleClass().add("hyperlink");
-        forgotPasswordLink.setOnAction(e -> {
-            new ForgotPassWordFormView(primaryStage).show();
-        });
+        forgotPasswordLink.setOnAction(e -> new ForgotPassWordFormView(primaryStage).show());
         formContainer.getChildren().add(forgotPasswordLink);
 
-        // Error Label (invisible par défaut)
+        // Error Label (initially invisible)
         errorLabel = new Label();
         errorLabel.getStyleClass().add("error-label");
         errorLabel.setWrapText(true);
@@ -131,21 +133,18 @@ public class AuthenticationFormView extends UI {
         btnLogin.setOnAction(e -> handleLogin(userField, pwField));
 
         // Create Account Button
-        CustomButton btnCreateAccount = new CustomButton("Create account");
-        btnCreateAccount.setOnAction(e -> {
-            // Appliquer un effet de flou
-            new CreateAccountFormView(primaryStage).show();
-        });
+        CustomButton btnCreateAccount = new CustomButton("Create Account");
+        btnCreateAccount.setOnAction(e -> new CreateAccountFormView(primaryStage).show());
 
         // Bottom Buttons
         HBox hbBottom = new HBox(10, btnCreateAccount, btnLogin);
         hbBottom.setAlignment(Pos.CENTER);
         formContainer.getChildren().add(hbBottom);
 
-        // Ajout du conteneur de formulaire au StackPane
+        // Add the form container to the StackPane
         root.getChildren().add(formContainer);
 
-        // Création de la scène avec le StackPane comme racine
+        // Create the scene with the StackPane as root
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         primaryStage.setScene(scene);
@@ -153,12 +152,18 @@ public class AuthenticationFormView extends UI {
         primaryStage.show();
     }
 
+    /**
+     * Handles the login logic.
+     *
+     * @param userField the text field for the username.
+     * @param pwField   the password field for the password.
+     */
     private void handleLogin(CustomTextField userField, CustomPasswordField pwField) {
         String username = userField.getText();
         String password = pwField.getText();
 
-        //Dev Account
-        if (username.equals("a")) {
+        // Developer Account (shortcut)
+        if ("a".equals(username)) {
             setAdmin(true);
             new MainMenuView(primaryStage).show();
             return;
@@ -167,12 +172,12 @@ public class AuthenticationFormView extends UI {
         String validationMessage = loginErrorHandler.validateAuthenticationFields(username, password);
         if ("Valid credentials.".equals(validationMessage)) {
             User user = userController.findUserByUsername(username);
-            if(user.getRole() == Role.Admin) {
+            if (user.getRole() == Role.Admin) {
                 setAdmin(true);
             }
             new MainMenuView(primaryStage).show();
         } else {
-            // Gérer l'affichage du message d'erreur
+            // Display error message
             if (errorLabel != null) {
                 errorLabel.setText(validationMessage);
                 errorLabel.setVisible(true);
