@@ -1,6 +1,6 @@
 package com.projet.da50.projet_da50.view;
 
-import com.projet.da50.projet_da50.controller.LoginErrorHandler;
+import com.projet.da50.projet_da50.controller.ErrorHandler;
 import com.projet.da50.projet_da50.view.components.CustomButton;
 import com.projet.da50.projet_da50.view.components.CustomLabel;
 import com.projet.da50.projet_da50.view.components.CustomTextField;
@@ -23,13 +23,13 @@ import javafx.scene.shape.Rectangle;
 public class ForgotPassWordFormView extends UI {
 
     private Stage primaryStage;
-    private LoginErrorHandler loginErrorHandler;
+    private ErrorHandler errorHandler;
     private Label errorLabel;
     private GridPane grid;
 
     public ForgotPassWordFormView(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.loginErrorHandler = new LoginErrorHandler();
+        this.errorHandler = new ErrorHandler();
     }
 
     public void show() {
@@ -113,7 +113,7 @@ public class ForgotPassWordFormView extends UI {
 
     private void handleResetPassword(CustomTextField mailField, VBox formContainer) {
         String mail = mailField.getText();
-        String validationMessage = loginErrorHandler.validateForgotPasswordFields(mail);
+        String validationMessage = errorHandler.validateForgotPasswordFields(mail);
 
         // Supprimer l'ancien message d'erreur s'il existe
         formContainer.getChildren().remove(errorLabel);

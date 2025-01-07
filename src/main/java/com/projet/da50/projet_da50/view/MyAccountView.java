@@ -1,6 +1,6 @@
 package com.projet.da50.projet_da50.view;
 
-import com.projet.da50.projet_da50.controller.LoginErrorHandler;
+import com.projet.da50.projet_da50.controller.ErrorHandler;
 import com.projet.da50.projet_da50.controller.UserController;
 import com.projet.da50.projet_da50.model.User;
 import com.projet.da50.projet_da50.view.components.CustomButton;
@@ -19,7 +19,7 @@ import static com.projet.da50.projet_da50.controller.TokenNotStayedLogin.*;
 public class MyAccountView extends UI {
 
     private final Stage primaryStage;
-    private final LoginErrorHandler loginErrorHandler = new LoginErrorHandler();
+    private final ErrorHandler errorHandler = new ErrorHandler();
     UserController userController = new UserController();
 
 
@@ -86,22 +86,20 @@ public class MyAccountView extends UI {
             grid.getChildren().removeIf(node -> GridPane.getRowIndex(node) == 1 && GridPane.getColumnIndex(node) == 4);
 
             // Check mail format
-            if (loginErrorHandler.validateCreateAccountFields("TestUser", "aaaaaaa", newEmail).equals("Mail format is invalid.")){
-                System.out.println("Invalid email entered: " + newEmail);
+            if (!errorHandler.isValidEmail(newEmail)) {
                 // Display an error message
                 Label errorField = new Label();
                 errorField.setText("Invalid email format.");
                 grid.add(errorField, 4, 1);
 
-            } else if (loginErrorHandler.validateCreateAccountFields("TestUser", "aaaaaaa", newEmail).equals("This mail is already used."))
-            {
+            } else if (errorHandler.isEmailAlreadyUsed(newEmail)) {
                 // Check if this mail is already used
                 Label errorField = new Label();
                 errorField.setText("This mail is already used.");
                 grid.add(errorField, 4, 1);
 
+            } else if (newEmail.isEmpty()) {
                 // Check if empty
-            } else if(newEmail.isEmpty()) {
                 Label errorField = new Label();
                 errorField.setText("Please fill in all fields.");
                 grid.add(errorField, 4, 1);
@@ -114,7 +112,7 @@ public class MyAccountView extends UI {
                 Label successField = new Label();
                 successField.setText("Email updated successfully.");
                 grid.add(successField, 4, 1);
-        }
+            }
         });
 
 
@@ -157,7 +155,7 @@ public class MyAccountView extends UI {
             // Clear previous messages
             grid.getChildren().removeIf(node -> GridPane.getRowIndex(node) == 3 && GridPane.getColumnIndex(node) == 4);
 
-            if (loginErrorHandler.validateCreateAccountFields(newUsername, "aaaaaa", "testUser@test.fr").equals("This username is already taken.")) {
+            if (errorHandler.isUsernameAlreadyTaken(newUsername)) {
                     Label errorField = new Label();
                     errorField.setText("This username is already used.");
                     grid.add(errorField, 4, 3);
@@ -238,28 +236,20 @@ public class MyAccountView extends UI {
             // Clear previous messages
             grid.getChildren().removeIf(node -> GridPane.getRowIndex(node) == 5 && GridPane.getColumnIndex(node) == 6);
 
-            // Check if a field is empty
-            if(newPassword.isEmpty() || lastPassword.isEmpty()){
+            if (newPassword.isEmpty() || lastPassword.isEmpty()) {
                 Label errorField = new Label();
                 errorField.setText("Please fill in all fields.");
                 grid.add(errorField, 6, 5);
-
-                // Check is the last password is correct
-            } else if (userController.verifyUserCredentials(user.getUsername(), lastPasswordField.getText())) {
-
-                // Check if the new password respect the 6 character minimal length
-                if (loginErrorHandler.validateCreateAccountFields("aaaa", newPassword, "testUser@test.fr").equals("Password should be at least 6 characters long.")) {
+            } else if (errorHandler.isCurrentPasswordCorrect(user, lastPassword)) {
+                if (!errorHandler.isPasswordValid(newPassword)) {
                     Label errorField = new Label();
                     errorField.setText("Password should be at least 6 characters long.");
                     grid.add(errorField, 6, 5);
-
-
-                } else if (userController.verifyUserCredentials(user.getUsername(), newPasswordField.getText())){
+                } else if (errorHandler.isCurrentPasswordCorrect(user, newPassword)) {
                     Label errorField = new Label();
                     errorField.setText("New password should be different from the last one.");
                     grid.add(errorField, 6, 5);
-                }else {
-                    System.out.println("Correct last password");
+                } else {
                     String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
                     user.setPassword(hashedPassword);
                     userController.updateUser(user);
@@ -268,7 +258,6 @@ public class MyAccountView extends UI {
                     grid.add(successField, 6, 5);
                 }
             } else {
-                System.out.println("Wrong current password");
                 Label errorField = new Label();
                 errorField.setText("Wrong current password.");
                 grid.add(errorField, 6, 5);

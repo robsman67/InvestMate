@@ -8,13 +8,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginErrorHandler {
+public class ErrorHandler {
 
     private UserController userController;
-    private Map<String, LoginAttempt> loginAttempts; // Map pour stocker les tentatives de connexion
-    private static final long LOCK_TIME_DURATION = 60 * 1000; // 30 secondes en millisecondes
+    private Map<String, LoginAttempt> loginAttempts;
+    private static final int MAX_FAILED_ATTEMPTS = 5;
+    private static final long LOCK_TIME_DURATION = 60 * 1000; // 60 secondes en millisecondes
 
-    public LoginErrorHandler() {
+    public ErrorHandler() {
         this.userController = new UserController();
         this.loginAttempts = new HashMap<>();
     }
@@ -30,8 +31,7 @@ public class LoginErrorHandler {
             return "Invalid username or password.";
         }
 
-        // Récupérer ou créer l'objet LoginAttempt pour cet utilisateur
-        LoginAttempt attempt = loginAttempts.computeIfAbsent(username, k -> new LoginAttempt());
+        LoginAttempt attempt = loginAttempts.getOrDefault(username, new LoginAttempt());
 
         if (attempt.isLocked(LOCK_TIME_DURATION)) {
             long remainingTime = ChronoUnit.MILLIS.between(LocalDateTime.now(), attempt.getLastAttemptTime().plus(LOCK_TIME_DURATION, ChronoUnit.MILLIS));
@@ -40,10 +40,17 @@ public class LoginErrorHandler {
 
         if (BCrypt.checkpw(password, user.getPassword())) {
             attempt.resetAttempts();
-            loginAttempts.remove(username); // Supprimer l'entrée de la map après une connexion réussie
+            loginAttempts.remove(username);
+//            if (user.getRole() != Role.Admin) {
+//                String token = TokenManager.generateToken(username);
+//                return "Valid credentials." + token;
+//            } else {
+//                return "Valid credentials.";
+//            }
             return "Valid credentials.";
         } else {
             attempt.incrementAttempts();
+            loginAttempts.put(username, attempt);
             return "Invalid username or password.";
         }
     }
@@ -55,7 +62,7 @@ public class LoginErrorHandler {
         if (password.length() < 6) {
             return "Password should be at least 6 characters long.";
         }
-        if (!mail.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
+        if (!isValidEmail(mail)) {
             return "Mail format is invalid.";
         }
         if (userController.findUserByUsername(username)!=null) {
@@ -71,7 +78,7 @@ public class LoginErrorHandler {
         if (mail.isEmpty()) {
             return "Please fill in all fields.";
         }
-        if (!mail.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
+        if (!isValidEmail(mail)) {
             return "Mail format is invalid.";
         }
         if (userController.findUserByMail(mail) == null) {
@@ -79,5 +86,31 @@ public class LoginErrorHandler {
         }
         //If everything is ok:
         return "Valid credentials.";
+    }
+
+    //  Valider le format du mail
+    public boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        return email.matches(emailRegex);
+    }
+
+    //  Vérifier si le mail est déjà utilisé
+    public boolean isEmailAlreadyUsed(String email) {
+        return userController.findUserByMail(email) != null;
+    }
+
+    //  Vérifier si le username est déjà utilisé
+    public boolean isUsernameAlreadyTaken(String username) {
+        return userController.findUserByUsername(username) != null;
+    }
+
+    //  Vérifier si le mot de passe a au moins 6 caractères
+    public boolean isPasswordValid(String password) {
+        return password.length() >= 6;
+    }
+
+    // Vérifier si le mot de passe actuel est correct
+    public boolean isCurrentPasswordCorrect(User user, String currentPassword) {
+        return BCrypt.checkpw(currentPassword, user.getPassword());
     }
 }

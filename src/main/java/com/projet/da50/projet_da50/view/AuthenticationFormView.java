@@ -1,6 +1,7 @@
 package com.projet.da50.projet_da50.view;
 
 import com.projet.da50.projet_da50.controller.TokenManager;
+import com.projet.da50.projet_da50.controller.ErrorHandler;
 import com.projet.da50.projet_da50.controller.UserController;
 import com.projet.da50.projet_da50.model.Role;
 import com.projet.da50.projet_da50.model.User;
@@ -23,7 +24,6 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.scene.shape.Rectangle;
 
 import static com.projet.da50.projet_da50.controller.TokenManager.logController;
@@ -49,7 +49,7 @@ public class AuthenticationFormView extends UI {
     public AuthenticationFormView(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.userController = new UserController();
-        this.loginErrorHandler = new LoginErrorHandler();
+        this.errorHandler = new ErrorHandler();
     }
 
     /**
