@@ -31,6 +31,10 @@ import javafx.util.Duration;
 import javafx.scene.shape.Rectangle;
 
 import static com.projet.da50.projet_da50.controller.TokenManager.logController;
+import java.util.Objects;
+
+import static com.projet.da50.projet_da50.controller.TokenManager.getIdToken;
+import static com.projet.da50.projet_da50.controller.TokenManager.stayLogged;
 
 /**
  * The AuthenticationFormView class represents the login view for the application.

@@ -6,7 +6,6 @@ import com.projet.da50.projet_da50.controller.TokenManager;
 import com.projet.da50.projet_da50.controller.UserController;
 import com.projet.da50.projet_da50.model.User;
 import com.projet.da50.projet_da50.view.components.CustomButton;
-import com.projet.da50.projet_da50.view.components.CustomLabel;
 import com.projet.da50.projet_da50.view.components.CustomPasswordField;
 import com.projet.da50.projet_da50.view.components.CustomTextField;
 import javafx.geometry.HPos;
@@ -17,6 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.util.Objects;
 
 import static com.projet.da50.projet_da50.controller.TokenManager.getIdToken;
 
@@ -41,13 +42,11 @@ public class MyAccountView extends UI {
                 // Handle the case where the username cannot be extracted
                 System.err.println("Error: Unable to extract username from token.");
                 new AuthenticationFormView(primaryStage).show();
-                return;
             }
         } else {
             // Handle the case where no valid token is found
             System.err.println("Error: No valid token found.");
             new AuthenticationFormView(primaryStage).show();
-            return;
         }
     }
 
@@ -320,7 +319,7 @@ public class MyAccountView extends UI {
         btnBack.setOnAction(e -> new MainMenuView(primaryStage).show());
 
         Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
-        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm());
         primaryStage.setTitle("My Account - " + TokenManager.extractUsernameFromToken(TokenManager.getToken()));
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);

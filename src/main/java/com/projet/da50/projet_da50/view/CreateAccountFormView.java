@@ -20,6 +20,8 @@ import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 import javafx.scene.shape.Rectangle;
 
+import java.util.Objects;
+
 public class CreateAccountFormView extends UI {
 
     private final UserController userController = new UserController();
@@ -118,7 +120,7 @@ public class CreateAccountFormView extends UI {
 
         // Création de la scène avec le StackPane comme racine
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
         primaryStage.show();

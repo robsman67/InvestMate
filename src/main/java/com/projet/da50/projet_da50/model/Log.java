@@ -19,7 +19,7 @@ public class Log {
     @Column(name = "action", nullable = false)
     private String action;
 
-    @Column(name = "detail", nullable = true)
+    @Column(name = "detail")
     private String detail;
 
     @Column(name = "timestamp", nullable = false)
@@ -51,6 +51,10 @@ public class Log {
 
     public Timestamp getTimestamp() {
         return timestamp;
+    }
+
+    public String getDetail() {
+        return detail;
     }
 
 

@@ -21,6 +21,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 import static com.projet.da50.projet_da50.controller.TokenManager.deleteToken;
 import static com.projet.da50.projet_da50.controller.TokenManager.getIdToken;
 
@@ -67,7 +69,7 @@ public class MainMenuView extends UI {
 
         // Create and set the scene
         Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
-        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm());
         primaryStage.setTitle("Main Menu");
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);

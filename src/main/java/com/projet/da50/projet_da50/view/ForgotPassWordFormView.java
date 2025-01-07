@@ -20,12 +20,13 @@ import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 import javafx.scene.shape.Rectangle;
 
+import java.util.Objects;
+
 public class ForgotPassWordFormView extends UI {
 
-    private Stage primaryStage;
-    private ErrorHandler errorHandler;
+    private final Stage primaryStage;
+    private final ErrorHandler errorHandler;
     private Label errorLabel;
-    private GridPane grid;
 
     public ForgotPassWordFormView(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -36,7 +37,7 @@ public class ForgotPassWordFormView extends UI {
         primaryStage.setTitle("Reset Password");
 
         // Création du GridPane principal
-        this.grid = new GridPane();
+        GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
@@ -105,7 +106,7 @@ public class ForgotPassWordFormView extends UI {
 
         // Création de la scène avec le StackPane comme racine
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
         primaryStage.show();
@@ -137,7 +138,7 @@ public class ForgotPassWordFormView extends UI {
             successGrid.add(closeButton, 0, 1);
 
             Scene successScene = new Scene(successGrid, 300, 100);
-            successScene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+            successScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm());
             successStage.setScene(successScene);
             successStage.showAndWait();
         } else {

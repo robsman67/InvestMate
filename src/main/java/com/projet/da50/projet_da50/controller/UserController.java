@@ -45,7 +45,7 @@ public class UserController {
 
     // Create a new user
     public Long createUser(String username, String password, String mail) {
-        Transaction transaction = null;
+        Transaction transaction;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
 
@@ -66,9 +66,6 @@ public class UserController {
             System.out.println("User created with ID: " + id);
             return id;
         } catch (Exception e) {
-//            if (transaction != null) {
-//                transaction.rollback();
-//            }
             e.printStackTrace();
             return null;
         }
@@ -78,10 +75,7 @@ public class UserController {
     public boolean verifyUserCredentials(String username, String password) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             User user = findUserByUsername(username);
-            if (user != null && BCrypt.checkpw(password, user.getPassword())) {
-                return true;
-            }
-            return false;
+            return user != null && BCrypt.checkpw(password, user.getPassword());
         } catch (Exception e) {
             e.printStackTrace();
             return false;
