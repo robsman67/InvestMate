@@ -1,11 +1,14 @@
 package com.projet.da50.projet_da50.controller;
 
+import com.projet.da50.projet_da50.model.User;
+
 import java.io.*;
 import java.nio.file.*;
 import java.util.Base64;
 
 public class TokenNotStayedLogin {
     private static final String TOKEN_FILE;
+    private static final UserController userController = new UserController();
 
     // Static block to determine platform-specific file location
     static {
@@ -54,6 +57,18 @@ public class TokenNotStayedLogin {
         } catch (IOException e) {
             System.err.println("Error retrieving token: " + e.getMessage());
             return null;
+        }
+    }
+
+    //For the log
+    public static Long getIdToken(){
+        String username = getToken();
+        if(username != null){
+            User user = userController.findUserByUsername(username);
+            return user.getId();
+        }
+        else {
+            return (long) -1;
         }
     }
 

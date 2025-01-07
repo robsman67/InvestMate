@@ -22,5 +22,6 @@
         <mapping class="com.projet.da50.projet_da50.model.PictureIntegration"/>
         <mapping class="com.projet.da50.projet_da50.model.VideoIntegration"/>
         <mapping class="com.projet.da50.projet_da50.model.Title"/>
+        <mapping class="com.projet.da50.projet_da50.model.Log"/>
     </session-factory>
 </hibernate-configuration>

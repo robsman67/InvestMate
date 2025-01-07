@@ -12,7 +12,7 @@ import com.projet.da50.projet_da50.model.User;
 
 public class UserController {
 
-    private SessionFactory factory;
+    private final SessionFactory factory;
 
     public UserController() {
         // Create the SessionFactory when the application is started
@@ -66,9 +66,9 @@ public class UserController {
             System.out.println("User created with ID: " + id);
             return id;
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
+//            if (transaction != null) {
+//                transaction.rollback();
+//            }
             e.printStackTrace();
             return null;
         }

@@ -2,6 +2,7 @@ package com.projet.da50.projet_da50.view;
 
 import com.projet.da50.projet_da50.controller.TokenManager;
 import com.projet.da50.projet_da50.controller.ErrorHandler;
+import com.projet.da50.projet_da50.controller.LogController;
 import com.projet.da50.projet_da50.controller.UserController;
 import com.projet.da50.projet_da50.model.Role;
 import com.projet.da50.projet_da50.model.User;
@@ -40,6 +41,7 @@ public class AuthenticationFormView extends UI {
     private Label errorLabel;
     private GridPane grid;
     private CheckBox stayConnectedCheckBox; // Checkbox for "Stay Connected"
+    LogController logController;
 
     /**
      * Constructs the AuthenticationFormView.
@@ -50,6 +52,7 @@ public class AuthenticationFormView extends UI {
         this.primaryStage = primaryStage;
         this.userController = new UserController();
         this.errorHandler = new ErrorHandler();
+        this.logController = new LogController();
     }
 
     /**

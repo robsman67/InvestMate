@@ -1,44 +1,54 @@
 package com.projet.da50.projet_da50.model;
 
-import com.projet.da50.projet_da50.controller.LogAction;
 import com.sun.jna.platform.win32.Sspi;
 
-public class Log {
-    private int id;
-    private int userId;
-    private LogAction action;
-    private String details;
-    private Sspi.TimeStamp timestamp;
+import javax.persistence.*;
+import java.sql.Timestamp;
 
-    public Log(int id, int userId, LogAction action, String details) {
-        this.id = id;
-        this.userId = userId;
-        this.action = action;
-        this.details = details;
-        timestamp = new Sspi.TimeStamp();
+@Entity
+@Table(name = "Logs") // Name of the table in the database
+public class Log {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incrémentation
+    private Long id;
+
+    @Column(name = "userId", nullable = false)
+    private Long userId;
+
+    @Column(name = "action", nullable = false)
+    private String action;
+
+//    @Column(name = "timestamp", nullable = false)
+//    private Timestamp timestamp;
+
+
+    public Log() {
     }
 
-    public int getId() {
+    public Log(Long userId, String action) {
+        this.userId = userId;
+        this.action = action;
+       // this.timestamp = new Timestamp(System.currentTimeMillis());
+    }
+
+
+    public Long getId() {
         return id;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public LogAction getAction() {
+    public String getAction() {
         return action;
     }
 
-    public String getDetails() {
-        return details;
-    }
+//    public Timestamp getTimestamp() {
+//        return timestamp;
+//    }
 
-    public Sspi.TimeStamp getTimestamp() {
-        return timestamp;
-    }
 
-    public void setTimestamp(Sspi.TimeStamp timestamp) {
-        this.timestamp = timestamp;
-    }
+
 }
