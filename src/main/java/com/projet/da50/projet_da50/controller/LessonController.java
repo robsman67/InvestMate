@@ -26,6 +26,11 @@ public class LessonController {
         factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Lesson.class).buildSessionFactory();
     }
 
+    public LessonController(Lesson lesson) {
+        this.lesson = lesson;
+        factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Lesson.class).buildSessionFactory();
+    }
+
     public Lesson getLesson() {
         return lesson;
     }
@@ -40,6 +45,7 @@ public class LessonController {
      * @return `true` si les entrées sont valides, `false` sinon
      */
     public boolean validateInputs(String lessonTitle) {
+
         if (lessonTitle == null || lessonTitle.isEmpty()) {
             showAlert("Validation Error", "Le titre de la leçon ne peut pas être vide.");
             return false;
@@ -95,7 +101,7 @@ public class LessonController {
 
     public Lesson createImage(String url) throws IOException {
 
-        byte[] imageBytes = readImageAsBytes(url);
+        byte[] imageBytes = readAsBytes(url);
 
         PictureIntegration image = new PictureIntegration();
         image.setContentPath(url);
@@ -106,18 +112,22 @@ public class LessonController {
         return lesson;
     }
 
-    public byte[] readImageAsBytes(String imagePath) throws IOException {
-        Path path = Paths.get(imagePath);
-        return Files.readAllBytes(path);
-    }
+    public Lesson createVideo(String url) throws IOException {
 
-    public Lesson createVideo(String url){
+        byte[] videoBytes = readAsBytes(url);
+
         VideoIntegration video = new VideoIntegration();
         video.setContentPath(url);
+        video.setVideoData(videoBytes);
 
         lesson.addElement(video);
 
         return lesson;
+    }
+
+    public byte[] readAsBytes(String url) throws IOException {
+        Path path = Paths.get(url);
+        return Files.readAllBytes(path);
     }
 
     public void removeElement(Elements element) {
@@ -253,6 +263,16 @@ public class LessonController {
             }
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public void updateLesson() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            session.update(lesson);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

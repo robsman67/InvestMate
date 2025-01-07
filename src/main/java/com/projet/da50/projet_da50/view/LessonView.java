@@ -53,7 +53,7 @@ public class LessonView extends UI {
         }
 
         // Add navigation buttons to the top
-        addNavigationButtons(root);
+        addNavigationButtons(root, lesson);
 
         // Add lesson elements to the layout
         populateLessonElements(root, lesson);
@@ -91,7 +91,7 @@ public class LessonView extends UI {
      *
      * @param root the root layout of the scene
      */
-    private void addNavigationButtons(BorderPane root) {
+    private void addNavigationButtons(BorderPane root, Lesson lesson) {
         HBox navigationBar = new HBox(15);
         navigationBar.setAlignment(Pos.TOP_LEFT);
         navigationBar.setPadding(new Insets(20));
@@ -103,19 +103,24 @@ public class LessonView extends UI {
             new MainMenuView(primaryStage).show();
         });
 
-        Button modifyButton = new Button("Modify");
-        modifyButton.getStyleClass().add("button-blue");
-        modifyButton.setOnAction(event -> {
-            // Action for Modify button
-        });
-
         Button shareButton = new Button("Share");
         shareButton.getStyleClass().add("button-blue");
         shareButton.setOnAction(event -> {
             // Action for Share button
         });
 
-        navigationBar.getChildren().addAll(homeButton, modifyButton, shareButton);
+        navigationBar.getChildren().addAll(homeButton, shareButton);
+
+        if (getAdmin()) {
+            Button modifyButton = new Button("Modify");
+            modifyButton.getStyleClass().add("button-blue");
+            modifyButton.setOnAction(event -> {
+                primaryStage.close();
+                new CreateLessonView(primaryStage, lesson).show();
+            });
+            navigationBar.getChildren().addAll(modifyButton);
+        }
+
         root.setTop(navigationBar);
     }
 

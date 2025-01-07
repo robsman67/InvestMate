@@ -9,6 +9,10 @@ public class VideoIntegration extends Elements {
     @Column(name = "contentPath", nullable = false)
     private String contentPath;
 
+    @Lob // Indique que ce champ stockera des données volumineuses
+    @Column(name = "videoData", nullable = false, columnDefinition = "LONGBLOB")
+    private byte[] videoData;
+
     public VideoIntegration() {}
 
     public VideoIntegration(String contentPath) {
@@ -22,6 +26,14 @@ public class VideoIntegration extends Elements {
 
     public void setContentPath(String contentPath) {
         this.contentPath = contentPath;
+    }
+
+    public byte[] getVideoData() {
+        return videoData;
+    }
+
+    public void setVideoData(byte[] videoData) {
+        this.videoData = videoData;
     }
 
     @Override

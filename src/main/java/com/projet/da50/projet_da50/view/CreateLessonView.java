@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A view for creating and managing lessons.
@@ -30,6 +31,7 @@ public class CreateLessonView extends UI {
     private final Stage stage; // The stage on which the view is displayed
     private final LessonController lessonController; // Controller for handling lesson logic
     private final ObservableList<Elements> elementsList; // List of elements for dynamic updates
+    private final Boolean isUpdate;
 
     private TextField nameField;
     private ComboBox<Tags> tagTypeComboBox;
@@ -44,6 +46,14 @@ public class CreateLessonView extends UI {
         this.stage = stage;
         this.lessonController = new LessonController();
         this.elementsList = FXCollections.observableArrayList();
+        this.isUpdate = false;
+    }
+
+    public CreateLessonView(Stage stage, Lesson lesson) {
+        this.stage = stage;
+        this.lessonController = new LessonController(lesson);
+        this.elementsList = FXCollections.observableArrayList();
+        this.isUpdate = true;
     }
 
     /**
@@ -123,7 +133,13 @@ public class CreateLessonView extends UI {
 
         // Add element button
         Button addButton = new CustomButton("Add");
-        addButton.setOnAction(e -> addElement(contentField, elementTypeComboBox, titleTypeComboBox, paragraphTypeComboBox));
+        addButton.setOnAction(e -> {
+            try {
+                addElement(contentField, elementTypeComboBox, titleTypeComboBox, paragraphTypeComboBox);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         addElementSection.getChildren().add(addButton);
 
         // Add a separator
@@ -167,7 +183,14 @@ public class CreateLessonView extends UI {
         buttonSection.setAlignment(Pos.CENTER);
 
         Button saveButton = new CustomButton("Save");
-        saveButton.setOnAction(e -> saveLesson());
+        saveButton.setOnAction(e ->
+                {
+                    if (isUpdate) {
+                        updateLesson();
+                    } else {
+                        saveLesson();
+                    }
+                });
 
         Button backButton = new CustomButton("Back to Main Menu");
         backButton.setOnAction(e -> {stage.close();
@@ -289,7 +312,7 @@ public class CreateLessonView extends UI {
     }
 
     private void addElement(TextField contentField, ComboBox<String> elementTypeComboBox,
-                            ComboBox<TitleType> titleTypeComboBox, ComboBox<ParagraphType> paragraphTypeComboBox) {
+                            ComboBox<TitleType> titleTypeComboBox, ComboBox<ParagraphType> paragraphTypeComboBox) throws IOException {
         String content = contentField.getText();
         String elementType = elementTypeComboBox.getValue();
 
@@ -429,6 +452,21 @@ public class CreateLessonView extends UI {
         } else {
             showAlert("Error", "Please provide a valid lesson name.");
         }
+    }
+
+    private void updateLesson() {
+
+        if(!nameField.getText().isEmpty() && !Objects.equals(nameField.getText(), lessonController.getLesson().getTitle())) {
+            lessonController.createMainTitle(nameField.getText());
+        }
+
+        if (tagTypeComboBox.getValue() != lessonController.getLesson().getTag()) {
+            lessonController.setTag(tagTypeComboBox.getValue());
+        }
+
+        lessonController.updateLesson();
+        stage.close();
+        new MainMenuView(stage).show();
     }
 
 }
