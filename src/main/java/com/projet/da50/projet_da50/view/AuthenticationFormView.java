@@ -163,6 +163,7 @@ public class AuthenticationFormView extends UI {
         String password = pwField.getText();
 
         // Developer Account (shortcut)
+        // TO DO DELETE THIS
         if ("a".equals(username)) {
             setAdmin(true);
             new MainMenuView(primaryStage).show();
@@ -174,6 +175,8 @@ public class AuthenticationFormView extends UI {
             User user = userController.findUserByUsername(username);
             if (user.getRole() == Role.Admin) {
                 setAdmin(true);
+            }else{
+                setAdmin(false);
             }
             new MainMenuView(primaryStage).show();
         } else {
