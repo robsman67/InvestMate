@@ -3,12 +3,14 @@ package com.projet.da50.projet_da50.view;
 import com.projet.da50.projet_da50.view.MyAccount.MyAccountView;
 import com.projet.da50.projet_da50.controller.LessonController;
 import com.projet.da50.projet_da50.model.Lesson;
+import com.projet.da50.projet_da50.controller.LogController
 import com.projet.da50.projet_da50.model.Tags;
 import com.projet.da50.projet_da50.view.components.CustomButton;
 import com.projet.da50.projet_da50.view.components.LessonComponent;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,6 +21,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
+import static com.projet.da50.projet_da50.controller.TokenManager.deleteToken;
+import static com.projet.da50.projet_da50.controller.TokenManager.getIdToken;
+
 import java.util.List;
 
 /**
@@ -26,6 +31,8 @@ import java.util.List;
  * Provides navigation, search, and lesson display functionalities.
  */
 public class MainMenuView extends UI {
+    private final Stage primaryStage;
+    private final LogController logController = new LogController();
     private final Stage primaryStage;
 
     private final Stage primaryStage;
@@ -145,6 +152,7 @@ public class MainMenuView extends UI {
             //Delete the current Token
             primaryStage.close();
             TokenManager.deleteToken(); // Supprimer le token lors de la déconnexion
+            logController.createLog(getIdToken(), "Logout by disconnect", "");
             new AuthenticationFormView(primaryStage).show();
         });
 

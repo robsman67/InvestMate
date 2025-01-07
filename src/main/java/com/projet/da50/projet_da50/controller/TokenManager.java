@@ -1,5 +1,7 @@
 package com.projet.da50.projet_da50.controller;
 
+import com.projet.da50.projet_da50.model.User;
+
 import java.io.*;
 import java.nio.file.*;
 import java.security.SecureRandom;
@@ -17,6 +19,11 @@ public class TokenManager {
     private static final long TOKEN_VALIDITY_DURATION = 24 * 60 * 60; // 24 heures en secondes
     private static final Map<String, String> activeTokens = new HashMap<>(); // Stockage des tokens actifs en mémoire
     private static final String TOKEN_SEPARATOR = ";"; // Séparateur modifié
+    private static final UserController userController = new UserController();
+    private static final LogController logController = new LogController();
+    public static boolean stayLogged = false;
+
+
 
     static {
         // Déterminer l'emplacement du fichier spécifique à la plateforme
@@ -67,6 +74,7 @@ public class TokenManager {
 
             Files.write(Paths.get(TOKEN_FILE), tokenWithTimestamp.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
             System.out.println("Token saved successfully.");
+            stayLogged = true;
         } catch (IOException e) {
             System.err.println("Error saving token: " + e.getMessage());
         }
@@ -102,6 +110,20 @@ public class TokenManager {
         } else {
             System.err.println("Invalid token format for username extraction.");
             return null;
+        }
+    }
+
+
+    //For the log
+    public static long getIdToken(){
+        String token = getToken();
+        String username = extractUsernameFromToken(token);
+        if(username != null){
+            User user = userController.findUserByUsername(username);
+            return user.getId();
+        }
+        else {
+            return (long) -1;
         }
     }
 
@@ -164,7 +186,7 @@ public class TokenManager {
                 return false;
             }
         }
-
+        stayLogged = true;
         return true;
     }
 
@@ -206,5 +228,18 @@ public class TokenManager {
             System.err.println("Error retrieving token: " + e.getMessage());
             return null;
         }
+    }
+
+
+    public static void shutDownDeleteToken(){
+        // Delete token when we quit the app
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("App is shutting down." + stayLogged);
+            if(!stayLogged) {
+                logController.createLog(getIdToken(), "Logout by shutdown", "");
+                System.out.println("App is shutting down. non persistent token deleted.");
+            }
+        }));
+
     }
 }

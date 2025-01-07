@@ -1,6 +1,7 @@
 package com.projet.da50.projet_da50.view;
 
 import com.projet.da50.projet_da50.controller.ErrorHandler;
+import com.projet.da50.projet_da50.controller.LogController;
 import com.projet.da50.projet_da50.controller.UserController;
 import com.projet.da50.projet_da50.view.components.CustomButton;
 import com.projet.da50.projet_da50.view.components.CustomLabel;
@@ -21,15 +22,14 @@ import javafx.scene.shape.Rectangle;
 
 public class CreateAccountFormView extends UI {
 
-    private UserController userController;
-    private Stage primaryStage;
-    private ErrorHandler errorHandler;
+    private final UserController userController = new UserController();
+    private final Stage primaryStage;
+    private final ErrorHandler errorHandler;
     private Label errorLabel;
-    private GridPane grid;
+    private final LogController logController = new LogController();
 
     public CreateAccountFormView(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.userController = new UserController();
         this.errorHandler = new ErrorHandler();
     }
 
@@ -38,7 +38,7 @@ public class CreateAccountFormView extends UI {
         primaryStage.setTitle("Create Account");
 
         // Création du GridPane principal
-        this.grid = new GridPane();
+        GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
@@ -135,6 +135,7 @@ public class CreateAccountFormView extends UI {
         String validationMessage = errorHandler.validateCreateAccountFields(username, password, mail);
         if ("Valid credentials.".equals(validationMessage)) {
             userController.createUser(username, password, mail);
+            logController.createLog(userController.findUserByUsername(username).getId(), "Account created", "");
             new AuthenticationFormView(primaryStage).show();
         } else {
             errorLabel.setText(validationMessage);

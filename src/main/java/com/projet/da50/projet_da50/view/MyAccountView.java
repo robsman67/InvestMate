@@ -1,6 +1,7 @@
 package com.projet.da50.projet_da50.view;
 
 import com.projet.da50.projet_da50.controller.ErrorHandler;
+import com.projet.da50.projet_da50.controller.LogController;
 import com.projet.da50.projet_da50.controller.TokenManager;
 import com.projet.da50.projet_da50.controller.UserController;
 import com.projet.da50.projet_da50.model.User;
@@ -17,11 +18,15 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.mindrot.jbcrypt.BCrypt;
 
+import static com.projet.da50.projet_da50.controller.TokenManager.getIdToken;
+
 public class MyAccountView extends UI {
 
     private final Stage primaryStage;
     private final ErrorHandler errorHandler = new ErrorHandler();
-    UserController userController = new UserController();
+    private final UserController userController = new UserController();
+    private final LogController logController = new LogController();
+
 
     private User user;
 
@@ -119,6 +124,7 @@ public class MyAccountView extends UI {
                 errorField.setText("Please fill in all fields.");
                 grid.add(errorField, 4, 1);
             } else {
+                String previousEmail = user.getMail();
                 // Save the new email to the user profile
                 user.setMail(newEmail);
                 // Update the user in the database
@@ -126,6 +132,7 @@ public class MyAccountView extends UI {
                 // Display a success message
                 Label successField = new Label();
                 successField.setText("Email updated successfully.");
+                logController.createLog(getIdToken(), "Email updated", "New email: " + newEmail + ", Old email: " + previousEmail);
                 grid.add(successField, 4, 1);
             }
         });
@@ -179,6 +186,7 @@ public class MyAccountView extends UI {
                 errorField.setText("Please fill in all fields.");
                 grid.add(errorField, 4, 3);
             } else {
+                String previousUsername = user.getUsername();
                 // Save the new email to the user profile
                 user.setUsername(newUsername);
                 // Update the user in the database
@@ -190,6 +198,7 @@ public class MyAccountView extends UI {
                 // Display a success message
                 Label successField = new Label();
                 successField.setText("Username updated successfully.");
+                logController.createLog(getIdToken(), "Username updated", "New username: " + newUsername + ", Old username: " + previousUsername);
                 grid.add(successField, 4, 3);
             }
         });
@@ -270,6 +279,7 @@ public class MyAccountView extends UI {
                     Label successField = new Label();
                     successField.setText("Password updated successfully.");
                     grid.add(successField, 6, 5);
+                    logController.createLog(getIdToken(), "Password updated","");
                 }
             } else {
                 Label errorField = new Label();
@@ -295,6 +305,7 @@ public class MyAccountView extends UI {
 
         //To delete
         btnSureDelete.setOnAction(e -> {
+            logController.createLog(getIdToken(), "Account deleted", "username: " + user.getUsername() + ", mail: " + user.getMail());
             userController.deleteUserById(user.getId());
             TokenManager.deleteToken();
             new AuthenticationFormView(primaryStage).show();

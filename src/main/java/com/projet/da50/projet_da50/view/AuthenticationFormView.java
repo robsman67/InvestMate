@@ -1,8 +1,8 @@
 package com.projet.da50.projet_da50.view;
 
-import com.projet.da50.projet_da50.controller.TokenManager;
 import com.projet.da50.projet_da50.controller.ErrorHandler;
 import com.projet.da50.projet_da50.controller.LogController;
+import com.projet.da50.projet_da50.controller.TokenManager;
 import com.projet.da50.projet_da50.controller.UserController;
 import com.projet.da50.projet_da50.model.Role;
 import com.projet.da50.projet_da50.model.User;
