@@ -19,21 +19,17 @@ public class Log {
     @Column(name = "action", nullable = false)
     private String action;
 
-    @Column(name = "detail", nullable = true)
-    private String detail;
-
-    @Column(name = "timestamp", nullable = false)
-    private Timestamp timestamp;
+//    @Column(name = "timestamp", nullable = false)
+//    private Timestamp timestamp;
 
 
     public Log() {
     }
 
-    public Log(Long userId, String action, String detail) {
+    public Log(Long userId, String action) {
         this.userId = userId;
         this.action = action;
-        this.detail = detail;
-        timestamp = new Timestamp(System.currentTimeMillis());
+       // this.timestamp = new Timestamp(System.currentTimeMillis());
     }
 
 
@@ -49,9 +45,9 @@ public class Log {
         return action;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
-    }
+//    public Timestamp getTimestamp() {
+//        return timestamp;
+//    }
 
 
 
