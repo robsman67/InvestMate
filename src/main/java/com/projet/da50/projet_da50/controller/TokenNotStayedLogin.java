@@ -9,6 +9,7 @@ import java.util.Base64;
 public class TokenNotStayedLogin {
     private static final String TOKEN_FILE;
     private static final UserController userController = new UserController();
+    private static final LogController logController = new LogController();
 
     // Static block to determine platform-specific file location
     static {
@@ -77,6 +78,7 @@ public class TokenNotStayedLogin {
         try {
             Path path = Paths.get(TOKEN_FILE);
             if (Files.exists(path)) {
+                logController.createLog(getIdToken(), "Logout", "Token deleted for not stay connected");
                 Files.delete(path);
                 System.out.println("Token deleted successfully.");
             } else {
