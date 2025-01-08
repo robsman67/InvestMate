@@ -8,7 +8,12 @@ import com.projet.da50.projet_da50.model.Question;
 import com.projet.da50.projet_da50.model.Quiz;
 import com.projet.da50.projet_da50.view.UI;
 import com.projet.da50.projet_da50.view.MainMenuView;
+import com.projet.da50.projet_da50.view.components.CustomButton;
+import com.projet.da50.projet_da50.view.components.CustomLabel;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -34,24 +39,26 @@ public class UpdateQuizView extends UI {
     }
 
     public void show() {
-        primaryStage.setTitle("Update Quiz");
+        GridPane grid = createMainLayout();
+        Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
         // Root Layout for UpdateQuizView
         VBox root = new VBox(10);
         root.setPadding(new Insets(20));
 
-        Button btnMainMenu = new Button("Main Menu");
-        btnMainMenu.setOnAction(e -> {
-            new MainMenuView(primaryStage).show();
+        Button btnBack = createButton("Back to quiz list", "button-blue",
+        e -> {
+            new ShowQuizView(primaryStage).show();
         });
 
-        Label titleLabel = new Label("Quiz Title:");
+        Label titleLabel = new CustomLabel("Quiz Title:");
         TextField quizTitleField = new TextField();
 
         List<QuestionBox> questionBoxes = new ArrayList<>();
 
-        Button addQuestionButton = new Button("Add Question");
-        Button updateQuizButton = new Button("Update Quiz");
+        Button addQuestionButton = new CustomButton("Add Question");
+        Button updateQuizButton = new CustomButton("Update Quiz");
 
         // Add question functionality
         addQuestionButton.setOnAction(e -> {
@@ -84,13 +91,35 @@ public class UpdateQuizView extends UI {
             alert.showAndWait();
         });
 
-        root.getChildren().addAll(btnMainMenu, titleLabel, quizTitleField, addQuestionButton, updateQuizButton);
-
+        root.getChildren().addAll(btnBack, titleLabel, quizTitleField, addQuestionButton, updateQuizButton);
+        grid.add(root,0,0);
         // Fetch quiz data and populate the view
         fetchAndPopulateQuizData(quizTitleField, questionBoxes, root);
 
-        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+        primaryStage.setTitle("Update quiz");
         primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
+        primaryStage.show();
+    }
+    private GridPane createMainLayout() {
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.TOP_LEFT);
+        grid.setHgap(20);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.getStyleClass().add("main-background");
+
+        ColumnConstraints column = new ColumnConstraints();
+        column.setHgrow(Priority.ALWAYS);
+        grid.getColumnConstraints().add(column);
+
+        return grid;
+    }
+    private Button createButton(String text, String styleClass, EventHandler<ActionEvent> action) {
+        Button button = new Button(text);
+        button.getStyleClass().add(styleClass);
+        button.setOnAction(action);
+        return button;
     }
 
     private void fetchAndPopulateQuizData(TextField quizTitleField, List<QuestionBox> questionBoxes, VBox root) {
@@ -134,14 +163,14 @@ public class UpdateQuizView extends UI {
 
             box = new VBox(10);
             box.setPadding(new Insets(10));
-            box.setStyle("-fx-border-color: gray; -fx-border-width: 1; -fx-padding: 10;");
+            box.setStyle("-fx-border-color: white; -fx-border-width: 1; -fx-padding: 10;");
 
             questionField = new TextField();
             questionField.setPromptText("Enter your question here");
 
             optionsBox = new VBox(5);
-            addOptionButton = new Button("Add Option");
-            deleteQuestionButton = new Button("Delete Question");
+            addOptionButton = new CustomButton("Add Option");
+            deleteQuestionButton = new CustomButton("Delete Question");
 
             addOptionButton.setOnAction(e -> addOption());
             deleteQuestionButton.setOnAction(e -> deleteQuestion());
@@ -167,7 +196,8 @@ public class UpdateQuizView extends UI {
             TextField optionField = new TextField();
             optionField.setPromptText("Enter option text");
             CheckBox correctCheckBox = new CheckBox("Correct");
-            Button removeOptionButton = new Button("Remove");
+            correctCheckBox.setStyle("-fx-font-size: 14; -fx-text-fill: white;");
+            Button removeOptionButton = new CustomButton("Remove");
 
             if (option != null) {
                 optionField.setText(option.getContent());

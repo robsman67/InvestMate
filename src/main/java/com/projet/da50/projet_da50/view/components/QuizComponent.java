@@ -59,9 +59,14 @@ public class QuizComponent extends HBox{
                 primaryStage.close();
                 new ShowQuizView(primaryStage).show();
             });
+            Button updateButton = new Button("Update");
+            updateButton.setStyle("-fx-background-color: Blue; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px;");
+            updateButton.setOnAction(e -> {
+                new UpdateQuizView(primaryStage, quiz.getId()).show();
+            });
 
             // Ajout des éléments au HBox
-            getChildren().addAll(suppBtn);
+            getChildren().addAll(updateButton,suppBtn);
         }
     }
 }

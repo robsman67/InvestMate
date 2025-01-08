@@ -172,7 +172,7 @@ public class CreateQuizView extends UI {
 
             box = new VBox(10);
             box.setPadding(new Insets(10));
-            box.setStyle("-fx-border-color: gray; -fx-border-width: 1; -fx-padding: 10;");
+            box.setStyle("-fx-border-color: white; -fx-border-width: 1; -fx-padding: 10;");
 
             questionField = new TextField();
             questionField.setPromptText("Enter your question here");
