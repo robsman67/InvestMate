@@ -217,7 +217,6 @@ public class CreateLessonView extends UI {
 
         // Add a title for the preview section
         Label previewTitle = createStyledLabel("Lesson Preview: " + nameField.getText(), 20, true, "black");
-        previewSection.getChildren().add(previewTitle);
 
         // Retrieve the elements from the lesson
         List<Elements> lesson = lessonController.getLesson().getElements();
@@ -232,6 +231,7 @@ public class CreateLessonView extends UI {
 
         // Clear any existing elements in the preview section
         previewSection.getChildren().clear();
+        previewSection.getChildren().add(previewTitle);
 
         // Loop through the sorted elements list and add them to the preview section
         for (int i = 0; i < lesson.size(); i++) {
@@ -525,7 +525,7 @@ public class CreateLessonView extends UI {
             stage.close();
             new MainMenuView(stage).show();
         } else {
-            showAlert("Error", "Please provide a valid lesson name.");
+            return;
         }
     }
 
@@ -535,7 +535,11 @@ public class CreateLessonView extends UI {
     private void updateLesson() {
 
         if(!nameField.getText().isEmpty() && !Objects.equals(nameField.getText(), lessonController.getLesson().getTitle())) {
-            lessonController.createMainTitle(nameField.getText());
+            if(lessonController.validateInputs(nameField.getText())){
+                lessonController.createMainTitle(nameField.getText());
+            } else {
+                return;
+            }
         }
 
         if (tagTypeComboBox.getValue() != lessonController.getLesson().getTag()) {

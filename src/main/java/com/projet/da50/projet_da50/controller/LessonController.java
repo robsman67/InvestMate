@@ -71,6 +71,11 @@ public class LessonController {
             return false;
         }
 
+        if (getLessonByTitle(lessonTitle) != null) {
+            showAlert("Validation Error", "This lesson already exists: " + lessonTitle);
+            return false;
+        }
+
         logController.createLog(getIdToken(), "Lesson Creation", "Lesson title: " + lessonTitle);
         // Additional validation rules can be added here as needed.
         return true;
@@ -357,11 +362,6 @@ public class LessonController {
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
-
-            if (getLessonByTitle(lesson.getTitle()) != null) {
-                System.err.println("This lesson already exists: " + lesson.getTitle());
-                return null;
-            }
 
             Integer id = (Integer) session.save(lesson);
             transaction.commit();
