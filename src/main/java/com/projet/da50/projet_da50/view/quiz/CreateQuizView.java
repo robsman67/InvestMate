@@ -6,6 +6,7 @@ import com.projet.da50.projet_da50.model.Question;
 import com.projet.da50.projet_da50.model.TitleType;
 import com.projet.da50.projet_da50.view.MainMenuView;
 import com.projet.da50.projet_da50.view.UI;
+import com.projet.da50.projet_da50.view.components.CustomButton;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -54,25 +55,23 @@ public class CreateQuizView extends UI {
     }
 
     private void showCreateQuestionView(Stage stage, boolean isMultipleAnswers) {
+        GridPane grid = createMainLayout();
+        addNavigationButtons(grid);
+        Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         // Root Layout for CreateQuestionView
         VBox root = new VBox(10);
         root.setPadding(new Insets(20));
 
-        // Create Main Menu button
-        Button btnMainMenu = new Button("Main Menu");
-        btnMainMenu.setOnAction(e -> {
-            new MainMenuView(primaryStage).show();
-        });
-
         // Quiz Title Input
-        Label quizTitleLabel = new Label("Quiz Title:");
+        Label quizTitleLabel = createStyledLabel("Quiz Title:", 14,true,"white");
         TextField quizTitleField = new TextField();
         quizTitleField.setPromptText("Enter the quiz title here");
 
         List<QuestionBox> questionBoxes = new ArrayList<>();
 
-        Button addQuestionButton = new Button("Add Question");
-        Button saveQuizButton = new Button("Save Quiz");
+        Button addQuestionButton = new CustomButton("Add Question");
+        Button saveQuizButton = new CustomButton("Save Quiz");
 
         // Add question functionality
         addQuestionButton.setOnAction(e -> {
@@ -99,16 +98,25 @@ public class CreateQuizView extends UI {
             new ShowQuizView(primaryStage).show(); // Redirect to ShowQuizView after saving
         });
 
-        root.getChildren().addAll(btnMainMenu, quizTitleLabel, quizTitleField, addQuestionButton, saveQuizButton);
-
-        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+        root.getChildren().addAll(quizTitleLabel, quizTitleField, addQuestionButton, saveQuizButton);
+        grid.add(root,0,1);
         stage.setScene(scene);
+        stage.setMaximized(true);
     }
     private Button createButton(String text, String styleClass, EventHandler<ActionEvent> action) {
         Button button = new Button(text);
         button.getStyleClass().add(styleClass);
         button.setOnAction(action);
         return button;
+    }
+    private Label createStyledLabel(String text, int fontSize, boolean bold, String color) {
+        Label label = new Label(text);
+        String style = "-fx-font-size: " + fontSize + "px;";
+        if (bold) {
+            style += " -fx-font-weight: bold;";
+        }
+        label.setStyle(style + " -fx-text-fill:" + color + ";");
+        return label;
     }
     private GridPane createMainLayout() {
         GridPane grid = new GridPane();
@@ -170,8 +178,8 @@ public class CreateQuizView extends UI {
             questionField.setPromptText("Enter your question here");
 
             optionsBox = new VBox(5);
-            addOptionButton = new Button("Add Option");
-            deleteQuestionButton = new Button("Delete Question");
+            addOptionButton = new CustomButton("Add Option");
+            deleteQuestionButton = new CustomButton("Delete Question");
 
             addOptionButton.setOnAction(e -> addOption());
             deleteQuestionButton.setOnAction(e -> deleteQuestion());
@@ -184,7 +192,8 @@ public class CreateQuizView extends UI {
             TextField optionField = new TextField();
             optionField.setPromptText("Enter option text");
             CheckBox correctCheckBox = new CheckBox("Correct");
-            Button removeOptionButton = new Button("Remove");
+            correctCheckBox.setStyle("-fx-font-size: 14; -fx-text-fill: white;");
+            Button removeOptionButton = new CustomButton("Remove");
 
             removeOptionButton.setOnAction(e -> optionsBox.getChildren().remove(optionRow));
             optionRow.getChildren().addAll(optionField, correctCheckBox, removeOptionButton);
