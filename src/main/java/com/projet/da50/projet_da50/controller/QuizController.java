@@ -95,6 +95,23 @@ public class QuizController {
         }
     }
 
+    public void deleteQuiz(Long quizId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.beginTransaction();
+
+            // Retrieve the quiz by ID
+            Quiz quiz = session.get(Quiz.class, quizId);
+
+            if (quiz != null) {
+                session.delete(quiz);  // Delete the quiz, elements are deleted due to cascade and orphan removal.
+            }
+
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
     // Close the SessionFactory when the application is closed
