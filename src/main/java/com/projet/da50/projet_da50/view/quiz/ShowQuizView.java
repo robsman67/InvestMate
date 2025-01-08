@@ -1,9 +1,12 @@
 package com.projet.da50.projet_da50.view.quiz;
 
 import com.projet.da50.projet_da50.controller.QuizController;
+import com.projet.da50.projet_da50.model.Lesson;
 import com.projet.da50.projet_da50.model.Quiz;
+import com.projet.da50.projet_da50.model.Tags;
 import com.projet.da50.projet_da50.view.MainMenuView;
 import com.projet.da50.projet_da50.view.UI;
+import com.projet.da50.projet_da50.view.components.LessonComponent;
 import com.projet.da50.projet_da50.view.components.QuizComponent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -104,6 +107,7 @@ public class ShowQuizView extends UI {
         if (getAdmin()) {
             addAdminNavigationButtons(grid);
         }
+        addSearchBar(grid);
         addQuiz(grid);
 
         // Create and set the scene
@@ -185,4 +189,50 @@ public class ShowQuizView extends UI {
             grid.add(quizComponent, 0, rowIndex++);
         }
     }
+
+    /**
+     * Adds a search bar to the grid.
+     *
+     * @param grid the {@link GridPane} to which the search bar is added.
+     */
+    private void addSearchBar(GridPane grid) {
+        HBox searchBar = new HBox(15);
+        searchBar.setAlignment(Pos.CENTER_LEFT);
+
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search by keyword...");
+        searchField.setPrefWidth(300);
+
+        Button searchButton = new Button("Search");
+        searchButton.getStyleClass().add("button-blue");
+        searchButton.setOnAction(e -> {
+            String keyword = searchField.getText();
+            List<Quiz> filteredQuizzes = controller.findQuizzesByTitle(keyword);
+            displayFilteredQuizzez(grid, filteredQuizzes);
+        });
+
+        searchBar.getChildren().addAll(searchField, searchButton);
+        grid.add(searchBar, 0, 2);
+    }
+
+    /**
+     * Displays a list of filtered quizzes in the grid.
+     *
+     * @param grid the {@link GridPane} where lessons are displayed.
+     * @param quizzes the list of {@link Quiz} objects to display.
+     */
+    private void displayFilteredQuizzez(GridPane grid, List<Quiz> quizzes) {
+        // Clear previous lessons
+        grid.getChildren().removeIf(node -> GridPane.getRowIndex(node) != null && GridPane.getRowIndex(node) >= 3);
+
+        int rowIndex = 3; // Start below the search bar
+        for (Quiz quiz : quizzes) {
+            QuizComponent quizComponent = new QuizComponent(primaryStage, quiz, getAdmin());
+            GridPane.setColumnSpan(quizComponent, GridPane.REMAINING);
+            GridPane.setHgrow(quizComponent, Priority.ALWAYS);
+            grid.add(quizComponent, 0, rowIndex++);
+        }
+    }
+
+
 }

@@ -112,6 +112,17 @@ public class QuizController {
         }
     }
 
+    public List<Quiz> findQuizzesByTitle(String title) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Quiz> query = session.createQuery("from Quiz where lower(title) like :title", Quiz.class);
+            query.setParameter("title", "%" + title.toLowerCase() + "%");
+            return query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 
     // Close the SessionFactory when the application is closed
