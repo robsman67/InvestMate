@@ -104,9 +104,6 @@ public class ShowQuizView extends UI {
         if (getAdmin()) {
             addAdminNavigationButtons(grid);
         }
-        else {
-            addAdminNavigationButtons(grid);
-        }
         addQuiz(grid);
 
         // Create and set the scene
@@ -177,10 +174,10 @@ public class ShowQuizView extends UI {
         displayQuizzez(grid, quizList);
     }
     private void displayQuizzez(GridPane grid, List<Quiz> quizzez) {
-        // Clear previous lessons
+        // Clear previous quizzez
         grid.getChildren().removeIf(node -> GridPane.getRowIndex(node) != null && GridPane.getRowIndex(node) >= 3);
 
-        int rowIndex = 3; // Start below the search bar
+        int rowIndex = 3;
         for (Quiz quiz : quizzez) {
             QuizComponent quizComponent = new QuizComponent(primaryStage, quiz, getAdmin());
             GridPane.setColumnSpan(quizComponent, GridPane.REMAINING);

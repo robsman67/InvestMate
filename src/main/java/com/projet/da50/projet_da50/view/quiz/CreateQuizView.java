@@ -3,9 +3,13 @@ package com.projet.da50.projet_da50.view.quiz;
 import com.projet.da50.projet_da50.controller.QuizController;
 import com.projet.da50.projet_da50.model.Option;
 import com.projet.da50.projet_da50.model.Question;
+import com.projet.da50.projet_da50.model.TitleType;
 import com.projet.da50.projet_da50.view.MainMenuView;
 import com.projet.da50.projet_da50.view.UI;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -25,28 +29,27 @@ public class CreateQuizView extends UI {
     }
 
     public void show() {
-        primaryStage.setTitle("Create Quiz");
+        GridPane grid = createMainLayout();
+        addNavigationButtons(grid);
+        Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
         // Root Layout for CreateQuizView
         VBox root = new VBox(10);
         root.setPadding(new Insets(20));
 
-        Button btnMainMenu = new Button("Main Menu");
-        btnMainMenu.setOnAction(e -> {
-            new MainMenuView(primaryStage).show();
-        });
 
         Label titleLabel = new Label("Choose Quiz Type:");
-        Button multiChoiceMultipleAnswersBtn = new Button("Multiple Choice (Multiple Answers)");
-        Button multiChoiceSingleAnswerBtn = new Button("Multiple Choice (Single Answer)");
-
-        multiChoiceMultipleAnswersBtn.setOnAction(e -> showCreateQuestionView(primaryStage, true));
-        multiChoiceSingleAnswerBtn.setOnAction(e -> showCreateQuestionView(primaryStage, false));
-
-        root.getChildren().addAll(btnMainMenu, titleLabel, multiChoiceMultipleAnswersBtn, multiChoiceSingleAnswerBtn);
-
-        Scene scene = new Scene(root, WINDOW_HEIGHT, WINDOW_WIDTH);
+        titleLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: white ; -fx-font-weight: bold;");
+        Button multiChoiceMultipleAnswersBtn = createButton("Multiple Choice Quiz",
+                "button-blue",e -> showCreateQuestionView(primaryStage, true));
+        Button multiChoiceSingleAnswerBtn = createButton("Single Choice Quiz",
+                "button-blue",e -> showCreateQuestionView(primaryStage, false));
+        root.getChildren().addAll(titleLabel, multiChoiceMultipleAnswersBtn, multiChoiceSingleAnswerBtn);
+        grid.add(root,0,1);
+        primaryStage.setTitle("Create quiz");
         primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 
@@ -100,6 +103,49 @@ public class CreateQuizView extends UI {
 
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         stage.setScene(scene);
+    }
+    private Button createButton(String text, String styleClass, EventHandler<ActionEvent> action) {
+        Button button = new Button(text);
+        button.getStyleClass().add(styleClass);
+        button.setOnAction(action);
+        return button;
+    }
+    private GridPane createMainLayout() {
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.TOP_LEFT);
+        grid.setHgap(20);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.getStyleClass().add("main-background");
+
+        ColumnConstraints column = new ColumnConstraints();
+        column.setHgrow(Priority.ALWAYS);
+        grid.getColumnConstraints().add(column);
+
+        return grid;
+    }
+    private void addNavigationButtons(GridPane grid) {
+        HBox navigationButtons = new HBox(20);
+        navigationButtons.setAlignment(Pos.CENTER_LEFT);
+
+        Button btnHome = createButton("Home", "button-blue", e -> {
+            primaryStage.close();
+            new MainMenuView(primaryStage).show();
+        });
+
+        Button btnQuizz = createButton("Quizz", "button-blue", e -> {
+            primaryStage.close();
+            new ShowQuizView(primaryStage).show();
+        });
+
+        Button btnWallet = createButton("Wallet", "button-blue", e -> {
+            primaryStage.close();
+            // Handle Wallet action (To be implemented)
+        });
+
+
+        navigationButtons.getChildren().addAll(btnHome, btnQuizz, btnWallet);
+        grid.add(navigationButtons, 0, 0);
     }
 
     // Helper class to manage question box
