@@ -22,6 +22,10 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.Objects;
 
+/**
+ * This class represents the view for creating a new account.
+ * It extends the UI class and provides the user interface for account creation.
+ */
 public class CreateAccountFormView extends UI {
 
     private final UserController userController = new UserController();
@@ -30,41 +34,49 @@ public class CreateAccountFormView extends UI {
     private Label errorLabel;
     private final LogController logController = new LogController();
 
+    /**
+     * Constructor for CreateAccountFormView.
+     *
+     * @param primaryStage The primary stage for this view.
+     */
     public CreateAccountFormView(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.errorHandler = new ErrorHandler();
     }
 
+    /**
+     * Displays the account creation form.
+     */
     @Override
     public void show() {
         primaryStage.setTitle("Create Account");
 
-        // Création du GridPane principal
+        // Create the main GridPane
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        // Création d'un rectangle pour le dégradé de fond
+        // Create a rectangle for the background gradient
         Rectangle background = new Rectangle(WINDOW_WIDTH, WINDOW_HEIGHT);
         Stop[] stops = new Stop[]{
-                new Stop(0, Color.web("#243447")), // Couleur de début
-                new Stop(1, Color.web("#0d1117"))  // Couleur de fin
+                new Stop(0, Color.web("#243447")), // Start color
+                new Stop(1, Color.web("#0d1117"))  // End color
         };
         LinearGradient gradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
         background.setFill(gradient);
 
-        // Application de l'effet de flou gaussien à l'arrière-plan
+        // Apply Gaussian blur effect to the background
         GaussianBlur blur = new GaussianBlur(20);
         background.setEffect(blur);
 
-        // Création d'un StackPane pour superposer le fond et le contenu
+        // Create a StackPane to overlay the background and the content
         StackPane root = new StackPane();
         root.getChildren().addAll(background, grid);
 
-        // Conteneur pour les éléments du formulaire
-        GridPane formGrid = new GridPane(); // Utilisation d'un GridPane pour le formulaire
+        // Create the form GridPane
+        GridPane formGrid = new GridPane(); // Container for form fields
         formGrid.setAlignment(Pos.CENTER);
         formGrid.setHgap(10);
         formGrid.setVgap(10);
@@ -73,30 +85,30 @@ public class CreateAccountFormView extends UI {
         formGrid.setMaxWidth(WINDOW_WIDTH * 0.4);
         formGrid.setMaxHeight(WINDOW_HEIGHT * 0.5);
 
-        // Username
+        // Username Field
         CustomLabel userLabel = new CustomLabel("Username:");
         CustomTextField userField = new CustomTextField();
         formGrid.add(userLabel, 0, 0);
         formGrid.add(userField, 1, 0);
 
-        // Mail
+        // Mail Field
         CustomLabel mailLabel = new CustomLabel("Mail:");
         CustomTextField mailField = new CustomTextField();
         formGrid.add(mailLabel, 0, 1);
         formGrid.add(mailField, 1, 1);
 
-        // Password
+        // Password Field
         CustomLabel pwLabel = new CustomLabel("Password:");
         CustomPasswordField pwField = new CustomPasswordField();
         formGrid.add(pwLabel, 0, 2);
         formGrid.add(pwField, 1, 2);
 
-        // Error Label (invisible par défaut)
+        // Error Label (hidden by default)
         errorLabel = new Label();
         errorLabel.getStyleClass().add("error-label");
         errorLabel.setWrapText(true);
         errorLabel.setVisible(false);
-        formGrid.add(errorLabel, 0, 3, 2, 1); // Span sur deux colonnes
+        formGrid.add(errorLabel, 0, 3, 2, 1); // Span across two columns
 
         // Create Account Button
         CustomButton btnCreateAccount = new CustomButton("Create Account");
@@ -110,15 +122,15 @@ public class CreateAccountFormView extends UI {
             new AuthenticationFormView(primaryStage).show();
         });
 
-        // Ajout des boutons au conteneur du formulaire
+        // Buttons HBox
         HBox buttonsBox = new HBox(10, btnBack, btnCreateAccount);
         buttonsBox.setAlignment(Pos.CENTER);
-        formGrid.add(buttonsBox, 0, 4, 2, 1); // Span sur deux colonnes
+        formGrid.add(buttonsBox, 0, 4, 2, 1); // Span across two columns
 
-        // Ajout du conteneur de formulaire au GridPane principal
+        // Add the formGrid to the main GridPane
         grid.add(formGrid, 0, 0);
 
-        // Création de la scène avec le StackPane comme racine
+        // Create and set the scene
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm());
         primaryStage.setScene(scene);
@@ -126,12 +138,20 @@ public class CreateAccountFormView extends UI {
         primaryStage.show();
     }
 
+    /**
+     * Handles the account creation process.
+     *
+     * @param userField The text field for the username.
+     * @param pwField The password field for the password.
+     * @param mailField The text field for the email.
+     * @param formGrid The grid pane containing the form fields.
+     */
     private void handleCreateAccount(CustomTextField userField, CustomPasswordField pwField, CustomTextField mailField, GridPane formGrid) {
         String username = userField.getText();
         String password = pwField.getText();
         String mail = mailField.getText();
 
-        // Supprimer l'ancien message d'erreur s'il existe
+        // Remove the error label if it is visible
         formGrid.getChildren().remove(errorLabel);
 
         String validationMessage = errorHandler.validateCreateAccountFields(username, password, mail);
@@ -142,7 +162,7 @@ public class CreateAccountFormView extends UI {
         } else {
             errorLabel.setText(validationMessage);
             errorLabel.setVisible(true);
-            formGrid.add(errorLabel, 0, 3, 2, 1); // Span sur deux colonnes
+            formGrid.add(errorLabel, 0, 3, 2, 1); // Span across two columns
 
             if (validationMessage.contains("Password")) {
                 pwField.clear();

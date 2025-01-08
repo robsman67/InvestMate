@@ -10,8 +10,6 @@ import com.projet.da50.projet_da50.view.components.CustomButton;
 import com.projet.da50.projet_da50.view.components.CustomLabel;
 import com.projet.da50.projet_da50.view.components.CustomPasswordField;
 import com.projet.da50.projet_da50.view.components.CustomTextField;
-import javafx.animation.FadeTransition;
-import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -27,10 +25,8 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.scene.shape.Rectangle;
 
-import static com.projet.da50.projet_da50.controller.TokenManager.logController;
 import java.util.Objects;
 
 import static com.projet.da50.projet_da50.controller.TokenManager.getIdToken;
@@ -44,9 +40,8 @@ public class AuthenticationFormView extends UI {
 
     private final UserController userController;
     private final Stage primaryStage;
-    private final ErrorHandler ErrorHandler;
+    private final ErrorHandler errorHandler;
     private Label errorLabel;
-    private GridPane grid;
     private CheckBox stayConnectedCheckBox; // Checkbox for "Stay Connected"
     LogController logController;
 
@@ -70,7 +65,7 @@ public class AuthenticationFormView extends UI {
         primaryStage.setMaximized(false);
 
         // Create the main GridPane layout
-        this.grid = new GridPane();
+        GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
@@ -111,7 +106,7 @@ public class AuthenticationFormView extends UI {
         formContainer.setMaxHeight(WINDOW_WIDTH * 0.4);
 
         // Logo
-        ImageView logoView = new ImageView(new Image(getClass().getResource("/icon.png").toExternalForm()));
+        ImageView logoView = new ImageView(new Image(Objects.requireNonNull(getClass().getResource("/icon.png")).toExternalForm()));
         logoView.setFitHeight(100);
         logoView.setPreserveRatio(true);
         formContainer.getChildren().add(logoView);
@@ -136,7 +131,6 @@ public class AuthenticationFormView extends UI {
 
         // Add checkbox to form container
         formContainer.getChildren().add(stayConnectedCheckBox);
-
 
         // Forgot Password Hyperlink
         Hyperlink forgotPasswordLink = new Hyperlink("Forgotten password?");
@@ -172,7 +166,7 @@ public class AuthenticationFormView extends UI {
 
         // Create the scene with the StackPane as root
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
         primaryStage.show();
@@ -199,14 +193,14 @@ public class AuthenticationFormView extends UI {
                 // Generate a token for the user
                 String token = TokenManager.generateToken(username);
 
-                // Enregistrer le token en fonction de la case à cocher
+                // Save the token if the user wants to stay connected
                 if (stayConnectedCheckBox.isSelected()) {
                     TokenManager.saveToken(token, true); // Enregistrer le token pour 24 heures
                     logController.createLog(user.getId(), "Login", "User logged in with token.");
                     System.out.println("Token saved for 24 hours.");
                 } else {
                     stayLogged = false;
-                    // Pour une connexion non persistante on enregistre quand même le token en mémoire
+                    // Log the user in without saving the token
                     logController.createLog(getIdToken(), "Login", "User logged in without token.");
                     System.out.println("Token generated for the current session only.");
                 }
@@ -214,10 +208,10 @@ public class AuthenticationFormView extends UI {
                 setAdmin(true);
                 System.out.println("Admin login, no token generated.");
             }
-
+            primaryStage.close();
             new MainMenuView(primaryStage).show();
         } else {
-            // Gérer l'affichage du message d'erreur
+            // Display the error message
             if (errorLabel != null) {
                 errorLabel.setText(validationMessage);
                 errorLabel.setVisible(true);

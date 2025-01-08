@@ -416,7 +416,6 @@ public class CreateLessonView extends UI {
      * @param index The index of the element in the lesson.
      * @return An HBox containing the element and action buttons.
      */
-
     private HBox createElementBox(Elements element, int index) {
         HBox elementBox = new HBox(10);
         elementBox.setPadding(new Insets(10));
@@ -477,7 +476,7 @@ public class CreateLessonView extends UI {
 
         Button downButton = new Button("↓");
         downButton.setOnAction(event -> {
-            if (index < elementsList.size() - 1) {
+            if (index < lesson.size() - 1) {
                 lessonController.swapElements(lesson, index, index + 1);
                 updatePreview();
             }

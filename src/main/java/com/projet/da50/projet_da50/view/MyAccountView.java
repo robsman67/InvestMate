@@ -307,6 +307,7 @@ public class MyAccountView extends UI {
             logController.createLog(getIdToken(), "Account deleted", "username: " + user.getUsername() + ", mail: " + user.getMail());
             userController.deleteUserById(user.getId());
             TokenManager.deleteToken();
+            primaryStage.close();
             new AuthenticationFormView(primaryStage).show();
         });
 
@@ -316,7 +317,10 @@ public class MyAccountView extends UI {
         grid.add(btnBack, 0, 8);
         // Press echap to go back or the button
         btnBack.setCancelButton(true);
-        btnBack.setOnAction(e -> new MainMenuView(primaryStage).show());
+        btnBack.setOnAction(e -> {
+            primaryStage.close();
+            new MainMenuView(primaryStage).show();
+        });
 
         Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm());

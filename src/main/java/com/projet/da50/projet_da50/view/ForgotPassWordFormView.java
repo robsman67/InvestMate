@@ -22,45 +22,57 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.Objects;
 
+/**
+ * This class represents the view for the "Forgot Password" form.
+ * It extends the UI class and provides the user interface for resetting the password.
+ */
 public class ForgotPassWordFormView extends UI {
 
     private final Stage primaryStage;
     private final ErrorHandler errorHandler;
     private Label errorLabel;
 
+    /**
+     * Constructor for ForgotPassWordFormView.
+     *
+     * @param primaryStage The primary stage for this view.
+     */
     public ForgotPassWordFormView(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.errorHandler = new ErrorHandler();
     }
 
+    /**
+     * Displays the "Forgot Password" form.
+     */
     public void show() {
         primaryStage.setTitle("Reset Password");
 
-        // Création du GridPane principal
+        // Create the main GridPane
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        // Création d'un rectangle pour le dégradé de fond
+        // Create a rectangle for the background gradient
         Rectangle background = new Rectangle(WINDOW_WIDTH, WINDOW_HEIGHT);
         Stop[] stops = new Stop[]{
-                new Stop(0, Color.web("#243447")), // Couleur de début
-                new Stop(1, Color.web("#0d1117"))  // Couleur de fin
+                new Stop(0, Color.web("#243447")), // Start color
+                new Stop(1, Color.web("#0d1117"))  // End color
         };
         LinearGradient gradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
         background.setFill(gradient);
 
-        // Application de l'effet de flou gaussien à l'arrière-plan
+        // Apply Gaussian blur effect to the background
         GaussianBlur blur = new GaussianBlur(20);
         background.setEffect(blur);
 
-        // Création d'un StackPane pour superposer le fond et le contenu
+        // Create a StackPane to overlay the background and the content
         StackPane root = new StackPane();
         root.getChildren().addAll(background, grid);
 
-        // Conteneur pour les éléments du formulaire
+        // Container for form elements
         VBox formContainer = new VBox(20);
         formContainer.setAlignment(Pos.CENTER);
         formContainer.setPadding(new Insets(30));
@@ -71,40 +83,41 @@ public class ForgotPassWordFormView extends UI {
         // Label "Mail:"
         CustomLabel mailLabel = new CustomLabel("Mail:");
 
-        // Champ de texte pour le mail
+        // Text field for the mail
         CustomTextField mailField = new CustomTextField();
 
-        // Ajout du label et du champ de texte au conteneur du formulaire
+        // Add the label and text field to the form container
         formContainer.getChildren().addAll(mailLabel, mailField);
 
-        // Label d'erreur (invisible par défaut)
+        // Error label (hidden by default)
         errorLabel = new Label();
         errorLabel.getStyleClass().add("error-label");
         errorLabel.setWrapText(true);
         errorLabel.setVisible(false);
-        formContainer.getChildren().add(errorLabel); // Ajout au VBox
+        formContainer.getChildren().add(errorLabel); // Add to VBox
 
-        // Bouton "Reset Password"
+        // "Reset Password" button
         CustomButton btnResetPassword = new CustomButton("Reset Password");
         btnResetPassword.getStyleClass().add("button-lightblue");
         btnResetPassword.setDefaultButton(true);
         btnResetPassword.setOnAction(e -> handleResetPassword(mailField, formContainer));
 
-        // Back Button
+        // "Go back" button
         CustomButton btnBack = new CustomButton("Go back");
         btnBack.setOnAction(e -> {
+            primaryStage.close();
             new AuthenticationFormView(primaryStage).show();
         });
 
-        // Ajout des boutons au conteneur du formulaire
+        // Add buttons to the form container
         HBox buttonsBox = new HBox(10, btnBack, btnResetPassword);
         buttonsBox.setAlignment(Pos.CENTER);
         formContainer.getChildren().add(buttonsBox);
 
-        // Ajout du conteneur de formulaire au GridPane principal
+        // Add the form container to the main GridPane
         grid.add(formContainer, 0, 0);
 
-        // Création de la scène avec le StackPane comme racine
+        // Create the scene with the StackPane as the root
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm());
         primaryStage.setScene(scene);
@@ -112,15 +125,21 @@ public class ForgotPassWordFormView extends UI {
         primaryStage.show();
     }
 
+    /**
+     * Handles the password reset process.
+     *
+     * @param mailField The text field for the email.
+     * @param formContainer The VBox containing the form elements.
+     */
     private void handleResetPassword(CustomTextField mailField, VBox formContainer) {
         String mail = mailField.getText();
         String validationMessage = errorHandler.validateForgotPasswordFields(mail);
 
-        // Supprimer l'ancien message d'erreur s'il existe
+        // Remove the old error message if it exists
         formContainer.getChildren().remove(errorLabel);
 
         if ("Valid credentials.".equals(validationMessage)) {
-            // Afficher le message de succès
+            // Display the success message
             Label successLabel = new CustomLabel("A reset link has been sent to " + mail);
             Stage successStage = new Stage();
             successStage.setTitle("Success");
@@ -142,10 +161,10 @@ public class ForgotPassWordFormView extends UI {
             successStage.setScene(successScene);
             successStage.showAndWait();
         } else {
-            // Afficher le label d'erreur
+            // Display the error label
             errorLabel.setText(validationMessage);
             errorLabel.setVisible(true);
-            formContainer.getChildren().add(2, errorLabel); // Ajout en tant que troisième enfant
+            formContainer.getChildren().add(2, errorLabel); // Add as the third child
 
             mailField.clear();
             mailField.requestFocus();

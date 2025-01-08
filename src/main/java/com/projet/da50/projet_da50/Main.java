@@ -14,17 +14,16 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Vérifier si un token valide existe
+        // Verify if a token is stored
         String storedToken = TokenManager.getToken();
 
         if (TokenManager.isTokenValid(storedToken)) {
             stayLogged = true;
-            // Un token valide existe, on connecte l'utilisateur directement
+            // A valid token exists, show the main menu
             new MainMenuView(primaryStage).show();
         } else {
-            // Aucun token valide n'existe, afficher la vue d'authentification
-            AuthenticationFormView authPage = new AuthenticationFormView(primaryStage);
-            authPage.show();
+            // No valid token exists, show the authentication form
+            new AuthenticationFormView(primaryStage).show();
         }
 
         // Set the application icon

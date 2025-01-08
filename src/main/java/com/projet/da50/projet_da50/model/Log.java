@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 public class Log {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incrémentation
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment
     private Long id;
 
     @Column(name = "userId", nullable = false)

@@ -13,20 +13,21 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class manages the generation, validation, and storage of tokens for user authentication.
+ */
 public class TokenManager {
 
     private static final String TOKEN_FILE;
-    private static final long TOKEN_VALIDITY_DURATION = 24 * 60 * 60; // 24 heures en secondes
-    private static final Map<String, String> activeTokens = new HashMap<>(); // Stockage des tokens actifs en mémoire
-    private static final String TOKEN_SEPARATOR = ";"; // Séparateur modifié
+    private static final long TOKEN_VALIDITY_DURATION = 24 * 60 * 60; // 24 hours in seconds
+    private static final Map<String, String> activeTokens = new HashMap<>(); // Storage of active tokens in memory
+    private static final String TOKEN_SEPARATOR = ";"; // Modified separator
     private static final UserController userController = new UserController();
     private static final LogController logController = new LogController();
     public static boolean stayLogged = false;
 
-
-
     static {
-        // Déterminer l'emplacement du fichier spécifique à la plateforme
+        // Determine the platform-specific file location
         String os = System.getProperty("os.name").toLowerCase();
         String baseDir;
         if (os.contains("mac")) {
@@ -35,7 +36,7 @@ public class TokenManager {
             baseDir = System.getProperty("user.home");
         }
 
-        // S'assurer que le répertoire existe
+        // Ensure the directory exists
         Path directoryPath = Paths.get(baseDir);
         if (!Files.exists(directoryPath)) {
             try {
@@ -47,29 +48,39 @@ public class TokenManager {
         TOKEN_FILE = baseDir + File.separator + ".myapp_token";
     }
 
-    // Générer un jeton pour l'utilisateur donné
+    /**
+     * Generates a token for the given user.
+     *
+     * @param username The username for which the token is generated.
+     * @return The generated token.
+     */
     public static String generateToken(String username) {
         SecureRandom secureRandom = new SecureRandom();
         byte[] randomBytes = new byte[32];
         secureRandom.nextBytes(randomBytes);
         String token = Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
-        // Combiner le token avec le nom d'utilisateur
+        // Combine the token with the username
         String combinedToken = token + TOKEN_SEPARATOR + username;
 
-        // Ajouter le token à la liste des tokens actifs
+        // Add the token to the list of active tokens
         activeTokens.put(username, combinedToken);
 
         return combinedToken;
     }
 
-    // Enregistrer le jeton dans un fichier avec une validité de 24 heures si l'option "stayLoggedIn" est activée
+    /**
+     * Saves the token to a file with a validity of 24 hours if the "stayLoggedIn" option is enabled.
+     *
+     * @param token The token to be saved.
+     * @param stayLoggedIn Whether the user chose to stay logged in.
+     */
     public static void saveToken(String token, boolean stayLoggedIn) {
         if (!stayLoggedIn) {
             System.out.println("Token will not be saved for non-stay logged in sessions.");
             return;
         }
         try {
-            // Ajouter l'horodatage actuel au jeton
+            // Add the current timestamp to the token
             String tokenWithTimestamp = token + TOKEN_SEPARATOR + Instant.now().atZone(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
 
             Files.write(Paths.get(TOKEN_FILE), tokenWithTimestamp.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -80,12 +91,14 @@ public class TokenManager {
         }
     }
 
-    // Supprimer le jeton de la mémoire et du fichier
+    /**
+     * Deletes the token from memory and from the file.
+     */
     public static void deleteToken() {
-        // Supprimer le token de la liste des tokens actifs
+        // Remove the token from the list of active tokens
         activeTokens.clear();
 
-        // Supprimer le fichier de token
+        // Delete the token file
         try {
             Path path = Paths.get(TOKEN_FILE);
             if (Files.exists(path)) {
@@ -99,13 +112,19 @@ public class TokenManager {
         }
     }
 
+    /**
+     * Extracts the username from the given token.
+     *
+     * @param token The token from which the username is extracted.
+     * @return The extracted username, or null if the token is invalid.
+     */
     public static String extractUsernameFromToken(String token) {
         if (token == null || token.isEmpty()) {
             return null;
         }
         String[] parts = token.split(TOKEN_SEPARATOR);
         if (parts.length == 2) {
-            // Le nom d'utilisateur est la deuxième partie
+            // The username is the second part
             return parts[1];
         } else {
             System.err.println("Invalid token format for username extraction.");
@@ -113,21 +132,28 @@ public class TokenManager {
         }
     }
 
-
-    //For the log
-    public static long getIdToken(){
+    /**
+     * Retrieves the user ID associated with the current token.
+     *
+     * @return The user ID, or -1 if the token is invalid.
+     */
+    public static long getIdToken() {
         String token = getToken();
         String username = extractUsernameFromToken(token);
-        if(username != null){
+        if (username != null) {
             User user = userController.findUserByUsername(username);
             return user.getId();
-        }
-        else {
-            return (long) -1;
+        } else {
+            return -1;
         }
     }
 
-    // Vérifier si le jeton est valide
+    /**
+     * Checks if the given token is valid.
+     *
+     * @param token The token to be validated.
+     * @return True if the token is valid, false otherwise.
+     */
     public static boolean isTokenValid(String token) {
         if (token == null || token.isEmpty()) {
             return false;
@@ -138,9 +164,9 @@ public class TokenManager {
             return false;
         }
 
-        // Vérifier si le token est dans la liste des tokens actifs
+        // Check if the token is in the list of active tokens
         if (!activeTokens.containsKey(username)) {
-            // Si le token n'est pas dans la liste des tokens actifs, vérifier s'il est valide dans le fichier
+            // If the token is not in the list of active tokens, check if it is valid in the file
             try {
                 if (Files.exists(Paths.get(TOKEN_FILE))) {
                     String tokenWithTimestamp = Files.readString(Paths.get(TOKEN_FILE));
@@ -150,25 +176,24 @@ public class TokenManager {
                     Instant timestamp = null;
 
                     if (parts.length == 3) {
-                        storedToken = parts[0] + TOKEN_SEPARATOR + parts[1]; // Reconstruire le token stocké sans l'horodatage
+                        storedToken = parts[0] + TOKEN_SEPARATOR + parts[1]; // Reconstruct the stored token without the timestamp
                         timestamp = Instant.parse(parts[2]);
-                    } else if(parts.length == 2){
+                    } else if (parts.length == 2) {
                         storedToken = parts[0] + TOKEN_SEPARATOR + parts[1];
                     } else {
                         System.err.println("Invalid token format.");
                         return false;
                     }
 
-
-                    // Vérifier si le token est correct et s'il n'a pas expiré
+                    // Check if the token is correct and has not expired
                     if (token.equals(storedToken) &&
                             (parts.length == 2 || timestamp.isAfter(Instant.now().minus(TOKEN_VALIDITY_DURATION, ChronoUnit.SECONDS)))) {
-                        // Mettre à jour le token actif avec la nouvelle date d'expiration
+                        // Update the active token with the new expiration date
                         activeTokens.put(username, token);
                         return true;
                     } else {
                         System.out.println("Token expired or invalid. Deleting...");
-                        deleteToken(); // Supprimer le token expiré ou invalide
+                        deleteToken(); // Delete the expired or invalid token
                         return false;
                     }
                 } else {
@@ -180,7 +205,7 @@ public class TokenManager {
                 return false;
             }
         } else {
-            // Si le token est dans la liste des tokens actifs, vérifier sa validité
+            // If the token is in the list of active tokens, check its validity
             String activeToken = activeTokens.get(username);
             if (!token.equals(activeToken)) {
                 return false;
@@ -190,9 +215,13 @@ public class TokenManager {
         return true;
     }
 
-    // Récupérer le jeton à partir d'un fichier
+    /**
+     * Retrieves the token from a file.
+     *
+     * @return The retrieved token, or null if no token is found.
+     */
     public static String getToken() {
-        // Chercher d'abord dans les tokens actifs en mémoire
+        // First, check in the active tokens in memory
         String usernameFromActiveToken = activeTokens.entrySet().stream()
                 .filter(entry -> entry.getValue() != null)
                 .map(Map.Entry::getKey)
@@ -207,13 +236,13 @@ public class TokenManager {
             }
         }
 
-        // Si aucun token actif n'est trouvé, essayer de récupérer le token à partir du fichier
+        // If no active token is found, try to retrieve the token from the file
         try {
             if (Files.exists(Paths.get(TOKEN_FILE))) {
                 String tokenWithTimestamp = Files.readString(Paths.get(TOKEN_FILE));
                 String[] parts = tokenWithTimestamp.split(TOKEN_SEPARATOR);
                 if (parts.length == 3 || parts.length == 2) {
-                    // Retourner le token complet (token + username)
+                    // Return the complete token (token + username)
                     System.out.println("Token found in file.");
                     return parts[0] + TOKEN_SEPARATOR + parts[1];
                 } else {
@@ -230,16 +259,17 @@ public class TokenManager {
         }
     }
 
-
-    public static void shutDownDeleteToken(){
+    /**
+     * Deletes the token when the application is closed.
+     */
+    public static void shutDownDeleteToken() {
         // Delete token when we quit the app
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("App is shutting down." + stayLogged);
-            if(!stayLogged) {
+            if (!stayLogged) {
                 logController.createLog(getIdToken(), "Logout by shutdown", "");
                 System.out.println("App is shutting down. non persistent token deleted.");
             }
         }));
-
     }
 }

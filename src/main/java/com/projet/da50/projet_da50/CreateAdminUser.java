@@ -3,7 +3,6 @@ package com.projet.da50.projet_da50;
 import com.projet.da50.projet_da50.controller.UserController;
 import com.projet.da50.projet_da50.model.Role;
 import com.projet.da50.projet_da50.model.User;
-import org.mindrot.jbcrypt.BCrypt;
 import java.util.Scanner;
 
 public class CreateAdminUser {
@@ -14,32 +13,31 @@ public class CreateAdminUser {
 
         System.out.println("Création d'un compte administrateur :");
 
-        // Demander le nom d'utilisateur
+        // Ask for the username
         System.out.print("Nom d'utilisateur : ");
         String username = scanner.nextLine();
 
-        // Demander l'adresse e-mail
+        // Ask for the email address
         System.out.print("Adresse e-mail : ");
         String mail = scanner.nextLine();
 
-        // Demander le mot de passe et le hacher
+        // Ask for the password
         System.out.print("Mot de passe : ");
         String password = scanner.nextLine();
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
 
-        // Créer l'utilisateur avec le rôle Reader par défaut
-        Long adminUserId = userController.createUser(username, hashedPassword, mail);
+        // Create the user
+        Long adminUserId = userController.createUser(username, password, mail);
 
         if (adminUserId != null) {
             System.out.println("Utilisateur créé avec succès. ID : " + adminUserId);
 
-            // Récupérer l'utilisateur par son ID
+            // Retrieve the user
             User adminUser = userController.getUserById(adminUserId);
             if (adminUser != null) {
-                // Attribuer le rôle Admin
+                // Assign the Admin role to the user
                 adminUser.setRole(Role.Admin);
 
-                // Mettre à jour l'utilisateur dans la base de données
+                // Update the user
                 if (userController.updateUser(adminUser)) {
                     System.out.println("Rôle Admin attribué à l'utilisateur.");
                 } else {
@@ -52,7 +50,7 @@ public class CreateAdminUser {
             System.err.println("Erreur lors de la création de l'utilisateur administrateur.");
         }
 
-        // Fermer la SessionFactory
+        // Close the scanner and the user controller
         userController.close();
     }
 }

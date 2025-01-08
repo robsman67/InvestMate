@@ -1,16 +1,15 @@
 package com.projet.da50.projet_da50.view;
 
-import com.projet.da50.projet_da50.view.MyAccount.MyAccountView;
+import com.projet.da50.projet_da50.controller.TokenManager;
 import com.projet.da50.projet_da50.controller.LessonController;
 import com.projet.da50.projet_da50.model.Lesson;
-import com.projet.da50.projet_da50.controller.LogController
+import com.projet.da50.projet_da50.controller.LogController;
 import com.projet.da50.projet_da50.model.Tags;
 import com.projet.da50.projet_da50.view.components.CustomButton;
 import com.projet.da50.projet_da50.view.components.LessonComponent;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,13 +19,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-
+import java.util.List;
 import java.util.Objects;
 
-import static com.projet.da50.projet_da50.controller.TokenManager.deleteToken;
 import static com.projet.da50.projet_da50.controller.TokenManager.getIdToken;
 
-import java.util.List;
+
 
 /**
  * Represents the main menu view of the application.
@@ -35,9 +33,6 @@ import java.util.List;
 public class MainMenuView extends UI {
     private final Stage primaryStage;
     private final LogController logController = new LogController();
-    private final Stage primaryStage;
-
-    private final Stage primaryStage;
     private final LessonController lessonController;
     private List<Lesson> lessonList;
 
@@ -115,17 +110,12 @@ public class MainMenuView extends UI {
             // Navigate to Quizz view (To be implemented)
         });
 
-        Button btnWallet = createButton("Wallet", "button-blue", e -> {
-            primaryStage.close();
-            // Handle Wallet action (To be implemented)
-        });
-
         Button btnProfile = createButton("Profile", "button-blue", e -> {
             primaryStage.close();
-
+            new MyAccountView(primaryStage).show();
         });
 
-        navigationButtons.getChildren().addAll(btnHome, btnQuizz, btnWallet, btnProfile);
+        navigationButtons.getChildren().addAll(btnHome, btnQuizz, btnProfile);
         grid.add(navigationButtons, 0, 0);
     }
 
@@ -137,15 +127,6 @@ public class MainMenuView extends UI {
     private void addLogoutButton(GridPane grid) {
         HBox logoutButton = new HBox(20);
         logoutButton.setAlignment(Pos.CENTER_RIGHT);
-
-        // Add My Account button
-        Button btnMyAccount = new Button("My Account");
-        btnMyAccount.getStyleClass().add("button-blue");
-        btnMyAccount.setOnAction(e -> {
-            new MyAccountView(primaryStage).show();
-            // Handle My Account button action (à implémenter plus tard)
-        });
-        grid.add(btnMyAccount, 0, 2);
 
         // Add Disconnect button
         CustomButton btnDisconnect = new CustomButton("Logout");
