@@ -6,18 +6,22 @@ import com.projet.da50.projet_da50.model.Option;
 import com.projet.da50.projet_da50.model.Question;
 import com.projet.da50.projet_da50.model.Quiz;
 import com.projet.da50.projet_da50.view.MainMenuView;
+import com.projet.da50.projet_da50.view.UI;
+import com.projet.da50.projet_da50.view.components.CustomButton;
+import com.projet.da50.projet_da50.view.components.CustomLabel;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ShowQuestionView {
+public class ShowQuestionView extends UI {
     private Stage primaryStage;
     private Quiz selectedQuiz;
     private QuestionController questionController;
@@ -33,18 +37,22 @@ public class ShowQuestionView {
     }
 
     public void show() {
+        GridPane grid = createMainLayout();
+        Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         VBox vbox = new VBox(15);
-
-        Label quizTitle = new Label(selectedQuiz.getTitle());
-        quizTitle.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        Button btnBack = new CustomButton("Back to Quizzes");
+        btnBack.setOnAction(e -> new ShowQuizView(primaryStage).show());
+        vbox.getChildren().add(btnBack);
+        Label quizTitle = createStyledLabel(selectedQuiz.getTitle(),20,true,"white");
         vbox.getChildren().add(quizTitle);
 
         List<Question> questions = questionController.getAllQuestionsByQuizId(selectedQuiz.getId());
         int questionNumber = 1;
 
         for (Question question : questions) {
-            Label questionLabel = new Label(questionNumber + ". " + question.getQuestion());
-            questionLabel.setStyle("-fx-font-size: 18px; -fx-padding: 10px 0;");
+            Label questionLabel = new CustomLabel(questionNumber + ". " + question.getQuestion());
+//            questionLabel.setStyle("-fx-font-size: 18px; -fx-padding: 10px 0;");
             vbox.getChildren().add(questionLabel);
 
             List<Option> options = optionController.getAllOptionsByQuestionId(question.getId());
@@ -54,6 +62,7 @@ public class ShowQuestionView {
             for (Option option : options) {
                 HBox optionBox = new HBox(10);
                 CheckBox optionCheckBox = new CheckBox(option.getContent());
+                optionCheckBox.setStyle("-fx-text-fill: white;");
                 questionOptionCheckBoxMap.put(option.getId(), optionCheckBox);
                 optionCheckBoxMap.put(option.getId(), optionCheckBox);
 
@@ -79,26 +88,43 @@ public class ShowQuestionView {
 
         HBox navigationBox = new HBox(10);
 
-        Button btnBack = new Button("Back to Quizzes");
-        btnBack.setOnAction(e -> new ShowQuizView(primaryStage).show());
-        navigationBox.getChildren().add(btnBack);
 
-        Button btnMainMenu = new Button("Main Menu");
-        btnMainMenu.setOnAction(e -> new MainMenuView(primaryStage).show());
-        navigationBox.getChildren().add(btnMainMenu);
-
-        Button btnSubmitQuiz = new Button("Submit Quiz");
+        Button btnSubmitQuiz = new CustomButton("Submit Quiz");
         btnSubmitQuiz.setOnAction(e -> handleSubmitQuiz());
         navigationBox.getChildren().add(btnSubmitQuiz);
 
         vbox.getChildren().add(navigationBox);
+        grid.add(vbox,0,0);
 
-        Scene scene = new Scene(vbox, 1000, 800);
-        primaryStage.setScene(scene);
         primaryStage.setTitle(selectedQuiz.getTitle());
+        primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
+    private GridPane createMainLayout() {
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.TOP_LEFT);
+        grid.setHgap(20);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.getStyleClass().add("main-background");
 
+        ColumnConstraints column = new ColumnConstraints();
+        column.setHgrow(Priority.ALWAYS);
+        grid.getColumnConstraints().add(column);
+
+        return grid;
+    }
+    private Label createStyledLabel(String text, int fontSize, boolean bold, String color) {
+        Label label = new Label(text);
+        String style = "-fx-font-size: " + fontSize + "px;";
+        if (bold) {
+            style += " -fx-font-weight: bold;";
+        }
+        label.setStyle(style + " -fx-text-fill:" + color + ";");
+        return label;
+    }
+    
     private void handleSubmitQuiz() {
         Map<Long, Boolean> userAnswers = new HashMap<>();
 
@@ -125,9 +151,12 @@ public class ShowQuestionView {
     }
 
     private void showResults(Map<Long, Boolean> userAnswers) {
+        GridPane grid = createMainLayout();
+        Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         VBox vbox = new VBox(15);
 
-        Label quizTitle = new Label(selectedQuiz.getTitle());
+        Label quizTitle = new CustomLabel(selectedQuiz.getTitle());
         quizTitle.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
         vbox.getChildren().add(quizTitle);
 
@@ -137,7 +166,7 @@ public class ShowQuestionView {
         int correctAnswers = 0;
 
         for (Question question : questions) {
-            Label questionLabel = new Label(questionNumber + ". " + question.getQuestion());
+            Label questionLabel = new CustomLabel(questionNumber + ". " + question.getQuestion());
             questionLabel.setStyle("-fx-font-size: 18px; -fx-padding: 10px 0;");
             vbox.getChildren().add(questionLabel);
 
@@ -156,9 +185,9 @@ public class ShowQuestionView {
                 if (userSelected) {
                     optionCheckBox.setSelected(true);
                     if (isOptionCorrect) {
-                        optionCheckBox.setStyle("-fx-text-fill: green;");
+                        optionCheckBox.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
                     } else {
-                        optionCheckBox.setStyle("-fx-text-fill: red;");
+                        optionCheckBox.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
                         isCorrect = false;
                     }
                 } else if (isOptionCorrect) {
@@ -174,14 +203,14 @@ public class ShowQuestionView {
                 correctAnswers++;
             }
 
-            Label resultLabel = new Label(isCorrect ? "Correct" : "False");
+            Label resultLabel = new CustomLabel(isCorrect ? "Correct" : "False");
             resultLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
             optionsBox.getChildren().add(resultLabel);
 
             if (!isCorrect) {
                 for (Option option : options) {
                     if (option.isCorrect()) {
-                        Label correctAnswerLabel = new Label("The correct answer is: " + option.getContent());
+                        Label correctAnswerLabel = new CustomLabel("The correct answer is: " + option.getContent());
                         correctAnswerLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: blue;");
                         optionsBox.getChildren().add(correctAnswerLabel);
                     }
@@ -193,17 +222,18 @@ public class ShowQuestionView {
         }
 
         double score = ((double) correctAnswers / totalQuestions) * 100;
-        Label scoreLabel = new Label("Your score: " + String.format("%.2f", score) + "%");
+        Label scoreLabel = new CustomLabel("Your score: " + String.format("%.2f", score) + "%");
         scoreLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
         vbox.getChildren().add(scoreLabel);
 
-        Button btnBackToQuizzes = new Button("Back to Quizzes");
+        Button btnBackToQuizzes = new CustomButton("Back to Quizzes");
         btnBackToQuizzes.setOnAction(e -> new ShowQuizView(primaryStage).show());
         vbox.getChildren().add(btnBackToQuizzes);
 
-        Scene scene = new Scene(vbox, 1000, 800);
-        primaryStage.setScene(scene);
+        grid.add(vbox,0,0);
         primaryStage.setTitle(selectedQuiz.getTitle());
+        primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 }
