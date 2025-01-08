@@ -57,7 +57,7 @@ set /p createAdmin=
 
 if /i "%createAdmin%" equ "y" (
     echo Creating admin account...
-    java -cp "target/classes;target/lib/*" com.projet.da50.projet_da50.CreateAdminUser
+    call create_admin.bat
 ) else (
     echo Admin account creation canceled.
 )
