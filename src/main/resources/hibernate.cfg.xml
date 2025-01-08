@@ -23,5 +23,8 @@
         <mapping class="com.projet.da50.projet_da50.model.VideoIntegration"/>
         <mapping class="com.projet.da50.projet_da50.model.Title"/>
         <mapping class="com.projet.da50.projet_da50.model.Log"/>
+        <mapping class="com.projet.da50.projet_da50.model.Quiz"/>
+        <mapping class="com.projet.da50.projet_da50.model.Question"/>
+        <mapping class="com.projet.da50.projet_da50.model.Option"/>
     </session-factory>
 </hibernate-configuration>

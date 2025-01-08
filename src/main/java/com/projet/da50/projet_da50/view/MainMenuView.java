@@ -7,6 +7,7 @@ import com.projet.da50.projet_da50.model.Lesson;
 import com.projet.da50.projet_da50.model.Tags;
 import com.projet.da50.projet_da50.view.components.CustomButton;
 import com.projet.da50.projet_da50.view.components.LessonComponent;
+import com.projet.da50.projet_da50.view.quiz.ShowQuizView;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -106,7 +107,7 @@ public class MainMenuView extends UI {
 
         Button btnQuizz = createButton("Quizz", "button-blue", e -> {
             primaryStage.close();
-            // Navigate to Quizz view (To be implemented)
+            new ShowQuizView(primaryStage).show();
         });
 
         Button btnWallet = createButton("Wallet", "button-blue", e -> {
