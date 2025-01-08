@@ -1,9 +1,9 @@
 package com.projet.da50.projet_da50.view;
 
-import com.projet.da50.projet_da50.controller.TokenManager;
 import com.projet.da50.projet_da50.controller.LessonController;
-import com.projet.da50.projet_da50.model.Lesson;
 import com.projet.da50.projet_da50.controller.LogController;
+import com.projet.da50.projet_da50.controller.TokenManager;
+import com.projet.da50.projet_da50.model.Lesson;
 import com.projet.da50.projet_da50.model.Tags;
 import com.projet.da50.projet_da50.view.components.CustomButton;
 import com.projet.da50.projet_da50.view.components.LessonComponent;
@@ -19,22 +19,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+
 import java.util.List;
-import java.util.Objects;
 
 import static com.projet.da50.projet_da50.controller.TokenManager.getIdToken;
-
-
 
 /**
  * Represents the main menu view of the application.
  * Provides navigation, search, and lesson display functionalities.
  */
 public class MainMenuView extends UI {
+
     private final Stage primaryStage;
-    private final LogController logController = new LogController();
     private final LessonController lessonController;
     private List<Lesson> lessonList;
+    private final LogController logController = new LogController();
 
     /**
      * Constructs a new MainMenuView with the specified primary stage.
@@ -64,7 +63,7 @@ public class MainMenuView extends UI {
 
         // Create and set the scene
         Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         primaryStage.setTitle("Main Menu");
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
@@ -110,12 +109,18 @@ public class MainMenuView extends UI {
             // Navigate to Quizz view (To be implemented)
         });
 
+        Button btnWallet = createButton("Wallet", "button-blue", e -> {
+            primaryStage.close();
+            // Handle Wallet action (To be implemented)
+        });
+
         Button btnProfile = createButton("Profile", "button-blue", e -> {
             primaryStage.close();
             new MyAccountView(primaryStage).show();
+
         });
 
-        navigationButtons.getChildren().addAll(btnHome, btnQuizz, btnProfile);
+        navigationButtons.getChildren().addAll(btnHome, btnQuizz, btnWallet, btnProfile);
         grid.add(navigationButtons, 0, 0);
     }
 
@@ -128,14 +133,13 @@ public class MainMenuView extends UI {
         HBox logoutButton = new HBox(20);
         logoutButton.setAlignment(Pos.CENTER_RIGHT);
 
-        // Add Disconnect button
         CustomButton btnDisconnect = new CustomButton("Logout");
         btnDisconnect.getStyleClass().add("button-red");
         btnDisconnect.setOnAction(e -> {
-            //Delete the current Token
             primaryStage.close();
-            TokenManager.deleteToken(); // Supprimer le token lors de la déconnexion
+            //Delete the current Token
             logController.createLog(getIdToken(), "Logout by disconnect", "");
+            TokenManager.deleteToken(); // Supprimer le token lors de la déconnexion
             new AuthenticationFormView(primaryStage).show();
         });
 
@@ -228,7 +232,7 @@ public class MainMenuView extends UI {
 
         int rowIndex = 3; // Start below the search bar
         for (Lesson lesson : lessons) {
-            LessonComponent lessonComponent = new LessonComponent(primaryStage, lesson);
+            LessonComponent lessonComponent = new LessonComponent(primaryStage, lesson, getAdmin());
             GridPane.setColumnSpan(lessonComponent, GridPane.REMAINING);
             GridPane.setHgrow(lessonComponent, Priority.ALWAYS);
             grid.add(lessonComponent, 0, rowIndex++);

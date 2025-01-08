@@ -18,6 +18,8 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -189,18 +191,18 @@ public class CreateLessonView extends UI {
         // Save and back buttons
         Button saveButton = new CustomButton("Save");
         saveButton.setOnAction(e ->
-                {
-                    if (isUpdate) {
-                        updateLesson();
-                    } else {
-                        saveLesson();
-                    }
-                });
+        {
+            if (isUpdate) {
+                updateLesson();
+            } else {
+                saveLesson();
+            }
+        });
 
         // Back to main menu button
         Button backButton = new CustomButton("Back to Main Menu");
         backButton.setOnAction(e -> {stage.close();
-                new MainMenuView(stage).show();});
+            new MainMenuView(stage).show();});
 
         buttonSection.getChildren().addAll(saveButton, backButton);
         return buttonSection;
@@ -217,10 +219,26 @@ public class CreateLessonView extends UI {
         Label previewTitle = createStyledLabel("Lesson Preview: " + nameField.getText(), 20, true, "black");
         previewSection.getChildren().add(previewTitle);
 
-        // Add elements to the preview section
+        // Retrieve the elements from the lesson
         List<Elements> lesson = lessonController.getLesson().getElements();
+
+        // Sort the elements by position (ascending order)
+        Collections.sort(lesson, new Comparator<Elements>() {
+            @Override
+            public int compare(Elements e1, Elements e2) {
+                return e1.getPosition().compareTo(e2.getPosition());
+            }
+        });
+
+        // Clear any existing elements in the preview section
+        previewSection.getChildren().clear();
+
+        // Loop through the sorted elements list and add them to the preview section
         for (int i = 0; i < lesson.size(); i++) {
             Elements element = lesson.get(i);
+
+            System.out.println(lesson.get(i).getPosition());
+
             HBox elementBox = createElementBox(element, i);
             previewSection.getChildren().add(elementBox);
         }
@@ -265,39 +283,39 @@ public class CreateLessonView extends UI {
      * @param inputContainer The container for input fields.
      */
     /**
-    private void updateInputContextType(ComboBox<String> elementTypeComboBox, VBox inputContainer) {
-        elementTypeComboBox.setOnAction(e -> {
-            String selectedType = elementTypeComboBox.getValue();
+     private void updateInputContextType(ComboBox<String> elementTypeComboBox, VBox inputContainer) {
+     elementTypeComboBox.setOnAction(e -> {
+     String selectedType = elementTypeComboBox.getValue();
 
-            // Clear the current content
-            inputContainer.getChildren().clear();
+     // Clear the current content
+     inputContainer.getChildren().clear();
 
-            // Label for content input
-            Label contentLabel = createStyledLabel("Content:", 16, true, "white");
+     // Label for content input
+     Label contentLabel = createStyledLabel("Content:", 16, true, "white");
 
-            // Add appropriate input field based on the selected type
-            if ("Paragraph".equals(selectedType)) {
-                TextArea contentArea = new TextArea();
-                contentArea.setWrapText(true);
-                contentArea.setPrefHeight(100); // Adjust height as needed
-                inputContainer.getChildren().addAll(contentLabel, contentArea);
+     // Add appropriate input field based on the selected type
+     if ("Paragraph".equals(selectedType)) {
+     TextArea contentArea = new TextArea();
+     contentArea.setWrapText(true);
+     contentArea.setPrefHeight(100); // Adjust height as needed
+     inputContainer.getChildren().addAll(contentLabel, contentArea);
 
-                // Example action to capture contentArea data
-                contentArea.textProperty().addListener((observable, oldValue, newValue) -> {
-                    System.out.println("TextArea Content: " + newValue); // Handle changes as needed
-                });
-            } else if ("Sub-Title".equals(selectedType) || "Image".equals(selectedType) || "Video".equals(selectedType)) {
-                TextField contentField = new TextField();
-                inputContainer.getChildren().addAll(contentLabel, contentField);
+     // Example action to capture contentArea data
+     contentArea.textProperty().addListener((observable, oldValue, newValue) -> {
+     System.out.println("TextArea Content: " + newValue); // Handle changes as needed
+     });
+     } else if ("Sub-Title".equals(selectedType) || "Image".equals(selectedType) || "Video".equals(selectedType)) {
+     TextField contentField = new TextField();
+     inputContainer.getChildren().addAll(contentLabel, contentField);
 
-                // Example action to capture contentField data
-                contentField.textProperty().addListener((observable, oldValue, newValue) -> {
-                    System.out.println("TextField Content: " + newValue); // Handle changes as needed
-                });
-            }
-        });
-    }
-    */
+     // Example action to capture contentField data
+     contentField.textProperty().addListener((observable, oldValue, newValue) -> {
+     System.out.println("TextField Content: " + newValue); // Handle changes as needed
+     });
+     }
+     });
+     }
+     */
 
     /**
      * Updates the dynamic options based on the selected element type.
@@ -338,7 +356,7 @@ public class CreateLessonView extends UI {
     }
 
     /**
-    * Adds an element to the lesson based on the selected element type.
+     * Adds an element to the lesson based on the selected element type.
      * @param contentField The TextField for entering content.
      * @param elementTypeComboBox The ComboBox for selecting element type.
      * @param titleTypeComboBox The ComboBox for selecting title type.
@@ -416,6 +434,7 @@ public class CreateLessonView extends UI {
      * @param index The index of the element in the lesson.
      * @return An HBox containing the element and action buttons.
      */
+
     private HBox createElementBox(Elements element, int index) {
         HBox elementBox = new HBox(10);
         elementBox.setPadding(new Insets(10));
@@ -469,7 +488,7 @@ public class CreateLessonView extends UI {
         Button upButton = new Button("↑");
         upButton.setOnAction(event -> {
             if (index > 0) {
-                lessonController.swapElements(lesson, index, index - 1);
+                lessonController.swapElements(lesson, index, index - 1, isUpdate);
                 updatePreview();
             }
         });
@@ -477,7 +496,7 @@ public class CreateLessonView extends UI {
         Button downButton = new Button("↓");
         downButton.setOnAction(event -> {
             if (index < lesson.size() - 1) {
-                lessonController.swapElements(lesson, index, index + 1);
+                lessonController.swapElements(lesson, index, index + 1, isUpdate);
                 updatePreview();
             }
         });

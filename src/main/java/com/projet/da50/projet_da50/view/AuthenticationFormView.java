@@ -205,6 +205,9 @@ public class AuthenticationFormView extends UI {
                     System.out.println("Token generated for the current session only.");
                 }
             } else {
+
+                stayLogged = false;
+                TokenManager.generateToken(username);
                 setAdmin(true);
                 System.out.println("Admin login, no token generated.");
             }

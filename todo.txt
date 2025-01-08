@@ -34,3 +34,6 @@ DONE :
 - Add a security about password tentative (5 tentatives max per minute) -- FAIT
 - Add profile modification when connected (mail, password, name) -- FAIT
 - Bouton stay connected or not (for the token manager) -- FAIT
+
+
+- Logout id -1

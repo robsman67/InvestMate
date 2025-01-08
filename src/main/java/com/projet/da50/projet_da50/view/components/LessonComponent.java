@@ -1,7 +1,10 @@
 package com.projet.da50.projet_da50.view.components;
 
+import com.projet.da50.projet_da50.controller.LessonController;
+import com.projet.da50.projet_da50.controller.LogController;
 import com.projet.da50.projet_da50.model.Lesson;
 import com.projet.da50.projet_da50.view.LessonView;
+import com.projet.da50.projet_da50.view.MainMenuView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -13,36 +16,31 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-/**
- * This class represents a custom component for displaying lesson information in an HBox layout.
- */
+import static com.projet.da50.projet_da50.controller.TokenManager.getIdToken;
+
 public class LessonComponent extends HBox {
 
-    /**
-     * Constructor for LessonComponent.
-     * Initializes the component with the given primary stage and lesson details.
-     *
-     * @param primaryStage The primary stage of the application.
-     * @param lesson The lesson object containing the lesson details.
-     */
-    public LessonComponent(Stage primaryStage, Lesson lesson) {
-        // Force the component to extend to the full width
+    private final LogController logController = new LogController();
+
+    public LessonComponent(Stage primaryStage, Lesson lesson, boolean isAdmin) {
+        // Forcer l'extension sur toute la largeur
         setPrefWidth(Double.MAX_VALUE);
         setMaxWidth(Double.MAX_VALUE);
 
-        // Basic configuration of the HBox
+
+        // Configuration de base du HBox
         setAlignment(Pos.CENTER_LEFT);
         setSpacing(20);
         setPadding(new Insets(10));
         setStyle(
-                "-fx-background-color: #f5f5f5; " + // Light background color
+                "-fx-background-color: #f5f5f5; " + // Couleur de fond clair
                         "-fx-background-radius: 5px; " +
-                        "-fx-border-color: #d1d1d1; " + // Border color
+                        "-fx-border-color: #d1d1d1; " + // Couleur du cadre
                         "-fx-border-width: 2px; " +
                         "-fx-border-radius: 5px;"
         );
 
-        // Create labels for the content
+        // Création des labels pour le contenu
         Label nameLabel = new Label("Title: " + lesson.getTitle());
         nameLabel.setFont(Font.font(16));
         nameLabel.setTextFill(Color.BLACK);
@@ -51,20 +49,35 @@ public class LessonComponent extends HBox {
         tagLabel.setFont(Font.font(14));
         tagLabel.setTextFill(Color.GRAY);
 
-        // Flexible spacing to balance the contents
+        // Espacement flexible pour équilibrer les contenus
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        // Create the "Read" button on the right
+        // Création du bouton "Lire" à droite
         Button readButton = new Button("Read");
         readButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px;");
         readButton.setOnAction(event -> {
-            System.out.println("Clicked on " + lesson.getTitle());
             primaryStage.close();
+            logController.createLog(getIdToken(), "Read lesson", "Id : " + lesson.getId() + "Title : " +lesson.getTitle() );
             new LessonView(primaryStage, lesson.getTitle()).show();
         });
 
-        // Add elements to the HBox
-        getChildren().addAll(nameLabel, tagLabel, spacer, readButton);
+        // Ajout des éléments au HBox
+        getChildren().addAll(nameLabel, tagLabel, spacer,readButton);
+
+        if(isAdmin){
+            Button suppBtn = new Button("X");
+            suppBtn.setStyle("-fx-background-color: Red; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px;");
+            suppBtn.setOnAction(event -> {
+                LessonController lessonController = new LessonController();
+                lessonController.deleteLesson(lesson.getId());
+
+                primaryStage.close();
+                new MainMenuView(primaryStage).show();
+            });
+
+            // Ajout des éléments au HBox
+            getChildren().addAll(suppBtn);
+        }
     }
 }

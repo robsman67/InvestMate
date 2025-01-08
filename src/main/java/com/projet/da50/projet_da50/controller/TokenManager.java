@@ -262,7 +262,7 @@ public class TokenManager {
     /**
      * Deletes the token when the application is closed.
      */
-    public static void shutDownDeleteToken() {
+    public static void shutDownDeleteToken(long idToken) {
         // Delete token when we quit the app
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("App is shutting down." + stayLogged);

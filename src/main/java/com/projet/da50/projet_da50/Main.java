@@ -7,8 +7,7 @@ import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import static com.projet.da50.projet_da50.controller.TokenManager.shutDownDeleteToken;
-import static com.projet.da50.projet_da50.controller.TokenManager.stayLogged;
+import static com.projet.da50.projet_da50.controller.TokenManager.*;
 
 public class Main extends Application {
 
@@ -42,7 +41,7 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        shutDownDeleteToken();
+        shutDownDeleteToken(getIdToken());
         launch(args);
     }
 }

@@ -12,6 +12,9 @@ public abstract class Elements {
     @Column(name = "id")
     private Integer id;
 
+    @Column(name = "position")
+    private Integer position;
+
     public Elements() {}
 
     // Getters and setters
@@ -21,6 +24,14 @@ public abstract class Elements {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 
     public abstract String toSave();

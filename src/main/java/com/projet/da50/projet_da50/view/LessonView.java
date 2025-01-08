@@ -17,6 +17,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -150,8 +152,22 @@ public class LessonView extends UI {
         separator.setStyle("-fx-background-color: #000000; -fx-arc-height: 5");
         section.getChildren().add(separator);
 
-        List<Elements> elementsList = lesson.getElements();
-        for (Elements element : elementsList) {
+        List<Elements> elementsList = lesson.getElements();;
+
+        // Sort the elements by position (ascending order)
+        Collections.sort(elementsList, new Comparator<Elements>() {
+            @Override
+            public int compare(Elements e1, Elements e2) {
+                return e1.getPosition().compareTo(e2.getPosition());
+            }
+        });
+
+        // Loop through the sorted elements list and add them to the preview section
+        for (int i = 0; i < elementsList.size(); i++) {
+            Elements element = elementsList.get(i);
+
+            System.out.println(elementsList.get(i).getPosition());
+
             HBox elementBox = createElementBox(element);
             section.getChildren().add(elementBox);
         }

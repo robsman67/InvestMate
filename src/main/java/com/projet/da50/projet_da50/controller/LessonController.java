@@ -15,6 +15,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static com.projet.da50.projet_da50.controller.TokenManager.getIdToken;
+
 /**
  * The LessonController class manages the creation, validation, and retrieval of Lesson objects.
  * It interacts with the Hibernate ORM to store and retrieve lesson data from the database.
@@ -22,7 +24,8 @@ import java.util.List;
 public class LessonController {
 
     private Lesson lesson;
-    private SessionFactory factory;
+    private final SessionFactory factory;
+    private final LogController logController = new LogController();
 
     /**
      * Default constructor, initializing a new Lesson and configuring Hibernate SessionFactory.
@@ -68,6 +71,7 @@ public class LessonController {
             return false;
         }
 
+        logController.createLog(getIdToken(), "Lesson Creation", "Lesson title: " + lessonTitle);
         // Additional validation rules can be added here as needed.
         return true;
     }
@@ -102,6 +106,7 @@ public class LessonController {
         Title title = new Title();
         title.setContent(content);
         title.setType(type);
+        title.setPosition(lesson.getElements().size());
 
         lesson.addElement(title);
         return lesson;
@@ -117,6 +122,7 @@ public class LessonController {
         Paragraph paragraph = new Paragraph();
         paragraph.setContent(content);
         paragraph.setType(type);
+        paragraph.setPosition(lesson.getElements().size());
 
         lesson.addElement(paragraph);
         return lesson;
@@ -134,6 +140,7 @@ public class LessonController {
         PictureIntegration image = new PictureIntegration();
         image.setContentPath(url);
         image.setImageData(imageBytes);
+        image.setPosition(lesson.getElements().size());
 
         lesson.addElement(image);
         return lesson;
@@ -151,6 +158,7 @@ public class LessonController {
         VideoIntegration video = new VideoIntegration();
         video.setContentPath(url);
         video.setVideoData(videoBytes);
+        video.setPosition(lesson.getElements().size());
 
         lesson.addElement(video);
         return lesson;
@@ -195,12 +203,45 @@ public class LessonController {
      * @param index2 The index of the second element.
      * @return true if the swap was successful, false otherwise.
      */
-    public boolean swapElements(List<Elements> lesson, int index1, int index2) {
+    public boolean swapElements(List<Elements> lesson, int index1, int index2, Boolean isUpdate) {
         // Validate the indices
         if (index1 >= 0 && index1 < lesson.size() && index2 >= 0 && index2 < lesson.size()) {
-            Elements temp = lesson.get(index1);
-            lesson.set(index1, lesson.get(index2));
-            lesson.set(index2, temp);
+            // Swap elements in the list
+            Elements element1 = lesson.get(index1);
+            Elements element2 = lesson.get(index2);
+
+            // Perform the swap in the list
+            lesson.set(index1, element2);
+            lesson.set(index2, element1);
+
+            // Swap positions (the new position is based on the index in the list)
+            element1.setPosition(index2);
+            element2.setPosition(index1);
+
+            // Update the IDs in the database using Hibernate
+            if (isUpdate) {
+                Session session = null;
+                try {
+                    session = HibernateUtil.getSessionFactory().openSession();
+                    session.beginTransaction();
+
+                    // Make sure the elements are in a persistent state before updating
+                    session.merge(element1);  // Re-attaches element1 if it's detached
+                    session.merge(element2);  // Re-attaches element2 if it's detached
+
+                    // Update the elements' positions in the database
+                    session.update(element1);
+                    session.update(element2);
+
+
+                    session.getTransaction().commit();
+                    return true;  // Swap and database update successful
+                } catch (Exception e) {
+                    session.getTransaction().rollback();
+                    System.out.println("Error during database update: " + e.getMessage());
+                    return false;  // Swap failed due to database error
+                }
+            }
             return true;  // Swap successful
         } else {
             System.out.println("Invalid indices!");
@@ -341,6 +382,31 @@ public class LessonController {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
             session.update(lesson);
+            session.getTransaction().commit();
+            logController.createLog(getIdToken(), "Update Lesson", "Lesson id: " + lesson.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * Deletes a lesson from the database.
+     * @param lessonId The ID of the lesson to delete.
+     */
+    public void deleteLesson(int lessonId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.beginTransaction();
+
+            // Retrieve the lesson by ID
+            Lesson lesson = session.get(Lesson.class, lessonId);
+
+            if (lesson != null) {
+                // Lesson exists, so proceed with deletion.
+                logController.createLog(getIdToken(), "Delete Lesson", "Lesson id: " + lesson.getId());
+                session.delete(lesson);  // Delete the lesson, elements are deleted due to cascade and orphan removal.
+            }
+
             session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
