@@ -14,12 +14,19 @@ public class UserController {
 
     private final SessionFactory factory;
 
+    /**
+     * Default constructor for UserController.
+     */
     public UserController() {
         // Create the SessionFactory when the application is started
         factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class).buildSessionFactory();
     }
 
-    // Find a user by username
+    /**
+     * Find a user by username
+     * @param username The username of the user.
+     * @return The user if found, null otherwise.
+     */
     public User findUserByUsername(String username) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<User> query = session.createQuery("from User where username = :username", User.class);
@@ -31,7 +38,11 @@ public class UserController {
         }
     }
 
-    // Find a user by mail
+    /**
+     * Find a user by mail
+     * @param mail The mail of the user.
+     * @return The user if found, null otherwise.
+     */
     public User findUserByMail(String mail) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<User> query = session.createQuery("from User where mail = :mail", User.class);
@@ -43,7 +54,13 @@ public class UserController {
         }
     }
 
-    // Create a new user
+    /**
+     * Create a user in the database
+     * @param username The username of the user.
+     * @param password The password of the user.
+     * @param mail The mail of the user.
+     * @return The ID of the user if created, null otherwise.
+     */
     public Long createUser(String username, String password, String mail) {
         Transaction transaction;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -71,7 +88,12 @@ public class UserController {
         }
     }
 
-    // Verify if a user exists with the right password
+    /**
+     * Verify the user credentials (username and password) in the database
+     * @param username The username of the user.
+     * @param password The password of the user.
+     * @return True if the credentials are correct, false otherwise.
+     */
     public boolean verifyUserCredentials(String username, String password) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             User user = findUserByUsername(username);
@@ -82,7 +104,11 @@ public class UserController {
         }
     }
 
-    // Delete a user
+    /**
+     * Delete a user by ID in the database
+     * @param userId The ID of the user.
+     * @return True if the user is deleted, false otherwise.
+     */
     public boolean deleteUserById(Long userId) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -107,7 +133,11 @@ public class UserController {
         }
     }
 
-    // Get a user by ID
+    /**
+     * Get a user by ID in the database
+     * @param userId The ID of the user.
+     * @return The user if found, null otherwise.
+     */
     public User getUserById(Long userId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(User.class, userId);
@@ -118,6 +148,11 @@ public class UserController {
         }
     }
 
+    /**
+     * Update a user in the database
+     * @param user The user to update.
+     * @return True if the user is updated, false otherwise.
+     */
     public boolean updateUser(User user) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -136,7 +171,9 @@ public class UserController {
         }
     }
 
-    // Close the SessionFactory when the application is closed
+    /**
+     * Close the SessionFactory when the application is stopped
+     */
     public void close() {
         if (factory != null && !factory.isClosed()) {
             factory.close();

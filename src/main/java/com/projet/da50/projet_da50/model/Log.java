@@ -26,9 +26,19 @@ public class Log {
     private Timestamp timestamp;
 
 
+    /**
+     * Default constructor for Log. For hibernate.
+     */
     public Log() {
     }
 
+    /**
+     * Constructor with parameters for Log.
+     *
+     * @param userId The id of the user.
+     * @param action The action performed.
+     * @param detail The detail of the action.
+     */
     public Log(Long userId, String action, String detail) {
         this.userId = userId;
         this.action = action;
@@ -37,26 +47,12 @@ public class Log {
     }
 
 
+    /**
+     * Getters id
+     */
     public Long getId() {
         return id;
     }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public String getAction() {
-        return action;
-    }
-
-    public Timestamp getTimestamp() {
-        return timestamp;
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
 
 
 }
