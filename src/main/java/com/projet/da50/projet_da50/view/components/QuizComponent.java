@@ -1,8 +1,7 @@
 package com.projet.da50.projet_da50.view.components;
-import com.projet.da50.projet_da50.controller.QuizController;
-import com.projet.da50.projet_da50.model.Quiz;
+import com.projet.da50.projet_da50.controller.quiz.QuizController;
+import com.projet.da50.projet_da50.model.quiz.Quiz;
 import com.projet.da50.projet_da50.view.quiz.*;
-import com.projet.da50.projet_da50.view.MainMenuView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

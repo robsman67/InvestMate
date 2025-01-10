@@ -1,8 +1,8 @@
 package com.projet.da50.projet_da50;
 
-import com.projet.da50.projet_da50.controller.UserController;
-import com.projet.da50.projet_da50.model.Role;
-import com.projet.da50.projet_da50.model.User;
+import com.projet.da50.projet_da50.controller.user.UserController;
+import com.projet.da50.projet_da50.model.user.Role;
+import com.projet.da50.projet_da50.model.user.User;
 import java.util.Scanner;
 
 public class CreateAdminUser {

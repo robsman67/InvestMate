@@ -1,13 +1,13 @@
 package com.projet.da50.projet_da50;
 
-import com.projet.da50.projet_da50.controller.TokenManager;
-import com.projet.da50.projet_da50.view.AuthenticationFormView;
+import com.projet.da50.projet_da50.controller.authentification.TokenManager;
+import com.projet.da50.projet_da50.view.authentification.AuthenticationFormView;
 import com.projet.da50.projet_da50.view.MainMenuView;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import static com.projet.da50.projet_da50.controller.TokenManager.*;
+import static com.projet.da50.projet_da50.controller.authentification.TokenManager.*;
 
 public class Main extends Application {
 

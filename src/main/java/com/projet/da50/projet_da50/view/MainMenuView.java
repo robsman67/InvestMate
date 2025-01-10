@@ -1,12 +1,15 @@
 package com.projet.da50.projet_da50.view;
 
-import com.projet.da50.projet_da50.controller.LessonController;
+import com.projet.da50.projet_da50.controller.lesson.LessonController;
 import com.projet.da50.projet_da50.controller.LogController;
-import com.projet.da50.projet_da50.controller.TokenManager;
-import com.projet.da50.projet_da50.model.Lesson;
-import com.projet.da50.projet_da50.model.Tags;
+import com.projet.da50.projet_da50.controller.authentification.TokenManager;
+import com.projet.da50.projet_da50.model.lesson.Lesson;
+import com.projet.da50.projet_da50.model.lesson.Tags;
+import com.projet.da50.projet_da50.view.account.MyAccountView;
+import com.projet.da50.projet_da50.view.authentification.AuthenticationFormView;
 import com.projet.da50.projet_da50.view.components.CustomButton;
 import com.projet.da50.projet_da50.view.components.LessonComponent;
+import com.projet.da50.projet_da50.view.lesson.CreateLessonView;
 import com.projet.da50.projet_da50.view.quiz.ShowQuizView;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -23,7 +26,7 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
-import static com.projet.da50.projet_da50.controller.TokenManager.getIdToken;
+import static com.projet.da50.projet_da50.controller.authentification.TokenManager.getIdToken;
 
 /**
  * Represents the main menu view of the application.

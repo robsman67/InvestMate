@@ -1,25 +1,18 @@
 package com.projet.da50.projet_da50.view.quiz;
 
-import com.projet.da50.projet_da50.controller.QuizController;
-import com.projet.da50.projet_da50.model.Lesson;
-import com.projet.da50.projet_da50.model.Quiz;
-import com.projet.da50.projet_da50.model.Tags;
+import com.projet.da50.projet_da50.controller.quiz.QuizController;
+import com.projet.da50.projet_da50.model.quiz.Quiz;
 import com.projet.da50.projet_da50.view.MainMenuView;
 import com.projet.da50.projet_da50.view.UI;
-import com.projet.da50.projet_da50.view.components.LessonComponent;
 import com.projet.da50.projet_da50.view.components.QuizComponent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;

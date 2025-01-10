@@ -1,11 +1,10 @@
 package com.projet.da50.projet_da50.view.quiz;
 
-import com.projet.da50.projet_da50.controller.OptionController;
-import com.projet.da50.projet_da50.controller.QuestionController;
-import com.projet.da50.projet_da50.model.Option;
-import com.projet.da50.projet_da50.model.Question;
-import com.projet.da50.projet_da50.model.Quiz;
-import com.projet.da50.projet_da50.view.MainMenuView;
+import com.projet.da50.projet_da50.controller.quiz.OptionController;
+import com.projet.da50.projet_da50.controller.quiz.QuestionController;
+import com.projet.da50.projet_da50.model.quiz.Option;
+import com.projet.da50.projet_da50.model.quiz.Question;
+import com.projet.da50.projet_da50.model.quiz.Quiz;
 import com.projet.da50.projet_da50.view.UI;
 import com.projet.da50.projet_da50.view.components.CustomButton;
 import com.projet.da50.projet_da50.view.components.CustomLabel;

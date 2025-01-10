@@ -1,7 +1,7 @@
 package controllerTest;
 
-import com.projet.da50.projet_da50.model.User;
-import com.projet.da50.projet_da50.controller.UserController;
+import com.projet.da50.projet_da50.model.user.User;
+import com.projet.da50.projet_da50.controller.user.UserController;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

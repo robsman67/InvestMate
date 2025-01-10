@@ -1,9 +1,9 @@
 package com.projet.da50.projet_da50.view.components;
 
-import com.projet.da50.projet_da50.controller.LessonController;
+import com.projet.da50.projet_da50.controller.lesson.LessonController;
 import com.projet.da50.projet_da50.controller.LogController;
-import com.projet.da50.projet_da50.model.Lesson;
-import com.projet.da50.projet_da50.view.LessonView;
+import com.projet.da50.projet_da50.model.lesson.Lesson;
+import com.projet.da50.projet_da50.view.lesson.LessonView;
 import com.projet.da50.projet_da50.view.MainMenuView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,7 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import static com.projet.da50.projet_da50.controller.TokenManager.getIdToken;
+import static com.projet.da50.projet_da50.controller.authentification.TokenManager.getIdToken;
 
 public class LessonComponent extends HBox {
 
