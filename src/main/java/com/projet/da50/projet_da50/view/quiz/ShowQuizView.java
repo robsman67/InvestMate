@@ -140,18 +140,8 @@ public class ShowQuizView extends UI {
             new MainMenuView(primaryStage).show();
         });
 
-        Button btnQuizz = createButton("Quizz", "button-blue", e -> {
-            primaryStage.close();
-            new ShowQuizView(primaryStage).show();
-        });
 
-        Button btnWallet = createButton("Wallet", "button-blue", e -> {
-            primaryStage.close();
-            // Handle Wallet action (To be implemented)
-        });
-
-
-        navigationButtons.getChildren().addAll(btnHome, btnQuizz, btnWallet);
+        navigationButtons.getChildren().addAll(btnHome);
         grid.add(navigationButtons, 0, 0);
     }
 

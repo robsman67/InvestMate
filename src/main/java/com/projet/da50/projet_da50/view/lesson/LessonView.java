@@ -110,13 +110,15 @@ public class LessonView extends UI {
             new MainMenuView(primaryStage).show();
         });
 
+        /**
         Button shareButton = new Button("Share");
         shareButton.getStyleClass().add("button-blue");
         shareButton.setOnAction(event -> {
             // Action for Share button
         });
+        */
 
-        navigationBar.getChildren().addAll(homeButton, shareButton);
+        navigationBar.getChildren().addAll(homeButton);
 
         if (getAdmin()) {
             Button modifyButton = new Button("Modify");

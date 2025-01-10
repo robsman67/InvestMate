@@ -113,10 +113,12 @@ public class MainMenuView extends UI {
             new ShowQuizView(primaryStage).show();
         });
 
+        /**
         Button btnWallet = createButton("Wallet", "button-blue", e -> {
             primaryStage.close();
             // Handle Wallet action (To be implemented)
         });
+        */
 
         Button btnProfile = createButton("Profile", "button-blue", e -> {
             primaryStage.close();
@@ -124,7 +126,7 @@ public class MainMenuView extends UI {
 
         });
 
-        navigationButtons.getChildren().addAll(btnHome, btnQuizz, btnWallet, btnProfile);
+        navigationButtons.getChildren().addAll(btnHome, btnQuizz, btnProfile);
         grid.add(navigationButtons, 0, 0);
     }
 

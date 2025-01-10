@@ -18,6 +18,9 @@ import javafx.stage.Stage;
 
 import static com.projet.da50.projet_da50.controller.authentification.TokenManager.getIdToken;
 
+/**
+ *  This class is a component that represents a lesson in the list of lessons
+ */
 public class LessonComponent extends HBox {
 
     private final LogController logController = new LogController();

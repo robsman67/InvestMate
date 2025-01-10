@@ -24,6 +24,10 @@ import java.util.Objects;
 
 import static com.projet.da50.projet_da50.controller.authentification.TokenManager.getIdToken;
 
+/**
+ * The MyAccountView class represents the view for the user's account settings.
+ * It allows users to modify their email, username, and password.
+ */
 public class MyAccountView extends UI {
 
     private final Stage primaryStage;
@@ -31,8 +35,6 @@ public class MyAccountView extends UI {
     private final UserController userController = new UserController();
     private final LogController logController = new LogController();
     GridPane grid = new GridPane();
-
-
 
     private User user;
 
