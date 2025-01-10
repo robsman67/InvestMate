@@ -27,10 +27,17 @@ public class MyAccountView extends UI {
     private final ErrorHandler errorHandler = new ErrorHandler();
     private final UserController userController = new UserController();
     private final LogController logController = new LogController();
+    GridPane grid = new GridPane();
+
 
 
     private User user;
 
+    /**
+     * Constructor for MyAccountView.
+     *
+     * @param primaryStage The primary stage for this view.
+     */
     public MyAccountView(Stage primaryStage) {
         this.primaryStage = primaryStage;
         String token = TokenManager.getToken();
@@ -50,8 +57,10 @@ public class MyAccountView extends UI {
         }
     }
 
+    /**
+     * Displays the MyAccount view.
+     */
     public void show() {
-        GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_LEFT);
         grid.setHgap(10);
         grid.setVgap(10);
@@ -104,36 +113,8 @@ public class MyAccountView extends UI {
             // Clear previous messages
             grid.getChildren().removeIf(node -> GridPane.getRowIndex(node) == 1 && GridPane.getColumnIndex(node) == 4);
 
-            // Check mail format
-            if (!errorHandler.isValidEmail(newEmail)) {
-                // Display an error message
-                Label errorField = new Label();
-                errorField.setText("Invalid email format.");
-                grid.add(errorField, 4, 1);
-
-            } else if (errorHandler.isEmailAlreadyUsed(newEmail)) {
-                // Check if this mail is already used
-                Label errorField = new Label();
-                errorField.setText("This mail is already used.");
-                grid.add(errorField, 4, 1);
-
-            } else if (newEmail.isEmpty()) {
-                // Check if empty
-                Label errorField = new Label();
-                errorField.setText("Please fill in all fields.");
-                grid.add(errorField, 4, 1);
-            } else {
-                String previousEmail = user.getMail();
-                // Save the new email to the user profile
-                user.setMail(newEmail);
-                // Update the user in the database
-                userController.updateUser(user);
-                // Display a success message
-                Label successField = new Label();
-                successField.setText("Email updated successfully.");
-                logController.createLog(getIdToken(), "Email updated", "New email: " + newEmail + ", Old email: " + previousEmail);
-                grid.add(successField, 4, 1);
-            }
+            //Call the new email function
+            newEmail(newEmail);
         });
 
 
@@ -176,30 +157,8 @@ public class MyAccountView extends UI {
             // Clear previous messages
             grid.getChildren().removeIf(node -> GridPane.getRowIndex(node) == 3 && GridPane.getColumnIndex(node) == 4);
 
-            if (errorHandler.isUsernameAlreadyTaken(newUsername)) {
-                Label errorField = new Label();
-                errorField.setText("This username is already used.");
-                grid.add(errorField, 4, 3);
-            } else if (newUsername.isEmpty()) {
-                Label errorField = new Label();
-                errorField.setText("Please fill in all fields.");
-                grid.add(errorField, 4, 3);
-            } else {
-                String previousUsername = user.getUsername();
-                // Save the new email to the user profile
-                user.setUsername(newUsername);
-                // Update the user in the database
-                userController.updateUser(user);
-
-                // Update the token with the username
-                TokenManager.deleteToken();
-                TokenManager.generateToken(newUsername);
-                // Display a success message
-                Label successField = new Label();
-                successField.setText("Username updated successfully.");
-                logController.createLog(getIdToken(), "Username updated", "New username: " + newUsername + ", Old username: " + previousUsername);
-                grid.add(successField, 4, 3);
-            }
+            //Call the new username function
+            newUsername(newUsername);
         });
 
 
@@ -258,37 +217,11 @@ public class MyAccountView extends UI {
             // Clear previous messages
             grid.getChildren().removeIf(node -> GridPane.getRowIndex(node) == 5 && GridPane.getColumnIndex(node) == 6);
 
-            if (newPassword.isEmpty() || lastPassword.isEmpty()) {
-                Label errorField = new Label();
-                errorField.setText("Please fill in all fields.");
-                grid.add(errorField, 6, 5);
-            } else if (errorHandler.isCurrentPasswordCorrect(user, lastPassword)) {
-                if (!errorHandler.isPasswordValid(newPassword)) {
-                    Label errorField = new Label();
-                    errorField.setText("Password should be at least 6 characters long.");
-                    grid.add(errorField, 6, 5);
-                } else if (errorHandler.isCurrentPasswordCorrect(user, newPassword)) {
-                    Label errorField = new Label();
-                    errorField.setText("New password should be different from the last one.");
-                    grid.add(errorField, 6, 5);
-                } else {
-                    String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
-                    user.setPassword(hashedPassword);
-                    userController.updateUser(user);
-                    Label successField = new Label();
-                    successField.setText("Password updated successfully.");
-                    grid.add(successField, 6, 5);
-                    logController.createLog(getIdToken(), "Password updated","");
-                }
-            } else {
-                Label errorField = new Label();
-                errorField.setText("Wrong current password.");
-                grid.add(errorField, 6, 5);
-            }
+            //Call the new password function
+            newPassword(newPassword, lastPassword);
         });
 
         // Delete Account
-        //TODO: Check wallet or more prevention
         CustomButton btnDelete = new CustomButton("Delete Account");
         btnDelete.getStyleClass().add("button-blue");
         grid.add(btnDelete, 0, 7);
@@ -328,6 +261,113 @@ public class MyAccountView extends UI {
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
         primaryStage.show();
+    }
+
+    /**
+     * Updates the user's email.
+     *
+     * @param newEmail The new email to be set.
+     */
+    public void newEmail (String newEmail) {
+        // Check mail format
+        if (!errorHandler.isValidEmail(newEmail)) {
+            // Display an error message
+            Label errorField = new Label();
+            errorField.setText("Invalid email format.");
+            grid.add(errorField, 4, 1);
+
+        } else if (errorHandler.isEmailAlreadyUsed(newEmail)) {
+            // Check if this mail is already used
+            Label errorField = new Label();
+            errorField.setText("This mail is already used.");
+            grid.add(errorField, 4, 1);
+
+        } else if (newEmail.isEmpty()) {
+            // Check if empty
+            Label errorField = new Label();
+            errorField.setText("Please fill in all fields.");
+            grid.add(errorField, 4, 1);
+        } else {
+            String previousEmail = user.getMail();
+            // Save the new email to the user profile
+            user.setMail(newEmail);
+            // Update the user in the database
+            userController.updateUser(user);
+            // Display a success message
+            Label successField = new Label();
+            successField.setText("Email updated successfully.");
+            logController.createLog(getIdToken(), "Email updated", "New email: " + newEmail + ", Old email: " + previousEmail);
+            grid.add(successField, 4, 1);
+        }
+    }
+
+    /**
+     * Updates the user's username.
+     *
+     * @param newUsername The new username to be set.
+     */
+    public void newUsername (String newUsername) {
+
+        if (errorHandler.isUsernameAlreadyTaken(newUsername)) {
+            Label errorField = new Label();
+            errorField.setText("This username is already used.");
+            grid.add(errorField, 4, 3);
+        } else if (newUsername.isEmpty()) {
+            Label errorField = new Label();
+            errorField.setText("Please fill in all fields.");
+            grid.add(errorField, 4, 3);
+        } else {
+            String previousUsername = user.getUsername();
+            // Save the new email to the user profile
+            user.setUsername(newUsername);
+            // Update the user in the database
+            userController.updateUser(user);
+
+            // Update the token with the username
+            TokenManager.deleteToken();
+            TokenManager.generateToken(newUsername);
+            // Display a success message
+            Label successField = new Label();
+            successField.setText("Username updated successfully.");
+            logController.createLog(getIdToken(), "Username updated", "New username: " + newUsername + ", Old username: " + previousUsername);
+            grid.add(successField, 4, 3);
+        }
+    }
+
+    /**
+     * Updates the user's password.
+     *
+     * @param newPassword The new password to be set.
+     * @param lastPassword The current password for verification.
+     */
+    public void newPassword (String newPassword, String lastPassword) {
+        if (newPassword.isEmpty() || lastPassword.isEmpty()) {
+            Label errorField = new Label();
+            errorField.setText("Please fill in all fields.");
+            grid.add(errorField, 6, 5);
+        } else if (errorHandler.isCurrentPasswordCorrect(user, lastPassword)) {
+            if (!errorHandler.isPasswordValid(newPassword)) {
+                Label errorField = new Label();
+                errorField.setText("Password should be at least 6 characters long.");
+                grid.add(errorField, 6, 5);
+            } else if (errorHandler.isCurrentPasswordCorrect(user, newPassword)) {
+                Label errorField = new Label();
+                errorField.setText("New password should be different from the last one.");
+                grid.add(errorField, 6, 5);
+            } else {
+                String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+                user.setPassword(hashedPassword);
+                userController.updateUser(user);
+                Label successField = new Label();
+                successField.setText("Password updated successfully.");
+                grid.add(successField, 6, 5);
+                logController.createLog(getIdToken(), "Password updated","");
+            }
+        } else {
+            Label errorField = new Label();
+            errorField.setText("Wrong current password.");
+            grid.add(errorField, 6, 5);
+        }
     }
 
 

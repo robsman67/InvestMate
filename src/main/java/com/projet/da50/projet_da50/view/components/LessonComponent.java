@@ -22,6 +22,12 @@ public class LessonComponent extends HBox {
 
     private final LogController logController = new LogController();
 
+    /**
+     * Constructeur de la classe LessonComponent
+     * @param primaryStage Stage : Primary stage
+     * @param lesson Lesson : Lesson to display
+     * @param isAdmin boolean : true if the user is an admin
+     */
     public LessonComponent(Stage primaryStage, Lesson lesson, boolean isAdmin) {
         // Forcer l'extension sur toute la largeur
         setPrefWidth(Double.MAX_VALUE);
