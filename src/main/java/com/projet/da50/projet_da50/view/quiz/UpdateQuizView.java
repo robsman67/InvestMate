@@ -29,6 +29,12 @@ public class UpdateQuizView extends UI {
     private OptionController optionController;
     private long quizId; // Quiz identifier for fetching/updating data
 
+    /**
+     * Constructor for UpdateQuizView.
+     *
+     * @param primaryStage The primary stage of the application.
+     * @param quizId The ID of the quiz to update.
+     */
     public UpdateQuizView(Stage primaryStage, long quizId) {
         this.primaryStage = primaryStage;
         this.controller = new QuizController();
@@ -37,6 +43,9 @@ public class UpdateQuizView extends UI {
         this.optionController = new OptionController();
     }
 
+    /**
+     * Displays the view.
+     */
     public void show() {
         GridPane grid = createMainLayout();
         Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -100,6 +109,11 @@ public class UpdateQuizView extends UI {
         primaryStage.setMaximized(true);
         primaryStage.show();
     }
+
+    /**
+     * Creates the main layout of the view.
+     * @return the main layout {@link GridPane}.
+     */
     private GridPane createMainLayout() {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_LEFT);
@@ -114,6 +128,14 @@ public class UpdateQuizView extends UI {
 
         return grid;
     }
+
+    /**
+     * Creates a button with the specified text, style class, and action
+     * @param text the text of the button.
+     * @param styleClass the style class of the button.
+     * @param action the action to perform when the button is clicked.
+     * @return the created button.
+     */
     private Button createButton(String text, String styleClass, EventHandler<ActionEvent> action) {
         Button button = new Button(text);
         button.getStyleClass().add(styleClass);
@@ -121,6 +143,12 @@ public class UpdateQuizView extends UI {
         return button;
     }
 
+    /**
+     * Fetches quiz data from the controller and populates the view.
+     * @param quizTitleField The text field for the quiz title.
+     * @param questionBoxes The list of question boxes.
+     * @param root The root layout of the view.
+     */
     private void fetchAndPopulateQuizData(TextField quizTitleField, List<QuestionBox> questionBoxes, VBox root) {
         // Fetch quiz data from the controller
         var quiz = controller.getQuizById(quizId);
@@ -152,10 +180,21 @@ public class UpdateQuizView extends UI {
         private boolean isMultipleAnswers;
         private List<QuestionBox> questionBoxes;
 
+        /**
+         * Constructor for QuestionBox.
+         * @param isMultipleAnswers Whether the question has multiple answers.
+         * @param questionBoxes The list of question boxes.
+         */
         public QuestionBox(boolean isMultipleAnswers, List<QuestionBox> questionBoxes) {
             this(isMultipleAnswers, questionBoxes, null);
         }
 
+        /**
+         * Constructor for QuestionBox.
+         * @param isMultipleAnswers Whether the question has multiple answers.
+         * @param questionBoxes The list of question boxes.
+         * @param question The question data to populate the box with.
+         */
         public QuestionBox(boolean isMultipleAnswers, List<QuestionBox> questionBoxes, Question question) {
             this.isMultipleAnswers = isMultipleAnswers;
             this.questionBoxes = questionBoxes;
@@ -186,10 +225,17 @@ public class UpdateQuizView extends UI {
             }
         }
 
+        /**
+         * Adds an option to the question.
+         */
         private void addOption() {
             addOption(null);
         }
 
+        /**
+         * Adds an option to the question.
+         * @param option The option data to populate the box with.
+         */
         private void addOption(Option option) {
             HBox optionRow = new HBox(10);
             TextField optionField = new TextField();
@@ -223,11 +269,18 @@ public class UpdateQuizView extends UI {
             }
         }
 
+        /**
+         * Deletes the question box.
+         */
         private void deleteQuestion() {
             ((VBox) box.getParent()).getChildren().remove(box); // Remove from UI
             questionBoxes.remove(this); // Remove from list
         }
 
+        /**
+         * Converts the question box to a {@link Question} object.
+         * @return the {@link Question} object.
+         */
         public Question toQuestion() {
             List<Option> options = new ArrayList<>();
             for (var node : optionsBox.getChildren()) {
@@ -239,6 +292,10 @@ public class UpdateQuizView extends UI {
             return new Question(questionField.getText(), options);
         }
 
+        /**
+         * Returns the VBox of the question box.
+         * @return the VBox of the question box.
+         */
         public VBox getBox() {
             return box;
         }

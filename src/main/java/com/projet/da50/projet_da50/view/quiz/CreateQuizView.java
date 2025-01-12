@@ -18,6 +18,9 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * View for creating a new quiz.
+ */
 public class CreateQuizView extends UI {
 
     private Stage primaryStage;
@@ -28,6 +31,9 @@ public class CreateQuizView extends UI {
         this.controller = new QuizController();
     }
 
+    /**
+     * Show the view.
+     */
     public void show() {
         GridPane grid = createMainLayout();
         addNavigationButtons(grid);
@@ -53,6 +59,11 @@ public class CreateQuizView extends UI {
         primaryStage.show();
     }
 
+    /**
+     * Show the view for creating questions.
+     * @param stage The stage to show the view on.
+     * @param isMultipleAnswers Whether the quiz allows multiple answers.
+     */
     private void showCreateQuestionView(Stage stage, boolean isMultipleAnswers) {
         GridPane grid = createMainLayout();
         addNavigationButtons(grid);
@@ -102,12 +113,29 @@ public class CreateQuizView extends UI {
         stage.setScene(scene);
         stage.setMaximized(true);
     }
+
+    /**
+     * Create a button with the given text, style class and action.
+     * @param text The text to display on the button.
+     * @param styleClass The style class to apply to the button.
+     * @param action The action to perform when the button is clicked.
+     * @return The created button.
+     */
     private Button createButton(String text, String styleClass, EventHandler<ActionEvent> action) {
         Button button = new Button(text);
         button.getStyleClass().add(styleClass);
         button.setOnAction(action);
         return button;
     }
+
+    /**
+     * Create a styled label with the given text, font size, boldness and color.
+     * @param text The text to display on the label.
+     * @param fontSize The font size of the label.
+     * @param bold Whether the text should be bold.
+     * @param color The color of the text.
+     * @return The created label.
+     */
     private Label createStyledLabel(String text, int fontSize, boolean bold, String color) {
         Label label = new Label(text);
         String style = "-fx-font-size: " + fontSize + "px;";
@@ -117,6 +145,11 @@ public class CreateQuizView extends UI {
         label.setStyle(style + " -fx-text-fill:" + color + ";");
         return label;
     }
+
+    /**
+     * Create the main layout for the view.
+     * @return The created layout.
+     */
     private GridPane createMainLayout() {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_LEFT);
@@ -131,6 +164,11 @@ public class CreateQuizView extends UI {
 
         return grid;
     }
+
+    /**
+     * Add navigation buttons to the view.
+     * @param grid The grid to add the buttons to.
+     */
     private void addNavigationButtons(GridPane grid) {
         HBox navigationButtons = new HBox(20);
         navigationButtons.setAlignment(Pos.CENTER_LEFT);
@@ -160,6 +198,11 @@ public class CreateQuizView extends UI {
         private boolean isMultipleAnswers;
         private List<QuestionBox> questionBoxes;
 
+        /**
+         * Constructor for QuestionBox.
+         * @param isMultipleAnswers Whether the question allows multiple answers.
+         * @param questionBoxes The list of question boxes.
+         */
         public QuestionBox(boolean isMultipleAnswers, List<QuestionBox> questionBoxes) {
             this.isMultipleAnswers = isMultipleAnswers;
             this.questionBoxes = questionBoxes;
@@ -181,6 +224,9 @@ public class CreateQuizView extends UI {
             box.getChildren().addAll(questionField, optionsBox, addOptionButton, deleteQuestionButton);
         }
 
+        /**
+         * Add an option to the question.
+         */
         private void addOption() {
             HBox optionRow = new HBox(10);
             TextField optionField = new TextField();
@@ -209,11 +255,18 @@ public class CreateQuizView extends UI {
             }
         }
 
+        /**
+         * Delete the question.
+         */
         private void deleteQuestion() {
             ((VBox) box.getParent()).getChildren().remove(box); // Remove from UI
             questionBoxes.remove(this); // Remove from list
         }
 
+        /**
+         * Convert the question box to a Question object.
+         * @return The created Question object.
+         */
         public Question toQuestion() {
             List<Option> options = new ArrayList<>();
             for (var node : optionsBox.getChildren()) {
@@ -225,6 +278,10 @@ public class CreateQuizView extends UI {
             return new Question(questionField.getText(), options);
         }
 
+        /**
+         * Get the VBox containing the question box.
+         * @return The VBox containing the question box.
+         */
         public VBox getBox() {
             return box;
         }

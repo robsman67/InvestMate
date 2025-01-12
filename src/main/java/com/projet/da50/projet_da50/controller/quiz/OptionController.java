@@ -12,24 +12,21 @@ import java.util.List;
 
 /**
  * Controller for the Option entity
- * This class is used to interact with the database
  */
 public class OptionController {
-
-    private final SessionFactory factory;
+    private SessionFactory factory;
 
     /**
-     * Constructor for the OptionController
-     * This constructor initializes the factory attribute
+     * Constructor
      */
     public OptionController(){
         factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Option.class).buildSessionFactory();
     }
 
     /**
-     * Method to get all the options of a question
-     * @param questionId the id of the question
-     * @return a list of options
+     * Get all options by question id
+     * @param questionId the question id
+     * @return the list of options
      */
     public List<Option> getAllOptionsByQuestionId(Long questionId){
         try (Session session = factory.openSession()) {
@@ -43,8 +40,8 @@ public class OptionController {
     }
 
     /**
-     * Method to get an option by its id
-     * @param optionId the id of the option
+     * Get an option by its id
+     * @param optionId the option id
      * @return the option
      */
     public Option getOptionById(Long optionId){
@@ -59,7 +56,7 @@ public class OptionController {
     }
 
     /**
-     * Method to create an option
+     * Create an option
      * @param option the option to create
      */
     public void createOption(Option option) {
@@ -77,7 +74,7 @@ public class OptionController {
     }
 
     /**
-     * Method to delete an option
+     * Delete an option
      * @param option the option to delete
      */
     public void updateOption(Option option){
@@ -91,7 +88,7 @@ public class OptionController {
     }
 
     /**
-     * Close the Hibernate session factory.
+     * Delete an option
      */
     public void close() {
         if (factory != null && !factory.isClosed()) {

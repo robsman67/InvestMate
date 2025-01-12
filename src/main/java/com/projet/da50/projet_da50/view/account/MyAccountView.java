@@ -74,13 +74,14 @@ public class MyAccountView extends UI {
 
         // Add a title label at the top of the page
         Label titleLabel = new Label("MyAccount");
-        titleLabel.setStyle("-fx-text-fill: black; -fx-font-weight: bold; -fx-font-size: 24px;");
+        titleLabel.setStyle("-fx-text-fill: black; -fx-font-weight: bold; -fx-font-size: 28px;-fx-alignment: center;");
         GridPane.setColumnSpan(titleLabel, 4); // Span across four columns
         GridPane.setHalignment(titleLabel, HPos.CENTER); // Center horizontally
         grid.add(titleLabel, 0, 0);
 
         // Add a label for the current email (use actual current email from user profile)
-        Label currentEmailLabel = new Label("Current Email: " + user.getMail());
+        Label currentEmailLabel = new Label("Current Email : " + user.getMail());
+        currentEmailLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 14px; -fx-text-fill: white;");
         grid.add(currentEmailLabel, 0, 1);
 
         // Button to modify the email
@@ -92,6 +93,7 @@ public class MyAccountView extends UI {
         CustomTextField newEmailField = new CustomTextField();
         newEmailField.setVisible(false);
         Label newEmailLabel = new Label("New Email:");
+        newEmailLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 14px; -fx-text-fill: white;");
         newEmailLabel.setVisible(false);
 
         // Add new email input components to the grid, but keep them hidden initially
@@ -125,6 +127,7 @@ public class MyAccountView extends UI {
 
         // Add a label for the current email (use actual current email from user profile)
         Label currentUserNameLabel = new Label("Current Username: " + user.getUsername());
+        currentUserNameLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 14px; -fx-text-fill: white;");
         grid.add(currentUserNameLabel, 0, 3);
 
         // Button to modify the email
@@ -136,6 +139,7 @@ public class MyAccountView extends UI {
         CustomTextField newUsernameField = new CustomTextField();
         newUsernameField.setVisible(false);
         Label newUsernameLabel = new Label("New Username:");
+        newUsernameLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 14px; -fx-text-fill: white;");
         newUsernameLabel.setVisible(false);
 
         // Add new email input components to the grid, but keep them hidden initially
@@ -167,9 +171,9 @@ public class MyAccountView extends UI {
         });
 
 
-        // DO the same for update the password
         // Add a label for the current email (use actual current email from user profile)
         Label currentPasswordLabel = new Label("Password");
+        currentPasswordLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 14px; -fx-text-fill: white;");
         grid.add(currentPasswordLabel, 0, 5);
 
         // Button to modify the email
@@ -180,6 +184,7 @@ public class MyAccountView extends UI {
 
         //Write last password
         Label lastPasswordLabel = new Label("Current Password: ");
+        lastPasswordLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 14px; -fx-text-fill: white;");
         lastPasswordLabel.setVisible(false);
         CustomPasswordField lastPasswordField = new CustomPasswordField();
         lastPasswordField.setVisible(false);
@@ -193,6 +198,7 @@ public class MyAccountView extends UI {
         CustomPasswordField newPasswordField = new CustomPasswordField();
         newPasswordField.setVisible(false);
         Label newPasswordLabel = new Label("New Password:");
+        newPasswordLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 14px; -fx-text-fill: white;");
         newPasswordLabel.setVisible(false);
 
         // Add new email input components to the grid, but keep them hidden initially
@@ -231,7 +237,9 @@ public class MyAccountView extends UI {
         btnDelete.getStyleClass().add("button-blue");
         grid.add(btnDelete, 0, 7);
         CustomButton btnSureDelete = new CustomButton("Are you sure ?");
+        btnSureDelete.setStyle("-fx-font-weight: bold;");
         btnSureDelete.getStyleClass().add("button-red");
+
         btnSureDelete.setVisible(false);
         grid.add(btnSureDelete, 1, 7);
 
@@ -242,11 +250,7 @@ public class MyAccountView extends UI {
 
         //To delete
         btnSureDelete.setOnAction(e -> {
-            logController.createLog(getIdToken(), "Account deleted", "username: " + user.getUsername() + ", mail: " + user.getMail());
-            userController.deleteUserById(user.getId());
-            TokenManager.deleteToken();
-            primaryStage.close();
-            new AuthenticationFormView(primaryStage).show();
+            deleteAccount();
         });
 
         // Go back button
@@ -373,6 +377,14 @@ public class MyAccountView extends UI {
             errorField.setText("Wrong current password.");
             grid.add(errorField, 6, 5);
         }
+    }
+
+    public void deleteAccount() {
+        logController.createLog(getIdToken(), "Account deleted", "username: " + user.getUsername() + ", mail: " + user.getMail());
+        userController.deleteUserById(user.getId());
+        TokenManager.deleteToken();
+        primaryStage.close();
+        new AuthenticationFormView(primaryStage).show();
     }
 
 

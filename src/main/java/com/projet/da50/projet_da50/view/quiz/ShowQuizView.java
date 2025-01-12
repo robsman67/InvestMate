@@ -27,73 +27,21 @@ public class ShowQuizView extends UI {
     private Stage primaryStage;
     private List<Quiz> quizList;
 
+    /**
+     * Constructor for ShowQuizView.
+     *
+     * @param primaryStage The primary stage of the application.
+     */
     public ShowQuizView(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.controller = new QuizController();
         this.quizList = controller.getAllQuizzes();
     }
 
-    //    public void show() {
-//        // Fetch data from database
-//        List<Quiz> quizzes = this.controller.getAllQuizzes();
-//
-//        // Create a VBox to hold buttons
-//        VBox vbox = new VBox(10);
-//        vbox.setStyle("-fx-padding: 20px;");
-//
-//        // Create a button to redirect to CreateQuizView
-//        Button btnCreateQuiz = new Button("Create Quiz");
-//        btnCreateQuiz.setStyle("-fx-padding: 10px; -fx-font-size: 16px;");
-//        btnCreateQuiz.setOnAction(e -> {
-//            new CreateQuizView(primaryStage).show();
-//        });
-//        vbox.getChildren().add(btnCreateQuiz);
-//
-//        // Create a Label for the title
-//        Label titleLabel = new Label("Available Quizzes");
-//        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
-//        vbox.getChildren().add(titleLabel);
-//
-//        // Create a Button for each quiz with numbering
-//        int quizNumber = 1;
-//        for (Quiz quiz : quizzes) {
-//            HBox quizBox = new HBox(10);
-//
-//            Button quizButton = new Button(quizNumber + ". " + quiz.getTitle());
-//            quizButton.setStyle("-fx-padding: 10px; -fx-font-size: 16px;");
-//            quizButton.setOnAction(e -> {
-//                new ShowQuestionView(primaryStage, quiz).show();
-//            });
-//
-//            Button updateButton = new Button("Update");
-//            updateButton.setStyle("-fx-padding: 10px; -fx-font-size: 16px;");
-//            updateButton.setOnAction(e -> {
-//                new UpdateQuizView(primaryStage, quiz.getId()).show();
-//            });
-//
-//            quizBox.getChildren().addAll(quizButton, updateButton);
-//            vbox.getChildren().add(quizBox);
-//            quizNumber++;
-//        }
-//
-//        // Create Main Menu button
-//        Button btnMainMenu = new Button("Main Menu");
-//        btnMainMenu.setStyle("-fx-padding: 10px; -fx-font-size: 16px;");
-//        btnMainMenu.setOnAction(e -> {
-//            new MainMenuView(primaryStage).show();
-//        });
-//
-//        // Add the Main Menu button to the VBox
-//        vbox.getChildren().add(btnMainMenu);
-//
-//        // Create the scene
-//        Scene scene = new Scene(vbox, WINDOW_HEIGHT, WINDOW_WIDTH);
-//
-//        // Use custom UI class's show method
-//        primaryStage.setScene(scene);
-//        primaryStage.setTitle("Show Quiz View");
-//        primaryStage.show();
-//    }
+
+    /**
+     * Displays the view.
+     */
     public void show() {
         GridPane grid = createMainLayout();
         addNavigationButtons(grid);
@@ -111,6 +59,11 @@ public class ShowQuizView extends UI {
         primaryStage.setMaximized(true);
         primaryStage.show();
     }
+
+    /**
+     * Creates the main layout of the view.
+     * @return the main layout {@link GridPane}.
+     */
     private GridPane createMainLayout() {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_LEFT);
@@ -125,12 +78,26 @@ public class ShowQuizView extends UI {
 
         return grid;
     }
+    /**
+     * Creates a button with the specified text, style class, and action.
+     *
+     * @param text the text of the button.
+     * @param styleClass the style class of the button.
+     * @param action the action to perform when the button is clicked.
+     * @return the created button.
+     */
     private Button createButton(String text, String styleClass, EventHandler<ActionEvent> action) {
         Button button = new Button(text);
         button.getStyleClass().add(styleClass);
         button.setOnAction(action);
         return button;
     }
+
+    /**
+     * Adds navigation buttons to the grid.
+     *
+     * @param grid the {@link GridPane} to which the buttons are added.
+     */
     private void addNavigationButtons(GridPane grid) {
         HBox navigationButtons = new HBox(20);
         navigationButtons.setAlignment(Pos.CENTER_LEFT);
@@ -145,6 +112,11 @@ public class ShowQuizView extends UI {
         grid.add(navigationButtons, 0, 0);
     }
 
+    /**
+     * Adds navigation buttons for admin users to the grid.
+     *
+     * @param grid the {@link GridPane} to which the buttons are added.
+     */
     private void addAdminNavigationButtons(GridPane grid) {
         HBox adminButtons = new HBox(20);
         adminButtons.setAlignment(Pos.CENTER_LEFT);
@@ -157,9 +129,22 @@ public class ShowQuizView extends UI {
         adminButtons.getChildren().add(btnCreateCourse);
         grid.add(adminButtons, 0, 1);
     }
+
+    /**
+     * Adds the list of quizzes to the grid.
+     *
+     * @param grid the {@link GridPane} to which the quizzes are added.
+     */
     private void addQuiz(GridPane grid) {
         displayQuizzez(grid, quizList);
     }
+
+    /**
+     * Displays a list of quizzes in the grid.
+     *
+     * @param grid the {@link GridPane} where quizzes are displayed.
+     * @param quizzez the list of {@link Quiz} objects to display.
+     */
     private void displayQuizzez(GridPane grid, List<Quiz> quizzez) {
         // Clear previous quizzez
         grid.getChildren().removeIf(node -> GridPane.getRowIndex(node) != null && GridPane.getRowIndex(node) >= 3);

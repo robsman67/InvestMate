@@ -27,6 +27,12 @@ public class ShowQuestionView extends UI {
     private OptionController optionController;
     private Map<Long, CheckBox> optionCheckBoxMap;
 
+    /**
+     * Constructor for ShowQuestionView.
+     *
+     * @param primaryStage The primary stage of the application.
+     * @param selectedQuiz The quiz to show the questions for.
+     */
     public ShowQuestionView(Stage primaryStage, Quiz selectedQuiz) {
         this.primaryStage = primaryStage;
         this.selectedQuiz = selectedQuiz;
@@ -35,6 +41,9 @@ public class ShowQuestionView extends UI {
         this.optionCheckBoxMap = new HashMap<>();
     }
 
+    /**
+     * Show the view.
+     */
     public void show() {
         GridPane grid = createMainLayout();
         Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -100,6 +109,12 @@ public class ShowQuestionView extends UI {
         primaryStage.setMaximized(true);
         primaryStage.show();
     }
+
+    /**
+     * Create the main layout.
+     *
+     * @return The main layout.
+     */
     private GridPane createMainLayout() {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_LEFT);
@@ -114,6 +129,16 @@ public class ShowQuestionView extends UI {
 
         return grid;
     }
+
+    /**
+     * Create a styled label.
+     *
+     * @param text The text of the label.
+     * @param fontSize The font size of the label.
+     * @param bold Whether the label should be bold.
+     * @param color The color of the label.
+     * @return The styled label.
+     */
     private Label createStyledLabel(String text, int fontSize, boolean bold, String color) {
         Label label = new Label(text);
         String style = "-fx-font-size: " + fontSize + "px;";
@@ -123,7 +148,10 @@ public class ShowQuestionView extends UI {
         label.setStyle(style + " -fx-text-fill:" + color + ";");
         return label;
     }
-    
+
+    /**
+     * Handle the submission of the quiz.
+     */
     private void handleSubmitQuiz() {
         Map<Long, Boolean> userAnswers = new HashMap<>();
 
@@ -149,6 +177,10 @@ public class ShowQuestionView extends UI {
         showResults(userAnswers);
     }
 
+    /**
+     * Show the results of the quiz.
+     * @param userAnswers The answers given by the user.
+     */
     private void showResults(Map<Long, Boolean> userAnswers) {
         GridPane grid = createMainLayout();
         Scene scene = new Scene(grid, WINDOW_WIDTH, WINDOW_HEIGHT);

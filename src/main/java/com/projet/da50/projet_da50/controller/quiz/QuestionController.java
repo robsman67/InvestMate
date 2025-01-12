@@ -11,25 +11,23 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 /**
- * Controller for Question entity
- * Contains methods to interact with the database
+ * Controller for the Question entity
  */
 public class QuestionController {
 
-    private final SessionFactory factory;
+    private SessionFactory factory;
 
     /**
-     * Constructor for QuestionController
-     * Initializes the factory
+     * Constructor
      */
     public QuestionController(){
         factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Question.class).buildSessionFactory();
     }
 
     /**
-     * Get all questions of a quiz from the database
-     * @param quizId Id of the quiz
-     * @return List of all questions
+     * Get all questions by quiz id
+     * @param quizId the quiz id
+     * @return the list of questions
      */
     public List<Question> getAllQuestionsByQuizId(Long quizId){
         try (Session session = factory.openSession()) {
@@ -44,8 +42,8 @@ public class QuestionController {
 
     /**
      * Get a question by its id
-     * @param questionId Id of the question
-     * @return Question object
+     * @param questionId the question id
+     * @return the question
      */
     public Question getQuestionById(Long questionId){
         try (Session session = factory.openSession()) {
@@ -59,8 +57,8 @@ public class QuestionController {
     }
 
     /**
-     * Create a question in the database
-     * @param question Question object
+     * Create a question
+     * @param question the question to create
      */
     public void createQuestion(Question question) {
         Transaction transaction = null;
@@ -76,13 +74,5 @@ public class QuestionController {
         }
     }
 
-    /**
-     * Close the Hibernate session factory.
-     */
-    public void close() {
-        if (factory != null && !factory.isClosed()) {
-            factory.close();
-        }
-    }
 
 }
