@@ -3,7 +3,7 @@
 Student project - Code a website and an app in Java
 
 ## Repository organization
-There is a main and 3 major branches: `Developpment`, `Documentation` and `website`.
+There is a main and 3 major branches: `main_dev`, `Documentation` and `website`.
 
 In the Documentation branches, you will be able to find the specifications of the projet, the technical report, a pitch video, and so on...
 In the website branch, you will be able to find all the files related to the website part of the project.
