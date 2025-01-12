@@ -12,10 +12,23 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class QuizController {
-    private SessionFactory factory;
+
+    private final SessionFactory factory;
+
+    /**
+     * Constructor for QuizController.
+     */
     public QuizController(){
         factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Quiz.class).buildSessionFactory();
     }
+
+    /**
+     * Create a new quiz.
+     *
+     * @param title Title of the quiz.
+     * @param hasMultipleAnswers Whether the quiz allows multiple answers.
+     * @param questions List of questions in the quiz.
+     */
     public void createQuiz(String title, boolean hasMultipleAnswers, List<Question> questions){
         Quiz quiz = new Quiz();
         quiz.setTitle(title);
@@ -37,6 +50,11 @@ public class QuizController {
         }
     }
 
+    /**
+     * Get all quizzes.
+     *
+     * @return List of all quizzes.
+     */
     public List<Quiz> getAllQuizzes(){
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Quiz> query = session.createQuery("from Quiz", Quiz.class);
@@ -47,6 +65,12 @@ public class QuizController {
         }
     }
 
+    /**
+     * Get a quiz by ID.
+     *
+     * @param quizId ID of the quiz.
+     * @return Quiz with the given ID.
+     */
     public Quiz getQuizById(Long quizId){
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Quiz> query = session.createQuery("from Quiz where id = :quizId", Quiz.class);
@@ -58,6 +82,12 @@ public class QuizController {
         }
     }
 
+    /**
+     * Update a quiz.
+     *
+     * @param quiz Quiz to update.
+     * @param newQuestions List of new questions to add to the quiz.
+     */
     public void updateQuiz(Quiz quiz, List<Question> newQuestions) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -94,6 +124,11 @@ public class QuizController {
         }
     }
 
+    /**
+     * Delete a quiz by ID.
+     *
+     * @param quizId ID of the quiz to delete.
+     */
     public void deleteQuiz(Long quizId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -111,6 +146,12 @@ public class QuizController {
         }
     }
 
+    /**
+     * Find quizzes by title.
+     *
+     * @param title Title of the quiz.
+     * @return List of quizzes with the given title.
+     */
     public List<Quiz> findQuizzesByTitle(String title) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Quiz> query = session.createQuery("from Quiz where lower(title) like :title", Quiz.class);
@@ -122,9 +163,9 @@ public class QuizController {
         }
     }
 
-
-
-    // Close the SessionFactory when the application is closed
+    /**
+     * Close the Hibernate session factory.
+     */
     public void close() {
         if (factory != null && !factory.isClosed()) {
             factory.close();

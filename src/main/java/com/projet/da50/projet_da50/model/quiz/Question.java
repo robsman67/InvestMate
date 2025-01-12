@@ -21,6 +21,7 @@ public class Question {
     @JoinColumn(name="quiz_id")
     private Quiz quiz;
 
+    // Constructors
     public Question(String question, List<Option> options) {
         this.question = question;
         this.options = options;

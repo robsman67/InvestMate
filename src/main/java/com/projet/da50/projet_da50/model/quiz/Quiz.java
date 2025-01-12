@@ -20,6 +20,11 @@ public class Quiz {
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions = new ArrayList<>();
 
+    // Constructors
+    public Quiz() {
+        //
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;
