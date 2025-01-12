@@ -2,6 +2,13 @@
 
 Student project - Code a website and an app in Java
 
+## Repository organization
+There is a main and 3 major branches: `Developpment`, `Documentation` and `website`.
+
+In the Documentation branches, you will be able to find the specifications of the projet, the technical report, a pitch video, and so on...
+In the website branch, you will be able to find all the files related to the website part of the project.
+In the Developpment and main branches, you will be able to find all the files related to the desktop app part of the project. 
+
 ## Installation
 
 This application requires **MySQL 8.4.3** to be installed locally and **Java JDK 21 or later**.
