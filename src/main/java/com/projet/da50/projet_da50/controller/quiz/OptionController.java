@@ -10,13 +10,27 @@ import org.hibernate.query.Query;
 
 import java.util.List;
 
+/**
+ * Controller for the Option entity
+ * This class is used to interact with the database
+ */
 public class OptionController {
-    private SessionFactory factory;
 
+    private final SessionFactory factory;
+
+    /**
+     * Constructor for the OptionController
+     * This constructor initializes the factory attribute
+     */
     public OptionController(){
         factory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Option.class).buildSessionFactory();
     }
 
+    /**
+     * Method to get all the options of a question
+     * @param questionId the id of the question
+     * @return a list of options
+     */
     public List<Option> getAllOptionsByQuestionId(Long questionId){
         try (Session session = factory.openSession()) {
             Query<Option> query = session.createQuery("from Option where question_id = :questionId", Option.class);
@@ -28,6 +42,11 @@ public class OptionController {
         }
     }
 
+    /**
+     * Method to get an option by its id
+     * @param optionId the id of the option
+     * @return the option
+     */
     public Option getOptionById(Long optionId){
         try (Session session = factory.openSession()) {
             Query<Option> query = session.createQuery("from Option where id = :optionId", Option.class);
@@ -39,6 +58,10 @@ public class OptionController {
         }
     }
 
+    /**
+     * Method to create an option
+     * @param option the option to create
+     */
     public void createOption(Option option) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -53,6 +76,10 @@ public class OptionController {
         }
     }
 
+    /**
+     * Method to delete an option
+     * @param option the option to delete
+     */
     public void updateOption(Option option){
         try (Session session = factory.openSession()) {
             session.beginTransaction();
@@ -63,6 +90,9 @@ public class OptionController {
         }
     }
 
+    /**
+     * Close the Hibernate session factory.
+     */
     public void close() {
         if (factory != null && !factory.isClosed()) {
             factory.close();

@@ -20,10 +20,12 @@ public class Option {
     @JoinColumn(name = "question_id")
     private Question question;
 
+    // Constructors
     public Option(String content, boolean isCorrect) {
         this.content = content;
         this.isCorrect = isCorrect;
     }
+
     public Option(){
 
     }
