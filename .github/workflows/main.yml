@@ -1,10 +1,10 @@
-name: CI-'Developpement'-branch
+name: CI-'main'-branch
 
 on:
   push:
-    branches: [ Developpement ]
+    branches: [ main ]
   pull_request:
-    branches: [ Developpement ]
+    branches: [ main ]
 
 jobs:
   build:
