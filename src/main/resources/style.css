@@ -1,0 +1,122 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.main-background {
+    -fx-background-color: #3e5180;
+}
+
+.title {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.subtitle {
+    -fx-font-size: 18px;
+    -fx-text-fill: #a9adc1;
+}
+
+.button-blue {
+    -fx-background-color: #293447;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-border-width: 0;
+}
+
+.button-blue:hover {
+    -fx-background-color: #212b3b; /* Couleur au survol */
+    -fx-cursor: hand;
+}
+
+.form-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.form-textfield {
+    -fx-font-size: 14px;
+    -fx-background-color: #293447;
+    -fx-text-fill: white;
+    -fx-border-color: #505d77;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-padding: 5px;
+}
+
+.error-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+}
+
+.hyperlink {
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-color: transparent;
+    -fx-text-fill: white; /* Couleur du lien */
+    -fx-underline: true;
+    -fx-font-size: 14px;
+}
+
+.hyperlink:hover {
+    -fx-text-fill: #ff9933; /* Couleur au survol */
+}
+
+.button-blue {
+    -fx-background-color: #0d1117; /* Bleu foncé similaire au fond pour le bouton Create Account */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-border-width: 0;
+}
+
+.button-blue:hover {
+    -fx-background-color: #1d283a;
+    -fx-cursor: hand;
+}
+
+.button-lightblue {
+    -fx-background-color: #5199ff;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-border-width: 0;
+}
+
+.button-lightblue:hover {
+    -fx-background-color: #427acc;
+    -fx-cursor: hand;
+}
+
+.button-red {
+    -fx-background-color: #ff5151; /* Rouge clair pour le bouton Logout */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-border-width: 0;
+}
+
+.button-red:hover {
+    -fx-background-color: #cc4242;
+    -fx-cursor: hand;
+}
+
+.form-container {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #5199ff, #243447);
+    -fx-background-radius: 10;
+    -fx-padding: 30px;
+    -fx-spacing: 20px;
+    -fx-alignment: center;
+}

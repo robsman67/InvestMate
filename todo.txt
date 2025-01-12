@@ -1,0 +1,39 @@
+TODO :
+- Token quand connexion (1 jours)
+    + : No token for the admin (in security purpose)
+    + : Déconnexion --> supp le token
+    ? : how to know who is logged in
+    + : Message that will warn the user that he will be disconnected in 5 minutes
+    + : Delete expired token
+
+
+- Gerer les logs (log4j)
+    Comment user créer automatiquement ?
+
+- WHEN WE RUN WITHOUT DATABASE ERROR.
+
+- Delete user when connected by creating a button (check if wallet equal to 0)
+   ? : Creating the profile page, we can delete the user from this page
+
+- Ameliorer le view en general
+
+- Admin will have different view
+
+- Test if cross platform
+
+DONE :
+- Create unitary test -- FAIT
+- Connexion remettre les champs par défaut (vide) après utilisateurs existe déjà -- FAIT
+- User connexion --> Emmene vers une page ou sera deco -- FAIT
+- Admin comment faire pour le role -- FAIT via le script install.bat -- FAIT
+- Crypter mdp -- FAIT
+- Manage the errors : function that take argument (mail,pwd,..) explaining the error
+    verify the mail is an mail, verify the password with restriction (6 characters...) -- FAIT mais améliorer le view et ajouter des erreurs si nécessaire
+- Command line argument in order to instantiate the database with the right schema from the db.json that will contain the schema of the database and the data that will be inserted in the database -- FAIT via le script install.bat
+    pas sur mais automatisé l'implémentaion de la base de donnée
+- Add a security about password tentative (5 tentatives max per minute) -- FAIT
+- Add profile modification when connected (mail, password, name) -- FAIT
+- Bouton stay connected or not (for the token manager) -- FAIT
+
+
+- Logout id -1
