@@ -198,7 +198,7 @@ public class ShowQuestionView extends UI {
 
         for (Question question : questions) {
             Label questionLabel = new CustomLabel(questionNumber + ". " + question.getQuestion());
-            questionLabel.setStyle("-fx-font-size: 18px; -fx-padding: 10px 0;");
+            questionLabel.setStyle("-fx-font-size: 16px; -fx-padding: 10px 0;");
             vbox.getChildren().add(questionLabel);
 
             List<Option> options = optionController.getAllOptionsByQuestionId(question.getId());
@@ -209,6 +209,8 @@ public class ShowQuestionView extends UI {
                 HBox optionBox = new HBox(10);
                 CheckBox optionCheckBox = new CheckBox(option.getContent());
                 optionCheckBox.setDisable(true);
+                optionCheckBox.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
+
 
                 boolean userSelected = userAnswers.getOrDefault(option.getId(), false);
                 boolean isOptionCorrect = option.isCorrect();
