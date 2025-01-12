@@ -72,3 +72,24 @@ CREATE DATABASE IF NOT EXISTS da50;
 CREATE USER IF NOT EXISTS 'hibernate_user'@'localhost' IDENTIFIED BY 'root';
 GRANT ALL PRIVILEGES ON da50.* TO 'hibernate_user'@'localhost';
 FLUSH PRIVILEGES;
+```
+## Usage
+
+1. After launching the application for the first time, you will be directed to the login page.
+2. In order to create lessons or quizzes, you must login with an admin account. If you just want to access the lessons pages, or the quizzes pages, you can use any type of account.
+
+### Creating a Lesson
+
+3. To create a lesson, go ahead and click on the `Create Course` button and enter the lesson's name, the tag for the difficulty, and other elements that you can choose from the select input.
+4. You can rearrange the elements by using the arrow button besides the elements in the preview window.
+5. When you are done, go ahead and click the `Save` button to save or simply the `Back to Main Menu` button to go back to the main menu.
+6. Once you are at the main menu, you will have the choice to modify the lesson if needed.
+
+### Creating a Quiz
+
+7. To create a quiz, go ahead and click the `Quizz` button from the main menu, and click `Create Quiz` .
+8. Then you will have the option to create a quiz with multiple correct answers or only single correct answers only (irrevisible for the moment).
+9. Then, enter the Quiz's title, and add questions by clicking the `Add Question` button and add options by clicking the `Add Option` button.
+10. If the option is the correct response for the question, go ahead and tick the checkbox (only 1 checkbox can be ticked for single correct answer quizzes).
+11. When you are done, go ahead and click the `Save Quiz` button to save the quiz or `Home` to go to the main menu or `Back` to go to the list of quizzes view.
+12. An update/modify button will be present if you want to update/modify the quizzes if needed. 
